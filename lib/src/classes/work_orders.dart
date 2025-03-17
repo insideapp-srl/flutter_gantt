@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import '../utils/datetime.dart';
 
-
 class WorkOrders {
   late DateTime start;
   late DateTime end;

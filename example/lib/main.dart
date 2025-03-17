@@ -12,23 +12,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      title: 'Flutter Demo',
-      scrollBehavior: AppCustomScrollBehavior(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Gantt'),
-    );
+        title: 'Flutter Demo',
+        scrollBehavior: AppCustomScrollBehavior(),
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Flutter Gantt'),
+      );
 }
+
 class AppCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad,
-    PointerDeviceKind.unknown,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.unknown,
+      };
 }
 
 class MyHomePage extends StatefulWidget {
@@ -44,7 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   GanttController controller = GanttController(daysViews: 20);
 
   List<WorkOrders> workOrders = [
-
     WorkOrders(
       start: DateTime(2025, 1, 15),
       end: DateTime(2025, 1, 25),
@@ -73,24 +73,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Column(
-        children: [
-          GanttRangeSelector(controller: controller),
-          Expanded(
-            child: Gantt(
-              controller: controller,
-              //startDate: DateTime.now().subtract(Duration(days: 60)),
-              //daysViews: 30,
-              workOrders: workOrders,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+        ),
+        body: Column(
+          children: [
+            GanttRangeSelector(controller: controller),
+            Expanded(
+              child: Gantt(
+                controller: controller,
+                //startDate: DateTime.now().subtract(Duration(days: 60)),
+                //daysViews: 30,
+                workOrders: workOrders,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
 }
-
-
