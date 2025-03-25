@@ -101,7 +101,9 @@ class GanttWorkOrdersCtrl extends ChangeNotifier {
 
   bool get cellVisible =>
       workOrders.start.isDateBetween(startDate, endDate) ||
-      workOrders.endByDays.isDateBetween(startDate, endDate);
+      workOrders.endByDays.isDateBetween(startDate, endDate) ||
+      (workOrders.start.isBefore(startDate) &&
+          workOrders.endByDays.isAfter(endDate));
 
   bool get showBefore =>
       !cellVisible && workOrders.endByDays.isBefore(startDate);
