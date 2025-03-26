@@ -61,9 +61,9 @@ class _GanttState extends State<Gantt> {
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
       if (dx.isNegative) {
-        controller.prev(1);
-      } else {
         controller.next(1);
+      } else {
+        controller.prev(1);
       }
       _lastPosition = details.localPosition;
     }

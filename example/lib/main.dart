@@ -42,7 +42,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  GanttController controller = GanttController(daysViews: 10);
+  GanttController controller = GanttController(daysViews: 60);
 
   List<WorkOrders> workOrders = [
     WorkOrders(
