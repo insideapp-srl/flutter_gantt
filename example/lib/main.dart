@@ -44,11 +44,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   GanttController controller = GanttController(daysViews: 60);
 
-  List<WorkOrders> workOrders = [
+  final List<WorkOrders> _workOrders = [
     WorkOrders(
       start: DateTime(2025, 1, 15),
-      end: DateTime(2025, 1, 25),
-      workHours: 80,
+      end: DateTime(2025, 1, 16),
       title: 'Task 1',
       description: 'Description 1',
       onTap: (workOrders) {
@@ -58,14 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
     WorkOrders(
       start: DateTime(2025, 1, 23),
       end: DateTime(2025, 1, 30),
-      workHours: 88,
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
     ),
     WorkOrders(
       start: DateTime(2025, 3, 1),
       end: DateTime(2025, 3, 17),
-      workHours: 200,
       title: 'Task 3, Ciaone',
       description: 'Description 2',
     ),
@@ -85,7 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: controller,
                 //startDate: DateTime.now().subtract(Duration(days: 60)),
                 //daysViews: 30,
-                workOrders: workOrders,
+                workOrdersAsync: (startDate, endDate, workOrders) async =>
+                    _workOrders,
+                //workOrders: workOrders,
               ),
             ),
           ],

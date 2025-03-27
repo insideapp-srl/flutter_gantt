@@ -5,7 +5,6 @@ import '../utils/datetime.dart';
 class WorkOrders {
   late DateTime start;
   late DateTime end;
-  final int workHours;
   final String title;
   final String description;
   final List<WorkOrders>? children;
@@ -15,18 +14,17 @@ class WorkOrders {
   WorkOrders({
     required DateTime start,
     required DateTime end,
-    required this.workHours,
     required this.title,
     required this.description,
     this.children,
     this.onTap,
     this.color,
-  }) {
+  }):assert(start.dayStart.isBefore(end.dayEnd)) {
     this.start = start.dayStart;
     this.end = end.dayEnd;
   }
 
-  int get daysDuration => (workHours / 8).ceil(); //ToDo
+  int get daysDuration => end.difference(start).inDays + 1 ;
 
   DateTime get endByDays => start
       .add(Duration(days: daysDuration))

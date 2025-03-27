@@ -10,7 +10,13 @@ import 'row.dart';
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
   final int? daysViews;
-  final List<WorkOrders> workOrders;
+  final List<WorkOrders>? workOrders;
+  final Future<List<WorkOrders>> Function(
+    DateTime startDate,
+    DateTime endDate,
+    List<WorkOrders> workOrders,
+  )?
+  workOrdersAsync;
   final GanttTheme? theme;
   final GanttController? controller;
 
@@ -19,9 +25,13 @@ class Gantt extends StatefulWidget {
     this.startDate,
     this.daysViews,
     this.theme,
-    required this.workOrders,
+    this.workOrders,
+    this.workOrdersAsync,
     this.controller,
-  }) : assert((startDate != null && daysViews != null) || controller != null);
+  }) : assert(
+         ((startDate != null && daysViews != null) || controller != null) &&
+             ((workOrders == null) != (workOrdersAsync == null)),
+       );
 
   @override
   State<Gantt> createState() => _GanttState();
@@ -30,6 +40,7 @@ class Gantt extends StatefulWidget {
 class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
+  List<WorkOrders> _workOrders = [];
 
   Offset? _lastPosition;
 
@@ -42,6 +53,11 @@ class _GanttState extends State<Gantt> {
           startDate: widget.startDate,
           daysViews: widget.daysViews,
         );
+    if (widget.workOrders != null) {
+      _workOrders = widget.workOrders!;
+    } else {
+      getAsync().ignore();
+    }
     super.initState();
   }
 
@@ -73,7 +89,23 @@ class _GanttState extends State<Gantt> {
 
   void _handlePanCancel() => _reset();
 
-  void _reset() => _lastPosition = null;
+  void _reset() {
+    _lastPosition = null;
+    getAsync().ignore();
+  }
+
+  Future<void> getAsync() async {
+    if (widget.workOrdersAsync != null) {
+      _workOrders = await widget.workOrdersAsync!(
+        controller.startDate,
+        controller.endDate,
+        workOrders,
+      );
+      setState(() {});
+    }
+  }
+
+  List<WorkOrders> get workOrders => _workOrders;
 
   @override
   Widget build(BuildContext context) => MultiProvider(
@@ -94,8 +126,8 @@ class _GanttState extends State<Gantt> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(widget.workOrders.length, (index) {
-                    final workOrders = widget.workOrders[index];
+                  children: List.generate(workOrders.length, (index) {
+                    final workOrder = workOrders[index];
                     return Padding(
                       padding: EdgeInsets.only(
                         top: context.watch<GanttTheme>().rowPadding,
@@ -103,10 +135,16 @@ class _GanttState extends State<Gantt> {
                       ),
                       child: SizedBox(
                         height: context.watch<GanttTheme>().cellHeight,
-                        child: Text(
-                          workOrders.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        child: Row(
+                          children: [
+                            if (index > 0) Icon(Icons.keyboard_arrow_right),
+                            Icon(Icons.keyboard_arrow_down),
+                            Text(
+                              workOrder.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -258,23 +296,19 @@ class _GanttState extends State<Gantt> {
                                   context.watch<GanttTheme>().rowsGroupPadding,
                             ),
                             child: Column(
-                              children: List.generate(
-                                widget.workOrders.length,
-                                (index) {
-                                  final workOrders = widget.workOrders[index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      top:
-                                          context
-                                              .watch<GanttTheme>()
-                                              .rowPadding,
-                                    ),
-                                    child: GanttWorkOrderRow(
-                                      workOrders: workOrders,
-                                    ),
-                                  );
-                                },
-                              ),
+                              children: List.generate(workOrders.length, (
+                                index,
+                              ) {
+                                final workOrder = workOrders[index];
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    top: context.watch<GanttTheme>().rowPadding,
+                                  ),
+                                  child: GanttWorkOrderRow(
+                                    workOrders: workOrder,
+                                  ),
+                                );
+                              }),
                             ),
                           ),
                         ],
