@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../classes/theme.dart';
-import '../classes/work_orders.dart';
+import '../classes/activity.dart';
 
 class GanttCell extends StatefulWidget {
-  final WorkOrders workOrders;
+  final GantActivity activity;
 
-  const GanttCell({super.key, required this.workOrders});
+  const GanttCell({super.key, required this.activity});
 
   @override
   State<GanttCell> createState() => _GanttCellState();
@@ -20,7 +20,7 @@ class _GanttCellState extends State<GanttCell> {
   Widget build(BuildContext context) => Material(
     color: Colors.transparent,
     child: InkWell(
-      onTap: () => widget.workOrders.onTap?.call(widget.workOrders),
+      onTap: () => widget.activity.onTap?.call(widget.activity),
       child: MouseRegion(
         onEnter: (event) {
           setState(() {
@@ -42,12 +42,12 @@ class _GanttCellState extends State<GanttCell> {
                 context.watch<GanttTheme>().cellRounded,
               ),
             ),
-            color: (widget.workOrders.color ??
+            color: (widget.activity.color ??
                     context.watch<GanttTheme>().defaultCellColor)
                 .withValues(alpha: mouseOver ? 0.7 : 1),
           ),
           child: Text(
-            widget.workOrders.title,
+            widget.activity.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

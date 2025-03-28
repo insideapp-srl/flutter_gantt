@@ -2,51 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../classes/theme.dart';
-import '../classes/work_orders.dart';
+import '../classes/activity.dart';
 import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
-class GanttWorkOrderRow extends StatelessWidget {
-  final WorkOrders workOrders;
+class GanttActivityRow extends StatelessWidget {
+  final GantActivity activity;
 
-  const GanttWorkOrderRow({super.key, required this.workOrders});
+  const GanttActivityRow({super.key, required this.activity});
 
   @override
   Widget build(
     BuildContext context,
-  ) => ChangeNotifierProvider<GanttWorkOrdersCtrl>(
+  ) => ChangeNotifierProvider<GanttActivityCtrl>(
     create:
-        (context) => GanttWorkOrdersCtrl(
+        (context) => GanttActivityCtrl(
           controller: context.read<GanttController>(),
-          workOrders: workOrders,
+          activity: activity,
         ),
     builder:
         (context, child) => SizedBox(
           height: context.watch<GanttTheme>().cellHeight,
           child:
-              context.watch<GanttWorkOrdersCtrl>().cellVisible
+              context.watch<GanttActivityCtrl>().cellVisible
                   ? Row(
                     children: [
                       Expanded(
                         flex:
-                            context.watch<GanttWorkOrdersCtrl>().cellsFlexStart,
+                            context.watch<GanttActivityCtrl>().cellsFlexStart,
                         child: Container(),
                       ),
                       Expanded(
-                        flex: context.watch<GanttWorkOrdersCtrl>().cellsFlex,
+                        flex: context.watch<GanttActivityCtrl>().cellsFlex,
                         child: Tooltip(
-                          message: workOrders.description,
-                          child: GanttCell(workOrders: workOrders),
+                          message: activity.description,
+                          child: GanttCell(activity: activity),
                         ),
                       ),
                       Expanded(
-                        flex: context.watch<GanttWorkOrdersCtrl>().cellsFlexEnd,
+                        flex: context.watch<GanttActivityCtrl>().cellsFlexEnd,
                         child: Container(),
                       ),
                     ],
                   )
-                  : context.watch<GanttWorkOrdersCtrl>().showBefore
+                  : context.watch<GanttActivityCtrl>().showBefore
                   ? Align(
                     alignment: Alignment.centerLeft,
                     child: Row(
@@ -54,7 +54,7 @@ class GanttWorkOrderRow extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.navigate_before, color: Colors.black),
-                        Text(workOrders.title),
+                        Text(activity.title),
                       ],
                     ),
                   )
@@ -64,7 +64,7 @@ class GanttWorkOrderRow extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(workOrders.title),
+                        Text(activity.title),
                         Icon(Icons.navigate_next, color: Colors.black),
                       ],
                     ),

@@ -1,5 +1,5 @@
 export 'src/classes/theme.dart';
-export 'src/classes/work_orders.dart';
+export 'src/classes/activity.dart';
 
 export 'src/widgets/cell.dart';
 export 'src/widgets/controller.dart';

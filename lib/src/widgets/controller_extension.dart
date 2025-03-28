@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../classes/work_orders.dart';
+import '../classes/activity.dart';
 import '../utils/datetime.dart';
 import 'controller.dart';
 
@@ -60,36 +60,36 @@ extension GanttCtrlInternal on GanttController {
     endDate.microsecondsSinceEpoch,
   );
 
-  int getStartFlex(WorkOrders workOrders) {
+  int getStartFlex(GantActivity activity) {
     final clampedStart = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(workOrders.start),
+      _clampToGanttRange(activity.start),
     );
     return clampedStart.difference(startDate).inDays;
   }
 
-  int getCellFlex(WorkOrders workOrders) {
+  int getCellFlex(GantActivity activity) {
     final clampedStart = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(workOrders.start),
+      _clampToGanttRange(activity.start),
     );
     final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(workOrders.endByDays) + 1,
+      _clampToGanttRange(activity.endByDays) + 1,
     );
     return clampedEnd.difference(clampedStart).inDays;
   }
 
-  int getCellsFlexEnd(WorkOrders workOrders) {
+  int getCellsFlexEnd(GantActivity activity) {
     final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(workOrders.endByDays),
+      _clampToGanttRange(activity.endByDays),
     );
     return endDate.difference(clampedEnd).inDays;
   }
 }
 
-class GanttWorkOrdersCtrl extends ChangeNotifier {
+class GanttActivityCtrl extends ChangeNotifier {
   final GanttController controller;
-  final WorkOrders workOrders;
+  final GantActivity activity;
 
-  GanttWorkOrdersCtrl({required this.controller, required this.workOrders});
+  GanttActivityCtrl({required this.controller, required this.activity});
 
   DateTime get startDate => controller.startDate;
 
@@ -100,19 +100,19 @@ class GanttWorkOrdersCtrl extends ChangeNotifier {
   DateTime get endDate => controller.endDate;
 
   bool get cellVisible =>
-      workOrders.start.isDateBetween(startDate, endDate) ||
-      workOrders.endByDays.isDateBetween(startDate, endDate) ||
-      (workOrders.start.isBefore(startDate) &&
-          workOrders.endByDays.isAfter(endDate));
+      activity.start.isDateBetween(startDate, endDate) ||
+      activity.endByDays.isDateBetween(startDate, endDate) ||
+      (activity.start.isBefore(startDate) &&
+          activity.endByDays.isAfter(endDate));
 
   bool get showBefore =>
-      !cellVisible && workOrders.endByDays.isBefore(startDate);
+      !cellVisible && activity.endByDays.isBefore(startDate);
 
-  bool get showAfter => !cellVisible && workOrders.start.isAfter(endDate);
+  bool get showAfter => !cellVisible && activity.start.isAfter(endDate);
 
-  int get cellsFlexStart => controller.getStartFlex(workOrders);
+  int get cellsFlexStart => controller.getStartFlex(activity);
 
-  int get cellsFlex => controller.getCellFlex(workOrders);
+  int get cellsFlex => controller.getCellFlex(activity);
 
-  int get cellsFlexEnd => controller.getCellsFlexEnd(workOrders);
+  int get cellsFlexEnd => controller.getCellsFlexEnd(activity);
 }

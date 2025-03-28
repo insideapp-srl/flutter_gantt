@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../classes/theme.dart';
-import '../classes/work_orders.dart';
+import '../classes/activity.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 import 'row.dart';
@@ -10,13 +10,13 @@ import 'row.dart';
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
   final int? daysViews;
-  final List<WorkOrders>? workOrders;
-  final Future<List<WorkOrders>> Function(
+  final List<GantActivity>? activities;
+  final Future<List<GantActivity>> Function(
     DateTime startDate,
     DateTime endDate,
-    List<WorkOrders> workOrders,
+    List<GantActivity> activities,
   )?
-  workOrdersAsync;
+  activitiesAsync;
   final GanttTheme? theme;
   final GanttController? controller;
 
@@ -25,12 +25,12 @@ class Gantt extends StatefulWidget {
     this.startDate,
     this.daysViews,
     this.theme,
-    this.workOrders,
-    this.workOrdersAsync,
+    this.activities,
+    this.activitiesAsync,
     this.controller,
   }) : assert(
          ((startDate != null && daysViews != null) || controller != null) &&
-             ((workOrders == null) != (workOrdersAsync == null)),
+             ((activities == null) != (activitiesAsync == null)),
        );
 
   @override
@@ -40,7 +40,7 @@ class Gantt extends StatefulWidget {
 class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
-  List<WorkOrders> _workOrders = [];
+  List<GantActivity> _activities = [];
 
   Offset? _lastPosition;
 
@@ -53,8 +53,8 @@ class _GanttState extends State<Gantt> {
           startDate: widget.startDate,
           daysViews: widget.daysViews,
         );
-    if (widget.workOrders != null) {
-      _workOrders = widget.workOrders!;
+    if (widget.activities != null) {
+      _activities = widget.activities!;
     } else {
       getAsync().ignore();
     }
@@ -95,17 +95,17 @@ class _GanttState extends State<Gantt> {
   }
 
   Future<void> getAsync() async {
-    if (widget.workOrdersAsync != null) {
-      _workOrders = await widget.workOrdersAsync!(
+    if (widget.activitiesAsync != null) {
+      _activities = await widget.activitiesAsync!(
         controller.startDate,
         controller.endDate,
-        workOrders,
+        activities,
       );
       setState(() {});
     }
   }
 
-  List<WorkOrders> get workOrders => _workOrders;
+  List<GantActivity> get activities => _activities;
 
   @override
   Widget build(BuildContext context) => MultiProvider(
@@ -126,9 +126,9 @@ class _GanttState extends State<Gantt> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(workOrders.length, (index) {
-                    final workOrder = workOrders[index];
-                    return Padding(
+                  children: List.generate(
+                    activities.length,
+                    (index) => Padding(
                       padding: EdgeInsets.only(
                         top: context.watch<GanttTheme>().rowPadding,
                         left: 8.0,
@@ -137,18 +137,18 @@ class _GanttState extends State<Gantt> {
                         height: context.watch<GanttTheme>().cellHeight,
                         child: Row(
                           children: [
-                            if (index > 0) Icon(Icons.keyboard_arrow_right),
-                            Icon(Icons.keyboard_arrow_down),
+                            //if (index > 0) Icon(Icons.keyboard_arrow_right),
+                            //Icon(Icons.keyboard_arrow_down),
                             Text(
-                              workOrder.title,
+                              activities[index].title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -296,19 +296,17 @@ class _GanttState extends State<Gantt> {
                                   context.watch<GanttTheme>().rowsGroupPadding,
                             ),
                             child: Column(
-                              children: List.generate(workOrders.length, (
-                                index,
-                              ) {
-                                final workOrder = workOrders[index];
-                                return Padding(
+                              children: List.generate(
+                                activities.length,
+                                (index) => Padding(
                                   padding: EdgeInsets.only(
                                     top: context.watch<GanttTheme>().rowPadding,
                                   ),
-                                  child: GanttWorkOrderRow(
-                                    workOrders: workOrder,
+                                  child: GanttActivityRow(
+                                    activity: activities[index],
                                   ),
-                                );
-                              }),
+                                ),
+                              ),
                             ),
                           ),
                         ],

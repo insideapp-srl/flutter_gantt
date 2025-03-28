@@ -2,16 +2,16 @@ import 'dart:ui';
 
 import '../utils/datetime.dart';
 
-class WorkOrders {
+class GantActivity {
   late DateTime start;
   late DateTime end;
   final String title;
   final String description;
-  final List<WorkOrders>? children;
-  final Function(WorkOrders workOrders)? onTap;
+  final List<GantActivity>? children;
+  final Function(GantActivity activity)? onTap;
   final Color? color;
 
-  WorkOrders({
+  GantActivity({
     required DateTime start,
     required DateTime end,
     required this.title,
