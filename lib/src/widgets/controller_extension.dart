@@ -102,11 +102,9 @@ class GanttActivityCtrl extends ChangeNotifier {
   bool get cellVisible =>
       activity.start.isDateBetween(startDate, endDate) ||
       activity.end.isDateBetween(startDate, endDate) ||
-      (activity.start.isBefore(startDate) &&
-          activity.end.isAfter(endDate));
+      (activity.start.isBefore(startDate) && activity.end.isAfter(endDate));
 
-  bool get showBefore =>
-      !cellVisible && activity.end.isBefore(startDate);
+  bool get showBefore => !cellVisible && activity.end.isBefore(startDate);
 
   bool get showAfter => !cellVisible && activity.start.isAfter(endDate);
 
