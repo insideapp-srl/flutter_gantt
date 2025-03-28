@@ -21,9 +21,9 @@ class GantActivity {
     this.children,
     this.onTap,
     this.color,
-  }) : assert(start.dayStart.isBefore(end.dayEnd)) {
-    this.start = start.dayStart;
-    this.end = end.dayEnd;
+  }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
+    this.start = start.toDate;
+    this.end = end.toDate;
     if (segments != null) {
       for (final segment in segments!) {
         assert(
@@ -52,8 +52,8 @@ class GantActivitySegment {
     required this.description,
     this.onTap,
     this.color,
-  }) : assert(start.dayStart.isBefore(end.dayEnd)) {
-    this.start = start.dayStart;
-    this.end = end.dayEnd;
+  }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
+    this.start = start.toDate;
+    this.end = end.toDate;
   }
 }

@@ -42,11 +42,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  GanttController controller = GanttController(daysViews: 90);
+  GanttController controller =
+      GanttController(daysViews: 30, startDate: DateTime(2025, 3, 30));
 
   final List<GantActivity> _activities = [
     GantActivity(
-      start: DateTime(2025, 4, 2),
+      start: DateTime(2025, 3, 30),
       end: DateTime(2025, 4, 12),
       title: 'Task 1',
       description: 'Description 1',
@@ -67,12 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     GantActivity(
       start: DateTime(2025, 4, 23),
-      end: DateTime(2025, 4, 30),
+      end: DateTime(2025, 4, 23),
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
     ),
     GantActivity(
-      start: DateTime(2025, 4, 1),
+      start: DateTime(2025, 3, 28),
       end: DateTime(2025, 4, 17),
       title: 'Task 3, Ciaone',
       description: 'Description 2',

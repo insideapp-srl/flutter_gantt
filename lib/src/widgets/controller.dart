@@ -8,6 +8,7 @@ class GanttController extends ChangeNotifier {
   DateTime get startDate => _startDate;
 
   set startDate(DateTime value) {
+    value = value.toDate;
     if (value != _startDate) {
       _startDate = value;
       notifyListeners();
@@ -25,11 +26,7 @@ class GanttController extends ChangeNotifier {
     }
   }
 
-  DateTime get endDate =>
-      startDate
-          .subtract(Duration(microseconds: 1))
-          .add(Duration(days: daysViews))
-          .dayEnd;
+  DateTime get endDate => startDate.add(Duration(days: daysViews - 1));
 
   void next({int days = 1}) {
     startDate = startDate.add(Duration(days: days));
@@ -41,6 +38,7 @@ class GanttController extends ChangeNotifier {
 
   GanttController({DateTime? startDate, int? daysViews})
     : _startDate =
-          (startDate ?? DateTime.now().subtract(Duration(days: 30))).dayStart,
+          (startDate?.toDate ??
+              DateTime.now().toDate.subtract(Duration(days: 30))),
       _daysViews = daysViews ?? 30;
 }

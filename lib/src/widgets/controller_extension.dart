@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 import '../classes/activity.dart';
@@ -55,32 +57,33 @@ extension GanttCtrlInternal on GanttController {
   Map<String, int> get months =>
       GanttCtrlInternal.getMonths(startDate, daysViews);
 
-  int _clampToGanttRange(DateTime date) => date.microsecondsSinceEpoch.clamp(
-    startDate.microsecondsSinceEpoch,
-    endDate.microsecondsSinceEpoch,
-  );
-
-  int getStartFlex(GantActivity activity) {
-    final clampedStart = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.start),
+  DateTime clampToGanttRange(DateTime date) {
+    final clampedMicroseconds = date.microsecondsSinceEpoch.clamp(
+      startDate.microsecondsSinceEpoch,
+      endDate.microsecondsSinceEpoch,
     );
+    return DateTime.fromMicrosecondsSinceEpoch(
+      clampedMicroseconds,
+      isUtc: true,
+    ).copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  }
+
+  int getCellDaysBefore(GantActivity activity) {
+    final clampedStart = clampToGanttRange(activity.start);
     return clampedStart.difference(startDate).inDays;
   }
 
-  int getCellFlex(GantActivity activity) {
-    final clampedStart = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.start),
-    );
-    final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.end) + 1,
-    );
+  int getCellDays(GantActivity activity) {
+    final clampedStart = clampToGanttRange(activity.start);
+    final clampedEnd = clampToGanttRange(
+      activity.end,
+    ).add(const Duration(days: 1));
+
     return clampedEnd.difference(clampedStart).inDays;
   }
 
-  int getCellsFlexEnd(GantActivity activity) {
-    final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.end),
-    );
+  int getCellsDaysAfter(GantActivity activity) {
+    final clampedEnd = clampToGanttRange(activity.end);
     return endDate.difference(clampedEnd).inDays;
   }
 }
@@ -108,9 +111,9 @@ class GanttActivityCtrl extends ChangeNotifier {
 
   bool get showAfter => !cellVisible && activity.start.isAfter(endDate);
 
-  int get cellsFlexStart => controller.getStartFlex(activity);
+  int get cellsFlexStart => controller.getCellDaysBefore(activity);
 
-  int get cellsFlex => controller.getCellFlex(activity);
+  int get cellsFlex => controller.getCellDays(activity);
 
-  int get cellsFlexEnd => controller.getCellsFlexEnd(activity);
+  int get cellsFlexEnd => controller.getCellsDaysAfter(activity);
 }
