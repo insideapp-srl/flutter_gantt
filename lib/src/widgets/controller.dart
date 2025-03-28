@@ -25,15 +25,17 @@ class GanttController extends ChangeNotifier {
     }
   }
 
-  DateTime get endDate => startDate
-      .add(Duration(days: daysViews))
-      .subtract(Duration(microseconds: 1));
+  DateTime get endDate =>
+      startDate
+          .subtract(Duration(microseconds: 1))
+          .add(Duration(days: daysViews))
+          .dayEnd;
 
-  void next(int days) {
+  void next({int days = 1}) {
     startDate = startDate.add(Duration(days: days));
   }
 
-  void prev(int days) {
+  void prev({int days = 1}) {
     startDate = startDate.subtract(Duration(days: days));
   }
 

@@ -11,11 +11,11 @@ class GanttRangeSelector extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       IconButton(
-        onPressed: () => controller.prev(1),
+        onPressed: () => controller.prev(),
         icon: Icon(Icons.navigate_before),
       ),
       IconButton(
-        onPressed: () => controller.next(1),
+        onPressed: () => controller.next(),
         icon: Icon(Icons.navigate_next),
       ),
     ],

@@ -42,35 +42,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  GanttController controller = GanttController(daysViews: 60);
+  GanttController controller = GanttController(daysViews: 90);
 
   final List<GantActivity> _activities = [
     GantActivity(
-      start: DateTime(2025, 1, 13),
-      end: DateTime(2025, 1, 17),
+      start: DateTime(2025, 4, 2),
+      end: DateTime(2025, 4, 12),
       title: 'Task 1',
       description: 'Description 1',
       onTap: (activity) {
         // ToDo
       },
       segments: [
+        /*
         GantActivitySegment(
-          start: DateTime(2025, 1, 15),
-          end: DateTime(2025, 1, 16),
+          start: DateTime(2025, 4, 15),
+          end: DateTime(2025, 4, 16),
           title: 'title',
           description: 'description',
         )
+
+         */
       ],
     ),
     GantActivity(
-      start: DateTime(2025, 1, 23),
-      end: DateTime(2025, 1, 30),
+      start: DateTime(2025, 4, 23),
+      end: DateTime(2025, 4, 30),
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
     ),
     GantActivity(
-      start: DateTime(2025, 3, 1),
-      end: DateTime(2025, 3, 17),
+      start: DateTime(2025, 4, 1),
+      end: DateTime(2025, 4, 17),
       title: 'Task 3, Ciaone',
       description: 'Description 2',
     ),
@@ -90,9 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: controller,
                 //startDate: DateTime.now().subtract(Duration(days: 60)),
                 //daysViews: 30,
-                // activitiesAsync: (startDate, endDate, activity) async =>
-                //     _activities,
-                activities: _activities,
+                activitiesAsync: (startDate, endDate, activity) async =>
+                    _activities,
+                //activities: _activities,
               ),
             ),
           ],

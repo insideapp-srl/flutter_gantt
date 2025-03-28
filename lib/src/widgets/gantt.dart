@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../classes/theme.dart';
 import '../classes/activity.dart';
+import '../classes/theme.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 import 'row.dart';
@@ -77,9 +77,9 @@ class _GanttState extends State<Gantt> {
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
       if (dx.isNegative) {
-        controller.next(1);
+        controller.next();
       } else {
-        controller.prev(1);
+        controller.prev();
       }
       _lastPosition = details.localPosition;
     }
