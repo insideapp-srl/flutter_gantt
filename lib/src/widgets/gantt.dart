@@ -113,208 +113,191 @@ class _GanttState extends State<Gantt> {
       ChangeNotifierProvider<GanttTheme>.value(value: theme),
       ChangeNotifierProvider<GanttController>.value(value: controller),
     ],
-    builder:
-        (context, child) => Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top:
-                      context.watch<GanttTheme>().headerHeight +
-                      context.watch<GanttTheme>().rowsGroupPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    activities.length,
-                    (index) => Padding(
-                      padding: EdgeInsets.only(
-                        top: context.watch<GanttTheme>().rowPadding,
-                        left: 8.0,
-                      ),
-                      child: SizedBox(
-                        height: context.watch<GanttTheme>().cellHeight,
-                        child: Row(
-                          children: [
-                            //if (index > 0) Icon(Icons.keyboard_arrow_right),
-                            //Icon(Icons.keyboard_arrow_down),
-                            Text(
-                              activities[index].title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
+    builder: (context, child) {
+      final c = context.watch<GanttController>();
+      return Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top:
+                    context.watch<GanttTheme>().headerHeight +
+                    context.watch<GanttTheme>().rowsGroupPadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  activities.length,
+                  (index) => Padding(
+                    padding: EdgeInsets.only(
+                      top: context.watch<GanttTheme>().rowPadding,
+                      left: 8.0,
+                    ),
+                    child: SizedBox(
+                      height: context.watch<GanttTheme>().cellHeight,
+                      child: Row(
+                        children: [
+                          //if (index > 0) Icon(Icons.keyboard_arrow_right),
+                          //Icon(Icons.keyboard_arrow_down),
+                          Text(
+                            activities[index].title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            Expanded(
-              flex: 4,
-              child: LayoutBuilder(
-                builder:
-                    (context, constraints) => GestureDetector(
-                      onPanStart: _handlePanStart,
-                      onPanUpdate:
-                          (details) =>
-                              _handlePanUpdate(details, constraints.maxWidth),
-                      onPanEnd: _handlePanEnd,
-                      onPanCancel: _handlePanCancel,
-                      child: Stack(
+          ),
+          Expanded(
+            flex: 4,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth / c.daysViews < theme.dayMinWidth) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    c.daysViews =
+                        (constraints.maxWidth / theme.dayMinWidth).floor();
+                  });
+                }
+                return GestureDetector(
+                  onPanStart: _handlePanStart,
+                  onPanUpdate:
+                      (details) =>
+                          _handlePanUpdate(details, constraints.maxWidth),
+                  onPanEnd: _handlePanEnd,
+                  onPanCancel: _handlePanCancel,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Container(color: theme.backgroundColor),
+                      ),
+                      Column(
                         children: [
-                          Positioned.fill(
-                            child: Container(color: theme.backgroundColor),
-                          ),
-                          Column(
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final months =
-                                      context
-                                          .watch<GanttController>()
-                                          .months
-                                          .entries
-                                          .toList();
-                                  return Row(
-                                    children: List.generate(months.length, (i) {
-                                      final month = months[i];
-                                      return Expanded(
-                                        flex: month.value,
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Center(
-                                                child: Text(
-                                                  month.key,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
+                          Builder(
+                            builder: (context) {
+                              final months = c.months.entries.toList();
+                              return Row(
+                                children: List.generate(months.length, (i) {
+                                  final month = months[i];
+                                  return Expanded(
+                                    flex: month.value,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              month.key,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            Container(
-                                              width: 1,
-                                              color:
-                                                  (i < months.length - 1)
-                                                      ? Colors.grey
-                                                      : Colors.transparent,
-                                              height: 10,
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      );
-                                    }),
+                                        Container(
+                                          width: 1,
+                                          color:
+                                              (i < months.length - 1)
+                                                  ? Colors.grey
+                                                  : Colors.transparent,
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
                                   );
-                                },
-                              ),
-                              Expanded(
-                                child: Row(
-                                  children: List.generate(
-                                    context
-                                        .watch<GanttController>()
-                                        .days
-                                        .length,
-                                    (i) {
-                                      final day =
-                                          context
-                                              .watch<GanttController>()
-                                              .days[i];
-                                      return Expanded(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                }),
+                              );
+                            },
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: List.generate(c.days.length, (i) {
+                                final day = c.days[i];
+                                return Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
                                           children: [
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          vertical: 4.0,
-                                                        ),
-                                                    child: Text(
-                                                      '${day.day}',
-                                                      style:
-                                                          Theme.of(
-                                                            context,
-                                                          ).textTheme.bodySmall,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 4.0,
                                                   ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      color:
-                                                          (day.weekday == 6 ||
-                                                                  day.weekday ==
-                                                                      7)
-                                                              ? Colors.black
-                                                                  .withValues(
-                                                                    alpha: .2,
-                                                                  )
-                                                              : Colors
-                                                                  .transparent,
-                                                    ),
-                                                  ),
-                                                ],
+                                              child: Text(
+                                                '${day.day}',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodySmall,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
                                               ),
                                             ),
-                                            Container(
-                                              height: double.infinity,
-                                              width: 1,
-                                              color:
-                                                  (i <
-                                                          context
-                                                                  .watch<
-                                                                    GanttController
-                                                                  >()
-                                                                  .days
-                                                                  .length -
-                                                              1)
-                                                      ? Colors.grey
-                                                      : Colors.transparent,
+                                            Expanded(
+                                              child: Container(
+                                                color:
+                                                    (day.weekday == 6 ||
+                                                            day.weekday == 7)
+                                                        ? Colors.black
+                                                            .withValues(
+                                                              alpha: .2,
+                                                            )
+                                                        : Colors.transparent,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      );
-                                    },
+                                      ),
+                                      Container(
+                                        height: double.infinity,
+                                        width: 1,
+                                        color:
+                                            (i < c.days.length - 1)
+                                                ? Colors.grey
+                                                : Colors.transparent,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top:
-                                  context.watch<GanttTheme>().headerHeight +
-                                  context.watch<GanttTheme>().rowsGroupPadding,
-                            ),
-                            child: Column(
-                              children: List.generate(
-                                activities.length,
-                                (index) => Padding(
-                                  padding: EdgeInsets.only(
-                                    top: context.watch<GanttTheme>().rowPadding,
-                                  ),
-                                  child: GanttActivityRow(
-                                    activity: activities[index],
-                                  ),
-                                ),
-                              ),
+                                );
+                              }),
                             ),
                           ),
                         ],
                       ),
-                    ),
-              ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top:
+                              context.watch<GanttTheme>().headerHeight +
+                              context.watch<GanttTheme>().rowsGroupPadding,
+                        ),
+                        child: Column(
+                          children: List.generate(
+                            activities.length,
+                            (index) => Padding(
+                              padding: EdgeInsets.only(
+                                top: context.watch<GanttTheme>().rowPadding,
+                              ),
+                              child: GanttActivityRow(
+                                activity: activities[index],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
+      );
+    },
   );
 }

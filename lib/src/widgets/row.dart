@@ -49,24 +49,30 @@ class GanttActivityRow extends StatelessWidget {
                   : context.watch<GanttActivityCtrl>().showBefore
                   ? Align(
                     alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.navigate_before, color: Colors.black),
-                        Text(activity.title),
-                      ],
+                    child: InkWell(
+                      onTap: () => context.read<GanttController>().startDate = activity.start,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.navigate_before, color: Colors.black),
+                          Text(activity.title),
+                        ],
+                      ),
                     ),
                   )
                   : Align(
                     alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(activity.title),
-                        Icon(Icons.navigate_next, color: Colors.black),
-                      ],
+                    child: InkWell(
+                      onTap: () => context.read<GanttController>().startDate = activity.start,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(activity.title),
+                          Icon(Icons.navigate_next, color: Colors.black),
+                        ],
+                      ),
                     ),
                   ),
         ),

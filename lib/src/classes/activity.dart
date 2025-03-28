@@ -30,3 +30,8 @@ class GantActivity {
       .add(Duration(days: daysDuration))
       .subtract(Duration(microseconds: 1));
 }
+
+
+class GantActivitySegment{
+
+}

@@ -82,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: controller,
                 //startDate: DateTime.now().subtract(Duration(days: 60)),
                 //daysViews: 30,
-                activitiesAsync: (startDate, endDate, activity) async =>
-                    _activities,
-                //activity: activity,
+                // activitiesAsync: (startDate, endDate, activity) async =>
+                //     _activities,
+                activities: _activities,
               ),
             ),
           ],

@@ -7,14 +7,16 @@ class GanttTheme extends ChangeNotifier {
   final double rowPadding;
   final double rowsGroupPadding;
   final double headerHeight;
+  final double dayMinWidth;
 
   GanttTheme({
-    this.backgroundColor = Colors.white,
+    this.backgroundColor = Colors.transparent,
     this.defaultCellColor = Colors.purple,
     this.cellHeight = 24.0,
     this.rowPadding = 8.0,
     this.rowsGroupPadding = 16.0,
     this.headerHeight = 30.0,
+    this.dayMinWidth = 20.0,
   });
 
   double get cellRounded => cellHeight / 3;
