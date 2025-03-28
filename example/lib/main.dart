@@ -46,13 +46,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<GantActivity> _activities = [
     GantActivity(
-      start: DateTime(2025, 1, 15),
-      end: DateTime(2025, 1, 16),
+      start: DateTime(2025, 1, 13),
+      end: DateTime(2025, 1, 17),
       title: 'Task 1',
       description: 'Description 1',
       onTap: (activity) {
         // ToDo
       },
+      segments: [
+        GantActivitySegment(
+          start: DateTime(2025, 1, 15),
+          end: DateTime(2025, 1, 16),
+          title: 'title',
+          description: 'description',
+        )
+      ],
     ),
     GantActivity(
       start: DateTime(2025, 1, 23),

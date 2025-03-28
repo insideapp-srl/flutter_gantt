@@ -7,6 +7,7 @@ class GantActivity {
   late DateTime end;
   final String title;
   final String description;
+  final List<GantActivitySegment>? segments;
   final List<GantActivity>? children;
   final Function(GantActivity activity)? onTap;
   final Color? color;
@@ -16,22 +17,43 @@ class GantActivity {
     required DateTime end,
     required this.title,
     required this.description,
+    this.segments,
     this.children,
     this.onTap,
     this.color,
-  }):assert(start.dayStart.isBefore(end.dayEnd)) {
+  }) : assert(start.dayStart.isBefore(end.dayEnd)) {
+    this.start = start.dayStart;
+    this.end = end.dayEnd;
+    if (segments != null) {
+      for (final segment in segments!) {
+        assert(
+          segment.start.isDateBetween(start, end) &&
+              segment.end.isDateBetween(start, end),
+        );
+      }
+    }
+  }
+
+  int get daysDuration => end.difference(start).inDays + 1;
+}
+
+class GantActivitySegment {
+  late DateTime start;
+  late DateTime end;
+  final String title;
+  final String description;
+  final Function(GantActivity activity)? onTap;
+  final Color? color;
+
+  GantActivitySegment({
+    required DateTime start,
+    required DateTime end,
+    required this.title,
+    required this.description,
+    this.onTap,
+    this.color,
+  }) : assert(start.dayStart.isBefore(end.dayEnd)) {
     this.start = start.dayStart;
     this.end = end.dayEnd;
   }
-
-  int get daysDuration => end.difference(start).inDays + 1 ;
-
-  DateTime get endByDays => start
-      .add(Duration(days: daysDuration))
-      .subtract(Duration(microseconds: 1));
-}
-
-
-class GantActivitySegment{
-
 }

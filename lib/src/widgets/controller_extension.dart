@@ -72,14 +72,14 @@ extension GanttCtrlInternal on GanttController {
       _clampToGanttRange(activity.start),
     );
     final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.endByDays) + 1,
+      _clampToGanttRange(activity.end) + 1,
     );
     return clampedEnd.difference(clampedStart).inDays;
   }
 
   int getCellsFlexEnd(GantActivity activity) {
     final clampedEnd = DateTime.fromMicrosecondsSinceEpoch(
-      _clampToGanttRange(activity.endByDays),
+      _clampToGanttRange(activity.end),
     );
     return endDate.difference(clampedEnd).inDays;
   }
@@ -101,12 +101,12 @@ class GanttActivityCtrl extends ChangeNotifier {
 
   bool get cellVisible =>
       activity.start.isDateBetween(startDate, endDate) ||
-      activity.endByDays.isDateBetween(startDate, endDate) ||
+      activity.end.isDateBetween(startDate, endDate) ||
       (activity.start.isBefore(startDate) &&
-          activity.endByDays.isAfter(endDate));
+          activity.end.isAfter(endDate));
 
   bool get showBefore =>
-      !cellVisible && activity.endByDays.isBefore(startDate);
+      !cellVisible && activity.end.isBefore(startDate);
 
   bool get showAfter => !cellVisible && activity.start.isAfter(endDate);
 
