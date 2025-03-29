@@ -29,11 +29,11 @@ class GanttController extends ChangeNotifier {
   DateTime get endDate => startDate.add(Duration(days: daysViews - 1));
 
   void next({int days = 1}) {
-    startDate = startDate.add(Duration(days: days));
+    startDate = startDate.subtract(Duration(days: days));
   }
 
   void prev({int days = 1}) {
-    startDate = startDate.subtract(Duration(days: days));
+    startDate = startDate.add(Duration(days: days));
   }
 
   GanttController({DateTime? startDate, int? daysViews})

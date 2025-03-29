@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../classes/theme.dart';
 import '../classes/activity.dart';
+import '../classes/theme.dart';
 import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
