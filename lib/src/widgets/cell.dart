@@ -18,7 +18,7 @@ class _GanttCellState extends State<GanttCell> {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () => widget.activity.onTap?.call(widget.activity),
+    onTap: () => widget.activity.onCellTap?.call(widget.activity),
     child: MouseRegion(
       onEnter: (event) {
         setState(() {

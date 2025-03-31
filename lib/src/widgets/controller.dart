@@ -28,12 +28,43 @@ class GanttController extends ChangeNotifier {
 
   DateTime get endDate => startDate.add(Duration(days: daysViews - 1));
 
-  void next({int days = 1}) {
+  void next({int days = 1, bool fetchData = true}) =>
+      _addStartDate(days: -days, fetchData: fetchData);
+
+  void prev({int days = 1, bool fetchData = true}) =>
+      _addStartDate(days: days, fetchData: fetchData);
+
+  void _addStartDate({int days = 1, bool fetchData = true}) {
     startDate = startDate.subtract(Duration(days: days));
+    if (fetchData) {
+      fetch();
+    }
   }
 
-  void prev({int days = 1}) {
-    startDate = startDate.add(Duration(days: days));
+  void update() => notifyListeners();
+
+  final List<VoidCallback> _fetchListener = <VoidCallback>[];
+
+  void addFetchListener(VoidCallback fn) => _fetchListener.add(fn);
+
+  void removeFetchListener(VoidCallback fn) => _fetchListener.remove(fn);
+
+  void removeAllFetchListener() {
+    for (var fn in _fetchListener) {
+      _fetchListener.remove(fn);
+    }
+  }
+
+  void fetch() {
+    for (var fn in _fetchListener) {
+      fn();
+    }
+  }
+
+  @override
+  void dispose() {
+    removeAllFetchListener();
+    super.dispose();
   }
 
   GanttController({DateTime? startDate, int? daysViews})

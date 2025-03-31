@@ -16,7 +16,7 @@ class GanttTheme extends ChangeNotifier {
     this.rowPadding = 8.0,
     this.rowsGroupPadding = 16.0,
     this.headerHeight = 30.0,
-    this.dayMinWidth = 20.0,
+    this.dayMinWidth = 30.0,
   });
 
   double get cellRounded => cellHeight / 3;

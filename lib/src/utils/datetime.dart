@@ -13,4 +13,6 @@ extension DateTimeEx on DateTime {
   DateTime get dayEnd => DateTime(year, month, day, 23, 59, 59, 999, 999);
 
   DateTime get toDate => DateTime.utc(year, month, day, 0, 0, 0, 0, 0);
+
+  int diffInDays(DateTime other) => difference(other).inDays;
 }

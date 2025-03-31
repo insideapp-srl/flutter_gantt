@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
+import 'activities_grid.dart';
+import 'activities_list.dart';
+import 'calendar_grid.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 import 'row.dart';
@@ -53,16 +56,18 @@ class _GanttState extends State<Gantt> {
           startDate: widget.startDate,
           daysViews: widget.daysViews,
         );
+    controller.addFetchListener(_getAsync);
     if (widget.activities != null) {
       _activities = widget.activities!;
     } else {
-      getAsync().ignore();
+      controller.fetch();
     }
     super.initState();
   }
 
   @override
   void dispose() {
+    controller.removeFetchListener(_getAsync);
     if (widget.controller == null) {
       controller.dispose();
     }
@@ -77,9 +82,9 @@ class _GanttState extends State<Gantt> {
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
       if (dx.isNegative) {
-        controller.prev();
+        controller.next(fetchData: false);
       } else {
-        controller.next();
+        controller.prev(fetchData: false);
       }
       _lastPosition = details.localPosition;
     }
@@ -91,10 +96,10 @@ class _GanttState extends State<Gantt> {
 
   void _reset() {
     _lastPosition = null;
-    getAsync().ignore();
+    controller.fetch();
   }
 
-  Future<void> getAsync() async {
+  Future<void> _getAsync() async {
     if (widget.activitiesAsync != null) {
       _activities = await widget.activitiesAsync!(
         controller.startDate,
@@ -119,51 +124,19 @@ class _GanttState extends State<Gantt> {
         children: [
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: EdgeInsets.only(
-                top:
-                    context.watch<GanttTheme>().headerHeight +
-                    context.watch<GanttTheme>().rowsGroupPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                  activities.length,
-                  (index) => Padding(
-                    padding: EdgeInsets.only(
-                      top: context.watch<GanttTheme>().rowPadding,
-                      left: 8.0,
-                    ),
-                    child: SizedBox(
-                      height: context.watch<GanttTheme>().cellHeight,
-                      child: Row(
-                        children: [
-                          //if (index > 0) Icon(Icons.keyboard_arrow_right),
-                          //Icon(Icons.keyboard_arrow_down),
-                          Text(
-                            activities[index].title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: ActivitiesList(activities: activities,),
           ),
           Expanded(
             flex: 4,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                if (constraints.maxWidth / c.daysViews < theme.dayMinWidth) {
+                final newDaysViews = (constraints.maxWidth / theme.dayMinWidth).floor();
+                if (newDaysViews != c.daysViews) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    c.daysViews =
-                        (constraints.maxWidth / theme.dayMinWidth).floor();
+                    c.daysViews = newDaysViews;
                   });
                 }
-                return GestureDetector(
+                return GestureDetector( 
                   onPanStart: _handlePanStart,
                   onPanUpdate:
                       (details) =>
@@ -175,121 +148,8 @@ class _GanttState extends State<Gantt> {
                       Positioned.fill(
                         child: Container(color: theme.backgroundColor),
                       ),
-                      Column(
-                        children: [
-                          Builder(
-                            builder: (context) {
-                              final months = c.months.entries.toList();
-                              return Row(
-                                children: List.generate(months.length, (i) {
-                                  final month = months[i];
-                                  return Expanded(
-                                    flex: month.value,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Center(
-                                            child: Text(
-                                              month.key,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 1,
-                                          color:
-                                              (i < months.length - 1)
-                                                  ? Colors.grey
-                                                  : Colors.transparent,
-                                          height: 10,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                              );
-                            },
-                          ),
-                          Expanded(
-                            child: Row(
-                              children: List.generate(c.days.length, (i) {
-                                final day = c.days[i];
-                                return Expanded(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 4.0,
-                                                  ),
-                                              child: Text(
-                                                '${day.day}',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodySmall,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                color:
-                                                    (day.weekday == 6 ||
-                                                            day.weekday == 7)
-                                                        ? Colors.black
-                                                            .withValues(
-                                                              alpha: .2,
-                                                            )
-                                                        : Colors.transparent,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: double.infinity,
-                                        width: 1,
-                                        color:
-                                            (i < c.days.length - 1)
-                                                ? Colors.grey
-                                                : Colors.transparent,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top:
-                              context.watch<GanttTheme>().headerHeight +
-                              context.watch<GanttTheme>().rowsGroupPadding,
-                        ),
-                        child: Column(
-                          children: List.generate(
-                            activities.length,
-                            (index) => Padding(
-                              padding: EdgeInsets.only(
-                                top: context.watch<GanttTheme>().rowPadding,
-                              ),
-                              child: GanttActivityRow(
-                                activity: activities[index],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      CalendarGrid(),
+                      ActivitiesGrid(activities: activities)
                     ],
                   ),
                 );

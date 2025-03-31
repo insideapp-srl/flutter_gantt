@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 
 import '../classes/activity.dart';
@@ -69,7 +68,7 @@ extension GanttCtrlInternal on GanttController {
 
   int getCellDaysBefore(GantActivity activity) {
     final clampedStart = clampToGanttRange(activity.start);
-    return clampedStart.difference(startDate).inDays;
+    return clampedStart.diffInDays(startDate);
   }
 
   int getCellDays(GantActivity activity) {
@@ -78,12 +77,12 @@ extension GanttCtrlInternal on GanttController {
       activity.end,
     ).add(const Duration(days: 1));
 
-    return clampedEnd.difference(clampedStart).inDays;
+    return clampedEnd.diffInDays(clampedStart);
   }
 
   int getCellsDaysAfter(GantActivity activity) {
     final clampedEnd = clampToGanttRange(activity.end);
-    return endDate.difference(clampedEnd).inDays;
+    return endDate.diffInDays(clampedEnd);
   }
 }
 

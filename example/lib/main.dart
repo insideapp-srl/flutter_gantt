@@ -51,9 +51,13 @@ class _MyHomePageState extends State<MyHomePage> {
       end: DateTime(2025, 4, 12),
       title: 'Task 1',
       description: 'Description 1',
-      onTap: (activity) {
+      onCellTap: (activity) {
         // ToDo
       },
+      actions: [
+        GantActivityAction(icon: Icons.add, onTap: () {},),
+        GantActivityAction(icon: Icons.delete, onTap: () {},),
+      ],
       segments: [
         /*
         GantActivitySegment(
@@ -71,6 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
       end: DateTime(2025, 4, 23),
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
+      actions: [
+        GantActivityAction(icon: Icons.add, onTap: () {},),
+      ],
     ),
     GantActivity(
       start: DateTime(2025, 3, 28),
