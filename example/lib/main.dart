@@ -55,8 +55,14 @@ class _MyHomePageState extends State<MyHomePage> {
         // ToDo
       },
       actions: [
-        GantActivityAction(icon: Icons.add, onTap: () {},),
-        GantActivityAction(icon: Icons.delete, onTap: () {},),
+        GantActivityAction(
+          icon: Icons.add,
+          onTap: () {},
+        ),
+        GantActivityAction(
+          icon: Icons.delete,
+          onTap: () {},
+        ),
       ],
       segments: [
         /*
@@ -76,7 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
       actions: [
-        GantActivityAction(icon: Icons.add, onTap: () {},),
+        GantActivityAction(
+          icon: Icons.add,
+          onTap: () {},
+        ),
       ],
     ),
     GantActivity(

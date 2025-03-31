@@ -120,21 +120,19 @@ class _GanttState extends State<Gantt> {
       final c = context.watch<GanttController>();
       return Row(
         children: [
-          Expanded(
-            flex: 1,
-            child: ActivitiesList(activities: activities,),
-          ),
+          Expanded(flex: 1, child: ActivitiesList(activities: activities)),
           Expanded(
             flex: 4,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final newDaysViews = (constraints.maxWidth / theme.dayMinWidth).floor();
+                final newDaysViews =
+                    (constraints.maxWidth / theme.dayMinWidth).floor();
                 if (newDaysViews != c.daysViews) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     c.daysViews = newDaysViews;
                   });
                 }
-                return GestureDetector( 
+                return GestureDetector(
                   onPanStart: _handlePanStart,
                   onPanUpdate:
                       (details) =>

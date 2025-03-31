@@ -40,15 +40,20 @@ class ActivitiesList extends StatelessWidget {
                       ),
                       if (activities[index].actions?.isNotEmpty == true)
                         Row(
-                          children: activities[index].actions!.map(
-                                (e) => IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: e.onTap,
-                              icon: Icon(e.icon, size:  theme.cellHeight * 0.8,),
-                            ),
-                          ).toList(),
+                          children:
+                              activities[index].actions!
+                                  .map(
+                                    (e) => IconButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: e.onTap,
+                                      icon: Icon(
+                                        e.icon,
+                                        size: theme.cellHeight * 0.8,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
                         ),
-
                     ],
                   ),
                 ),

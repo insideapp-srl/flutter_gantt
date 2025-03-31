@@ -34,9 +34,7 @@ class _GanttCellState extends State<GanttCell> {
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(
-              context.watch<GanttTheme>().cellRounded,
-            ),
+            topLeft: Radius.circular(context.watch<GanttTheme>().cellRounded),
             bottomRight: Radius.circular(
               context.watch<GanttTheme>().cellRounded,
             ),
