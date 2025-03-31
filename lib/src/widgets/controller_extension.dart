@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../classes/activity.dart';
 import '../utils/datetime.dart';

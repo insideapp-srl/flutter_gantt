@@ -7,8 +7,6 @@ import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
 import 'controller.dart';
-import 'controller_extension.dart';
-import 'row.dart';
 
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
@@ -149,7 +147,7 @@ class _GanttState extends State<Gantt> {
                         child: Container(color: theme.backgroundColor),
                       ),
                       CalendarGrid(),
-                      ActivitiesGrid(activities: activities)
+                      ActivitiesGrid(activities: activities),
                     ],
                   ),
                 );

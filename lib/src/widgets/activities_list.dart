@@ -28,29 +28,26 @@ class ActivitiesList extends StatelessWidget {
                     children: [
                       //if (index > 0) Icon(Icons.keyboard_arrow_right),
                       //Icon(Icons.keyboard_arrow_down),
-                      Flexible(
-                        child: Text(
-                          activities[index].title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Tooltip(
+                          message: activities[index].title,
+                          child: Text(
+                            activities[index].title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                       if (activities[index].actions?.isNotEmpty == true)
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: activities[index].actions!.map(
-                                    (e) => IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: e.onTap,
-                                  icon: Icon(e.icon, size:  theme.cellHeight * 0.8,),
-                                ),
-                              ).toList(),
+                        Row(
+                          children: activities[index].actions!.map(
+                                (e) => IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: e.onTap,
+                              icon: Icon(e.icon, size:  theme.cellHeight * 0.8,),
                             ),
-                          ),
-                        )
+                          ).toList(),
+                        ),
 
                     ],
                   ),
