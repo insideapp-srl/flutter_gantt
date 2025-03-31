@@ -41,7 +41,10 @@ class GanttController extends ChangeNotifier {
     }
   }
 
-  void update() => notifyListeners();
+  void update() {
+    fetch();
+    notifyListeners();
+  }
 
   final List<VoidCallback> _fetchListener = <VoidCallback>[];
 
