@@ -1,6 +1,6 @@
 name: flutter_gantt
 description: "Flutter package for rendering an interactive and customizable Gantt chart widget."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/insideapp-srl/flutter_gantt
 repository: https://github.com/insideapp-srl/flutter_gantt
 
