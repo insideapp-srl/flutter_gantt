@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   GanttController controller =
-      GanttController(daysViews: 30, startDate: DateTime(2025, 3, 30));
+      GanttController(startDate: DateTime(2025, 3, 30));
 
   final List<GantActivity> _activities = [
     GantActivity(
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         GantActivityAction(
           icon: Icons.delete,
           onTap: () {},
-          tooltip: 'Delete'
+          tooltip: 'Delete',
         ),
       ],
       segments: [
@@ -118,9 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
               description: 'Description 2',
               color: Colors.redAccent,
             ),
-          ]
+          ],
         ),
-      ]
+      ],
     ),
     GantActivity(
       start: DateTime(2025, 4, 9),

@@ -11,7 +11,6 @@ import 'controller.dart';
 
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
-  final int? daysViews;
   final List<GantActivity>? activities;
   final Future<List<GantActivity>> Function(
     DateTime startDate,
@@ -25,13 +24,12 @@ class Gantt extends StatefulWidget {
   const Gantt({
     super.key,
     this.startDate,
-    this.daysViews,
     this.theme,
     this.activities,
     this.activitiesAsync,
     this.controller,
   }) : assert(
-         ((startDate != null && daysViews != null) || controller != null) &&
+         (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)),
        );
 
@@ -60,7 +58,6 @@ class _GanttState extends State<Gantt> {
         widget.controller ??
         GanttController(
           startDate: widget.startDate,
-          daysViews: widget.daysViews,
         );
     controller.addFetchListener(_getAsync);
     if (widget.activities != null) {
