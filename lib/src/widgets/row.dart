@@ -60,7 +60,7 @@ class GanttActivityRow extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(Icons.navigate_before, color: Colors.black),
+                            Icon(Icons.navigate_before),
                             Text(activity.title),
                           ],
                         ),
@@ -82,7 +82,7 @@ class GanttActivityRow extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(activity.title),
-                            Icon(Icons.navigate_next, color: Colors.black),
+                            Icon(Icons.navigate_next),
                           ],
                         ),
                       ),

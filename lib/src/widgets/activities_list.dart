@@ -5,8 +5,13 @@ import '../../flutter_gantt.dart';
 
 class ActivitiesList extends StatelessWidget {
   final List<GantActivity> activities;
+  final ScrollController? controller;
 
-  const ActivitiesList({super.key, required this.activities});
+  const ActivitiesList({
+    super.key,
+    required this.activities,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) => Consumer<GanttTheme>(
@@ -15,8 +20,8 @@ class ActivitiesList extends StatelessWidget {
           padding: EdgeInsets.only(
             top: theme.headerHeight + theme.rowsGroupPadding,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            controller: controller,
             children: List.generate(
               activities.length,
               (index) => Padding(

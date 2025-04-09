@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
@@ -45,8 +46,15 @@ class _GanttState extends State<Gantt> {
 
   Offset? _lastPosition;
 
+  late LinkedScrollControllerGroup _linkedControllers;
+  late ScrollController _listController;
+  late ScrollController _gridColumnsController;
+
   @override
   void initState() {
+    _linkedControllers = LinkedScrollControllerGroup();
+    _listController = _linkedControllers.addAndGet();
+    _gridColumnsController = _linkedControllers.addAndGet();
     theme = widget.theme ?? GanttTheme();
     controller =
         widget.controller ??
@@ -69,6 +77,8 @@ class _GanttState extends State<Gantt> {
     if (widget.controller == null) {
       controller.dispose();
     }
+    _listController.dispose();
+    _gridColumnsController.dispose();
     super.dispose();
   }
 
@@ -120,7 +130,13 @@ class _GanttState extends State<Gantt> {
       final c = context.watch<GanttController>();
       return Row(
         children: [
-          Expanded(flex: 1, child: ActivitiesList(activities: activities)),
+          Expanded(
+            flex: 1,
+            child: ActivitiesList(
+              activities: activities,
+              controller: _listController,
+            ),
+          ),
           Expanded(
             flex: 4,
             child: LayoutBuilder(
@@ -145,7 +161,10 @@ class _GanttState extends State<Gantt> {
                         child: Container(color: theme.backgroundColor),
                       ),
                       CalendarGrid(),
-                      ActivitiesGrid(activities: activities),
+                      ActivitiesGrid(
+                        activities: activities,
+                        controller: _gridColumnsController,
+                      ),
                     ],
                   ),
                 );
