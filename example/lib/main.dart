@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         GantActivityAction(
           icon: Icons.delete,
           onTap: () {},
+          tooltip: 'Delete'
         ),
       ],
       segments: [
@@ -75,9 +76,54 @@ class _MyHomePageState extends State<MyHomePage> {
 
          */
       ],
+      children: [
+        GantActivity(
+          start: DateTime(2025, 3, 30),
+          end: DateTime(2025, 4, 12),
+          title: 'Task 2, titolo lungo',
+          description: 'Description 2',
+          color: Colors.green,
+          actions: [
+            GantActivityAction(
+              icon: Icons.add,
+              onTap: () {},
+            ),
+          ],
+        ),
+        GantActivity(
+          start: DateTime(2025, 3, 30),
+          end: DateTime(2025, 4, 12),
+          title: 'Task 3, Ciaone',
+          description: 'Description 2',
+
+            color: Colors.green,
+          children: [
+            GantActivity(
+              start: DateTime(2025, 4, 1),
+              end: DateTime(2025, 4, 12),
+              title: 'Task 2, titolo lungo',
+              description: 'Description 2',
+              color: Colors.redAccent,
+              actions: [
+                GantActivityAction(
+                  icon: Icons.add,
+                  onTap: () {},
+                ),
+              ],
+            ),
+            GantActivity(
+              start: DateTime(2025, 4, 2),
+              end: DateTime(2025, 4, 11),
+              title: 'Task 3, Ciaone',
+              description: 'Description 2',
+              color: Colors.redAccent,
+            ),
+          ]
+        ),
+      ]
     ),
     GantActivity(
-      start: DateTime(2025, 4, 23),
+      start: DateTime(2025, 4, 9),
       end: DateTime(2025, 4, 23),
       title: 'Task 2, titolo lungo',
       description: 'Description 2',
