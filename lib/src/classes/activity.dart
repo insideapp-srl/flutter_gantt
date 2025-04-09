@@ -42,6 +42,7 @@ class GantActivity {
         );
       }
     }
+    //TODO
     // if (children != null) {
     //   for (final child in children!) {
     //     assert(
