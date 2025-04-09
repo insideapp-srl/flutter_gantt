@@ -95,8 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           end: DateTime(2025, 4, 12),
           title: 'Task 3, Ciaone',
           description: 'Description 2',
-
-            color: Colors.green,
+          color: Colors.green,
           children: [
             GantActivity(
               start: DateTime(2025, 4, 1),

@@ -17,7 +17,7 @@ class ActivitiesList extends StatelessWidget {
     activities.length,
     (index) => Padding(
       padding: EdgeInsets.only(
-        top: theme.rowPadding + (nested == 0?theme.rowsGroupPadding:0),
+        top: theme.rowPadding + (nested == 0 ? theme.rowsGroupPadding : 0),
         left: 8.0 * (nested + 1),
       ),
       child: Column(
@@ -56,11 +56,7 @@ class ActivitiesList extends StatelessWidget {
             ),
           ),
           if (activities[index].children?.isNotEmpty == true)
-            ...getItems(
-              activities[index].children!,
-              theme,
-              nested: nested + 1,
-            ),
+            ...getItems(activities[index].children!, theme, nested: nested + 1),
         ],
       ),
     ),

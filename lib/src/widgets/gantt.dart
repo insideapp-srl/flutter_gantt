@@ -55,10 +55,7 @@ class _GanttState extends State<Gantt> {
     _gridColumnsController = _linkedControllers.addAndGet();
     theme = widget.theme ?? GanttTheme();
     controller =
-        widget.controller ??
-        GanttController(
-          startDate: widget.startDate,
-        );
+        widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
     if (widget.activities != null) {
       _activities = widget.activities!;

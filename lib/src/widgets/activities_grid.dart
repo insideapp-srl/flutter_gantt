@@ -24,11 +24,7 @@ class ActivitiesGrid extends StatelessWidget {
         children: [
           GanttActivityRow(activity: activities[index]),
           if (activities[index].children?.isNotEmpty == true)
-            ...getItems(
-              activities[index].children!,
-              theme,
-              nested: nested + 1,
-            ),
+            ...getItems(activities[index].children!, theme, nested: nested + 1),
         ],
       ),
     ),
