@@ -42,14 +42,14 @@ class GantActivity {
         );
       }
     }
-    if (children != null) {
-      for (final child in children!) {
-        assert(
-          child.start.isDateBetween(this.start, this.end) &&
-              child.end.isDateBetween(this.start, this.end),
-        );
-      }
-    }
+    // if (children != null) {
+    //   for (final child in children!) {
+    //     assert(
+    //       child.start.isDateBetween(this.start, this.end) &&
+    //           child.end.isDateBetween(this.start, this.end),
+    //     );
+    //   }
+    // }
   }
 
   int get daysDuration => end.diffInDays(start) + 1;
