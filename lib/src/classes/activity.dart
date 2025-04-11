@@ -5,8 +5,9 @@ import '../utils/datetime.dart';
 class GantActivityAction {
   final IconData icon;
   final VoidCallback onTap;
+  final String? tooltip;
 
-  GantActivityAction({required this.icon, required this.onTap});
+  GantActivityAction({required this.icon, required this.onTap, this.tooltip});
 }
 
 class GantActivity {
@@ -36,11 +37,20 @@ class GantActivity {
     if (segments != null) {
       for (final segment in segments!) {
         assert(
-          segment.start.isDateBetween(start, end) &&
-              segment.end.isDateBetween(start, end),
+          segment.start.isDateBetween(this.start, this.end) &&
+              segment.end.isDateBetween(this.start, this.end),
         );
       }
     }
+    //TODO
+    // if (children != null) {
+    //   for (final child in children!) {
+    //     assert(
+    //       child.start.isDateBetween(this.start, this.end) &&
+    //           child.end.isDateBetween(this.start, this.end),
+    //     );
+    //   }
+    // }
   }
 
   int get daysDuration => end.diffInDays(start) + 1;

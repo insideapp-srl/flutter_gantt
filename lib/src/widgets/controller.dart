@@ -70,9 +70,9 @@ class GanttController extends ChangeNotifier {
     super.dispose();
   }
 
-  GanttController({DateTime? startDate, int? daysViews})
+  GanttController({DateTime? startDate})
     : _startDate =
           (startDate?.toDate ??
               DateTime.now().toDate.subtract(Duration(days: 30))),
-      _daysViews = daysViews ?? 30;
+      _daysViews = 30;
 }

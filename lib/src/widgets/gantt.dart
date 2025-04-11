@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
@@ -10,7 +11,6 @@ import 'controller.dart';
 
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
-  final int? daysViews;
   final List<GantActivity>? activities;
   final Future<List<GantActivity>> Function(
     DateTime startDate,
@@ -24,13 +24,12 @@ class Gantt extends StatefulWidget {
   const Gantt({
     super.key,
     this.startDate,
-    this.daysViews,
     this.theme,
     this.activities,
     this.activitiesAsync,
     this.controller,
   }) : assert(
-         ((startDate != null && daysViews != null) || controller != null) &&
+         (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)),
        );
 
@@ -45,15 +44,18 @@ class _GanttState extends State<Gantt> {
 
   Offset? _lastPosition;
 
+  late LinkedScrollControllerGroup _linkedControllers;
+  late ScrollController _listController;
+  late ScrollController _gridColumnsController;
+
   @override
   void initState() {
+    _linkedControllers = LinkedScrollControllerGroup();
+    _listController = _linkedControllers.addAndGet();
+    _gridColumnsController = _linkedControllers.addAndGet();
     theme = widget.theme ?? GanttTheme();
     controller =
-        widget.controller ??
-        GanttController(
-          startDate: widget.startDate,
-          daysViews: widget.daysViews,
-        );
+        widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
     if (widget.activities != null) {
       _activities = widget.activities!;
@@ -69,6 +71,8 @@ class _GanttState extends State<Gantt> {
     if (widget.controller == null) {
       controller.dispose();
     }
+    _listController.dispose();
+    _gridColumnsController.dispose();
     super.dispose();
   }
 
@@ -120,7 +124,13 @@ class _GanttState extends State<Gantt> {
       final c = context.watch<GanttController>();
       return Row(
         children: [
-          Expanded(flex: 1, child: ActivitiesList(activities: activities)),
+          Expanded(
+            flex: 1,
+            child: ActivitiesList(
+              activities: activities,
+              controller: _listController,
+            ),
+          ),
           Expanded(
             flex: 4,
             child: LayoutBuilder(
@@ -145,7 +155,10 @@ class _GanttState extends State<Gantt> {
                         child: Container(color: theme.backgroundColor),
                       ),
                       CalendarGrid(),
-                      ActivitiesGrid(activities: activities),
+                      ActivitiesGrid(
+                        activities: activities,
+                        controller: _gridColumnsController,
+                      ),
                     ],
                   ),
                 );
