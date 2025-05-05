@@ -20,6 +20,7 @@ class GantActivity {
   final List<GantActivityAction>? actions;
   final Function(GantActivity activity)? onCellTap;
   final Color? color;
+  final bool showCell;
 
   GantActivity({
     required DateTime start,
@@ -31,6 +32,7 @@ class GantActivity {
     this.onCellTap,
     this.color,
     this.actions,
+    this.showCell = true,
   }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
     this.start = start.toDate;
     this.end = end.toDate;

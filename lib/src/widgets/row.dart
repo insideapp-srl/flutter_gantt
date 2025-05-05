@@ -25,7 +25,7 @@ class GanttActivityRow extends StatelessWidget {
         (context, child) => SizedBox(
           height: context.watch<GanttTheme>().cellHeight,
           child:
-              context.watch<GanttActivityCtrl>().cellVisible
+              context.watch<GanttActivityCtrl>().cellVisible && activity.showCell
                   ? Row(
                     children: [
                       Expanded(
