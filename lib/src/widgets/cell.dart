@@ -16,6 +16,9 @@ class GanttCell extends StatefulWidget {
 class _GanttCellState extends State<GanttCell> {
   bool mouseOver = false;
 
+  Color get color =>
+      widget.activity.color ?? context.watch<GanttTheme>().defaultCellColor;
+
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: () => widget.activity.onCellTap?.call(widget.activity),
@@ -39,9 +42,7 @@ class _GanttCellState extends State<GanttCell> {
               context.watch<GanttTheme>().cellRounded,
             ),
           ),
-          color: (widget.activity.color ??
-                  context.watch<GanttTheme>().defaultCellColor)
-              .withValues(alpha: mouseOver ? 0.7 : 1),
+          color: color.withValues(alpha: color.a * (mouseOver ? 0.7 : 1)),
         ),
         child: Text(
           widget.activity.title,
