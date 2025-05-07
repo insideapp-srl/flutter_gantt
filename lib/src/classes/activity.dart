@@ -15,6 +15,7 @@ class GantActivity {
   late DateTime end;
   final String title;
   final String description;
+  final TextStyle? titleStyle;
   final List<GantActivitySegment>? segments;
   final List<GantActivity>? children;
   final List<GantActivityAction>? actions;
@@ -27,6 +28,7 @@ class GantActivity {
     required DateTime end,
     required this.title,
     required this.description,
+    this.titleStyle,
     this.segments,
     this.children,
     this.onCellTap,

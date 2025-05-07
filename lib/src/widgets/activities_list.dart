@@ -35,6 +35,7 @@ class ActivitiesList extends StatelessWidget {
                       activities[index].title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: activities[index].titleStyle,
                     ),
                   ),
                 ),
