@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
-import 'controller_extension.dart';
+import '../widgets/controller_extension.dart';
 
 class GanttCell extends StatefulWidget {
   final GantActivity activity;
