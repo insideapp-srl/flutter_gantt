@@ -16,6 +16,7 @@ class GantActivity {
   final String title;
   final String description;
   final TextStyle? titleStyle;
+  final Widget? iconTitle;
   final List<GantActivitySegment>? segments;
   final List<GantActivity>? children;
   final List<GantActivityAction>? actions;
@@ -29,6 +30,7 @@ class GantActivity {
     required this.title,
     required this.description,
     this.titleStyle,
+    this.iconTitle,
     this.segments,
     this.children,
     this.onCellTap,
