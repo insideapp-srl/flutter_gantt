@@ -7,7 +7,7 @@ import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
- class GanttActivityRow extends StatefulWidget {
+class GanttActivityRow extends StatefulWidget {
   final GantActivity activity;
 
   const GanttActivityRow({super.key, required this.activity});
@@ -50,10 +50,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(
     value: _ctrl,
-    builder:(context, child) => SizedBox(
-      height: context.watch<GanttTheme>().cellHeight,
-      child: _buildContent(context),
-    ),
+    builder:
+        (context, child) => SizedBox(
+          height: context.watch<GanttTheme>().cellHeight,
+          child: _buildContent(context),
+        ),
   );
 
   Widget _buildContent(BuildContext context) {

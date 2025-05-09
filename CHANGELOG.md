@@ -1,3 +1,9 @@
+## [0.0.4] - 2025-05-09
+
+@RichiB20 @rickypid
+
+* Init project.
+ 
 ## [0.0.3] - 2025-04-11
 
 * Init project.
