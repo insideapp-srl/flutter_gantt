@@ -28,6 +28,11 @@ class ActivitiesList extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                if (activities[index].iconTitle != null)
+                  Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: activities[index].iconTitle!,
+                  ),
                 Expanded(
                   child: Tooltip(
                     message: activities[index].title,
@@ -35,6 +40,7 @@ class ActivitiesList extends StatelessWidget {
                       activities[index].title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: activities[index].titleStyle,
                     ),
                   ),
                 ),

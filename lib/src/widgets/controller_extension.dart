@@ -114,4 +114,9 @@ class GanttActivityCtrl extends ChangeNotifier {
   int get cellsFlex => controller.getCellDays(activity);
 
   int get cellsFlexEnd => controller.getCellsDaysAfter(activity);
+
+  bool get cellsNotVisibleBefore =>
+      cellsFlexStart == 0 && startDate != activity.start;
+
+  bool get cellsNotVisibleAfter => cellsFlexEnd == 0 && endDate != activity.end;
 }

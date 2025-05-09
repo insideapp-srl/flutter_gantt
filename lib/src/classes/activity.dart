@@ -15,22 +15,28 @@ class GantActivity {
   late DateTime end;
   final String title;
   final String description;
+  final TextStyle? titleStyle;
+  final Widget? iconTitle;
   final List<GantActivitySegment>? segments;
   final List<GantActivity>? children;
   final List<GantActivityAction>? actions;
   final Function(GantActivity activity)? onCellTap;
   final Color? color;
+  final bool showCell;
 
   GantActivity({
     required DateTime start,
     required DateTime end,
     required this.title,
     required this.description,
+    this.titleStyle,
+    this.iconTitle,
     this.segments,
     this.children,
     this.onCellTap,
     this.color,
     this.actions,
+    this.showCell = true,
   }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
     this.start = start.toDate;
     this.end = end.toDate;

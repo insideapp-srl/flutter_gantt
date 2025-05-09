@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
+import '../widgets/controller_extension.dart';
 
 class GanttCell extends StatefulWidget {
   final GantActivity activity;
@@ -15,6 +16,9 @@ class GanttCell extends StatefulWidget {
 
 class _GanttCellState extends State<GanttCell> {
   bool mouseOver = false;
+
+  Color get color =>
+      widget.activity.color ?? context.watch<GanttTheme>().defaultCellColor;
 
   @override
   Widget build(BuildContext context) => InkWell(
@@ -34,14 +38,16 @@ class _GanttCellState extends State<GanttCell> {
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(context.watch<GanttTheme>().cellRounded),
-            bottomRight: Radius.circular(
-              context.watch<GanttTheme>().cellRounded,
-            ),
+            topLeft:
+                context.watch<GanttActivityCtrl>().cellsNotVisibleBefore
+                    ? Radius.zero
+                    : Radius.circular(context.watch<GanttTheme>().cellRounded),
+            bottomRight:
+                context.watch<GanttActivityCtrl>().cellsNotVisibleAfter
+                    ? Radius.zero
+                    : Radius.circular(context.watch<GanttTheme>().cellRounded),
           ),
-          color: (widget.activity.color ??
-                  context.watch<GanttTheme>().defaultCellColor)
-              .withValues(alpha: mouseOver ? 0.7 : 1),
+          color: color.withValues(alpha: color.a * (mouseOver ? 0.7 : 1)),
         ),
         child: Text(
           widget.activity.title,

@@ -7,87 +7,100 @@ import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
-class GanttActivityRow extends StatelessWidget {
+class GanttActivityRow extends StatefulWidget {
   final GantActivity activity;
 
   const GanttActivityRow({super.key, required this.activity});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => ChangeNotifierProvider<GanttActivityCtrl>(
-    create:
-        (context) => GanttActivityCtrl(
-          controller: context.read<GanttController>(),
-          activity: activity,
-        ),
+  State<GanttActivityRow> createState() => _GanttActivityRowState();
+}
+
+class _GanttActivityRowState extends State<GanttActivityRow> {
+  late GanttActivityCtrl _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = GanttActivityCtrl(
+      controller: context.read<GanttController>(),
+      activity: widget.activity,
+    );
+  }
+
+  @override
+  void didUpdateWidget(GanttActivityRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.activity != widget.activity) {
+      _ctrl.dispose();
+      _ctrl = GanttActivityCtrl(
+        controller: context.read<GanttController>(),
+        activity: widget.activity,
+      );
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider.value(
+    value: _ctrl,
     builder:
         (context, child) => SizedBox(
           height: context.watch<GanttTheme>().cellHeight,
-          child:
-              context.watch<GanttActivityCtrl>().cellVisible
-                  ? Row(
-                    children: [
-                      Expanded(
-                        flex: context.watch<GanttActivityCtrl>().cellsFlexStart,
-                        child: Container(),
-                      ),
-                      Expanded(
-                        flex: context.watch<GanttActivityCtrl>().cellsFlex,
-                        child: Tooltip(
-                          message: activity.description,
-                          child: GanttCell(activity: activity),
-                        ),
-                      ),
-                      Expanded(
-                        flex: context.watch<GanttActivityCtrl>().cellsFlexEnd,
-                        child: Container(),
-                      ),
-                    ],
-                  )
-                  : context.watch<GanttActivityCtrl>().showBefore
-                  ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tooltip(
-                      message:
-                          '${activity.start.toLocal()} - ${activity.end.toLocal()}',
-                      child: InkWell(
-                        onTap:
-                            () =>
-                                context.read<GanttController>().startDate =
-                                    activity.start,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.navigate_before),
-                            Text(activity.title),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                  : Align(
-                    alignment: Alignment.centerRight,
-                    child: Tooltip(
-                      message:
-                          '${activity.start.toLocal()} - ${activity.end.toLocal()}',
-                      child: InkWell(
-                        onTap:
-                            () =>
-                                context.read<GanttController>().startDate =
-                                    activity.start,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(activity.title),
-                            Icon(Icons.navigate_next),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+          child: _buildContent(context),
         ),
   );
+
+  Widget _buildContent(BuildContext context) {
+    final activity = widget.activity;
+    final ctrl = context.watch<GanttActivityCtrl>();
+
+    if (!activity.showCell) return Container();
+
+    if (ctrl.cellVisible) {
+      return Row(
+        children: [
+          Expanded(flex: ctrl.cellsFlexStart, child: Container()),
+          Expanded(
+            flex: ctrl.cellsFlex,
+            child: Tooltip(
+              message: activity.description,
+              child: GanttCell(activity: activity),
+            ),
+          ),
+          Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
+        ],
+      );
+    }
+
+    final isBefore = ctrl.showBefore;
+    final alignment = isBefore ? Alignment.centerLeft : Alignment.centerRight;
+    final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
+    final children =
+        isBefore
+            ? [Icon(icon), Text(activity.title)]
+            : [Text(activity.title), Icon(icon)];
+
+    return Align(
+      alignment: alignment,
+      child: Tooltip(
+        message: '${activity.start.toLocal()} - ${activity.end.toLocal()}',
+        child: InkWell(
+          onTap:
+              () => context.read<GanttController>().startDate = activity.start,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: children,
+          ),
+        ),
+      ),
+    );
+  }
 }
