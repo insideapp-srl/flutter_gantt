@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../flutter_gantt.dart';
+import '../utils/datetime.dart';
 import 'controller_extension.dart';
 
 extension _DayColorEx on DateTime {
@@ -71,10 +72,13 @@ class CalendarGrid extends StatelessWidget {
                               ),
                               child: Text(
                                 '${day.day}',
-                                style: Theme.of(context).textTheme.bodySmall,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight:
+                                day.isToday? FontWeight.bold:
+                                FontWeight.normal,),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
+
                               ),
                             ),
                           ),
