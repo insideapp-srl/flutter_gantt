@@ -67,13 +67,23 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(
-            flex: ctrl.cellsFlex,
-            child: Tooltip(
-              message: activity.description,
-              child: GanttCell(activity: activity),
+          if (activity.cellBuilder == null)
+            Expanded(
+              flex: ctrl.cellsFlex,
+              child: Tooltip(
+                message: activity.description,
+                child: GanttCell(activity: activity),
+              ),
             ),
-          ),
+          if (activity.cellBuilder != null)
+            ...List<Widget>.generate(
+              ctrl.cellsFlex,
+              (index) => Expanded(
+                child: activity.cellBuilder!(
+                  activity.start.add(Duration(days: index)),
+                ),
+              ),
+            ),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );

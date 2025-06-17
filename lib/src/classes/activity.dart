@@ -21,6 +21,7 @@ class GantActivity {
   final List<GantActivity>? children;
   final List<GantActivityAction>? actions;
   final Function(GantActivity activity)? onCellTap;
+  final Widget Function(DateTime cellDate)? cellBuilder;
   final Color? color;
   final bool showCell;
 
@@ -34,6 +35,7 @@ class GantActivity {
     this.segments,
     this.children,
     this.onCellTap,
+    this.cellBuilder,
     this.color,
     this.actions,
     this.showCell = true,

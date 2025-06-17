@@ -51,6 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
       end: DateTime(2025, 4, 12),
       title: 'Task 1',
       description: 'Description 1',
+      cellBuilder: (cellDate) => Container(
+        color: Colors.blue,
+      ),
       onCellTap: (activity) {
         // ToDo
       },
@@ -158,6 +161,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 activitiesAsync: (startDate, endDate, activity) async =>
                     _activities,
                 //activities: _activities,
+                holidays: [
+                  GantDateHoliday(
+                      date: DateTime(2025, 12, 25), holiday: 'Natale')
+                ],
               ),
             ),
           ],

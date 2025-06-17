@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../classes/activity.dart';
+import '../classes/date_holiday.dart';
 import '../utils/datetime.dart';
 
 class GanttController extends ChangeNotifier {
   DateTime _startDate;
+  List<GantActivity> _activities = [];
+  List<GantDateHoliday> _holidays = [];
 
   DateTime get startDate => _startDate;
 
@@ -12,6 +16,28 @@ class GanttController extends ChangeNotifier {
     if (value != _startDate) {
       _startDate = value;
       notifyListeners();
+    }
+  }
+
+  List<GantActivity> get activities => _activities;
+
+  void setActivities(List<GantActivity> value, {bool notify = true}) {
+    if (value != _activities) {
+      _activities = value;
+      if (notify) {
+        notifyListeners();
+      }
+    }
+  }
+
+  List<GantDateHoliday> get holidays => _holidays;
+
+  void setHolidays(List<GantDateHoliday> value, {bool notify = true}) {
+    if (value != _holidays) {
+      _holidays = value;
+      if (notify) {
+        notifyListeners();
+      }
     }
   }
 

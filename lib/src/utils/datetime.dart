@@ -17,4 +17,5 @@ extension DateTimeEx on DateTime {
   int diffInDays(DateTime other) => difference(other).inDays;
 
   bool get isToday => dayStart.compareTo(DateTime.now().dayStart)==0;
+  bool get isWeekend => weekday==6 || weekday==7;
 }
