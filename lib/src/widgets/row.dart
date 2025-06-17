@@ -22,10 +22,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   @override
   void initState() {
     super.initState();
-    _ctrl = GanttActivityCtrl(
-      controller: context.read<GanttController>(),
-      activity: widget.activity,
-    );
+    _createController();
   }
 
   @override
@@ -33,12 +30,16 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.activity != widget.activity) {
       _ctrl.dispose();
-      _ctrl = GanttActivityCtrl(
-        controller: context.read<GanttController>(),
-        activity: widget.activity,
-      );
+      _createController();
       setState(() {});
     }
+  }
+
+  void _createController() {
+    _ctrl = GanttActivityCtrl(
+      controller: context.read<GanttController>(),
+      activity: widget.activity,
+    );
   }
 
   @override
@@ -67,7 +68,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          if (activity.cellBuilder == null)
+             if (activity.cellBuilder == null)
             Expanded(
               flex: ctrl.cellsFlex,
               child: Tooltip(
@@ -80,10 +81,15 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               ctrl.cellsFlex,
               (index) => Expanded(
                 child: activity.cellBuilder!(
-                  activity.start.add(Duration(days: index)),
+                  context
+                      .read<GanttController>()
+                      .clampToGanttRange(activity.start)
+                      .add(Duration(days: index)),
                 ),
               ),
             ),
+
+
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );

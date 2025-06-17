@@ -37,7 +37,8 @@ class Gantt extends StatefulWidget {
     this.controller,
   }) : assert(
          (startDate != null || controller != null) &&
-             ((activities == null) != (activitiesAsync == null)),
+             ((activities == null) != (activitiesAsync == null)) &&
+             ((holidays == null) != (holidaysAsync == null)),
        );
 
   @override
@@ -113,26 +114,26 @@ class _GanttState extends State<Gantt> {
 
   Future<void> _getAsync() async {
     if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
-      List<GantActivity> _activities = [];
-      List<GantDateHoliday> _holidays = [];
+      var activities = <GantActivity>[];
+      var holidays = <GantDateHoliday>[];
       setState(() {
         _loading = true;
       });
       if (widget.activitiesAsync != null) {
-        _activities = await widget.activitiesAsync!(
+        activities = await widget.activitiesAsync!(
           controller.startDate,
           controller.endDate,
           controller.activities,
         );
-        controller.setActivities(_activities, notify: false);
+        controller.setActivities(activities, notify: false);
       }
       if (widget.holidaysAsync != null) {
-        _holidays = await widget.holidaysAsync!(
+        holidays = await widget.holidaysAsync!(
           controller.startDate,
           controller.endDate,
           controller.holidays,
         );
-        controller.setHolidays(_holidays, notify: false);
+        controller.setHolidays(holidays, notify: false);
       }
       setState(() {
         _loading = false;
@@ -160,7 +161,7 @@ class _GanttState extends State<Gantt> {
                 Expanded(
                   flex: 1,
                   child: ActivitiesList(
-                    activities: controller.activities,
+                    activities: c.activities,
                     controller: _listController,
                   ),
                 ),
@@ -189,7 +190,7 @@ class _GanttState extends State<Gantt> {
                             ),
                             CalendarGrid(holidays: widget.holidays),
                             ActivitiesGrid(
-                              activities: controller.activities,
+                              activities: c.activities,
                               controller: _gridColumnsController,
                             ),
                           ],
