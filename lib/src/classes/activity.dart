@@ -14,7 +14,7 @@ class GantActivity {
   late DateTime start;
   late DateTime end;
   final String title;
-  final String description;
+  final Widget description;
   final TextStyle? titleStyle;
   final Widget? iconTitle;
   final List<GantActivitySegment>? segments;

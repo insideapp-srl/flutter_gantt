@@ -90,6 +90,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  super_tooltip:
+    dependency: transitive
+    description:
+      name: super_tooltip
+      sha256: "55c0764554c961846d489503b76a1fc33ec2120bd7407266b77a34abbf3ed471"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.9"
   vector_math:
     dependency: transitive
     description:
