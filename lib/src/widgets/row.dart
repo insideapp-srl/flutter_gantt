@@ -72,12 +72,15 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Expanded(
             flex: ctrl.cellsFlex,
             child: MouseRegion(
-              onHover: (event) async => await controller.showTooltip(),
+              onEnter: (event) async {
+                await controller.showTooltip();
+                await Future.delayed(Duration(seconds: 10));
+                await controller.hideTooltip();
+              },
               child: SuperTooltip(
-                showBarrier: true,
-                barrierColor: Colors.red,
                 controller: controller,
-                content: Icon(Icons.save), //activity.description,
+                hideTooltipOnTap: true,
+                content: activity.description,
                 child: GanttCell(activity: activity),
               ),
             ),
