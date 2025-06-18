@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:super_tooltip/super_tooltip.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
@@ -61,7 +60,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   Widget _buildContent(BuildContext context) {
     final activity = widget.activity;
     final ctrl = context.watch<GanttActivityCtrl>();
-    final controller = SuperTooltipController();
 
     if (!activity.showCell) return Container();
 
@@ -71,18 +69,9 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
           Expanded(
             flex: ctrl.cellsFlex,
-            child: MouseRegion(
-              onEnter: (event) async {
-                await controller.showTooltip();
-                await Future.delayed(Duration(seconds: 10));
-                await controller.hideTooltip();
-              },
-              child: SuperTooltip(
-                controller: controller,
-                hideTooltipOnTap: true,
-                content: activity.description,
-                child: GanttCell(activity: activity),
-              ),
+            child: Tooltip(
+              richMessage: WidgetSpan(child: activity.description),
+              child: GanttCell(activity: activity),
             ),
           ),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
