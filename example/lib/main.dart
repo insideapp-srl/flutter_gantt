@@ -164,7 +164,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 //activities: _activities,
                 holidays: [
                   GantDateHoliday(
-                      date: DateTime(2025, 12, 25), holiday: 'Natale')
+                    date: DateTime(2025, 12, 25),
+                    holiday: 'Natale',
+                  ),
                 ],
               ),
             ),

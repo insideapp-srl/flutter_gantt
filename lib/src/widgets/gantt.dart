@@ -38,7 +38,7 @@ class Gantt extends StatefulWidget {
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
-             ((holidays == null) != (holidaysAsync == null)),
+             (holidays == null || holidaysAsync == null),
        );
 
   @override

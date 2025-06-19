@@ -68,13 +68,13 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       final cell =
           activity.cellBuilder == null
               ? Tooltip(
-            message: activity.tooltipMessage,
-            richMessage:
-            activity.tooltipWidget != null
-                ? WidgetSpan(child: activity.tooltipWidget!)
-                : null,
-            child: GanttCell(activity: activity),
-          )
+                message: activity.tooltipMessage,
+                richMessage:
+                    activity.tooltipWidget != null
+                        ? WidgetSpan(child: activity.tooltipWidget!)
+                        : null,
+                child: GanttCell(activity: activity),
+              )
               : Row(
                 children: List<Widget>.generate(
                   ctrl.cellsFlex,
