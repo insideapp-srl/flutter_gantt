@@ -70,7 +70,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Expanded(
             flex: ctrl.cellsFlex,
             child: Tooltip(
-              richMessage: WidgetSpan(child: activity.description),
+              message: activity.tooltipMessage,
+              richMessage:
+                  activity.tooltipWidget != null
+                      ? WidgetSpan(child: activity.tooltipWidget!)
+                      : null,
               child: GanttCell(activity: activity),
             ),
           ),
@@ -84,8 +88,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
     final children =
         isBefore
-            ? [Icon(icon), Text(activity.title)]
-            : [Text(activity.title), Icon(icon)];
+            ? [Icon(icon), activity.titleWidget ?? Text(activity.title!)]
+            : [activity.titleWidget ?? Text(activity.title!), Icon(icon)];
 
     return Align(
       alignment: alignment,

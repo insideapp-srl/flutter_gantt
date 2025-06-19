@@ -9,4 +9,3 @@ export 'src/widgets/row.dart';
 //ToDo
 // Selezione giorno corrente
 // Loading
-

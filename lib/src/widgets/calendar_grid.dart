@@ -72,13 +72,17 @@ class CalendarGrid extends StatelessWidget {
                               ),
                               child: Text(
                                 '${day.day}',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight:
-                                day.isToday? FontWeight.bold:
-                                FontWeight.normal,),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(
+                                  fontWeight:
+                                      day.isToday
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
-
                               ),
                             ),
                           ),

@@ -34,15 +34,17 @@ class ActivitiesList extends StatelessWidget {
                     child: activities[index].iconTitle!,
                   ),
                 Expanded(
-                  child: Tooltip(
-                    message: activities[index].title,
-                    child: Text(
-                      activities[index].title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: activities[index].titleStyle,
-                    ),
-                  ),
+                  child:
+                      activities[index].titleWidget ??
+                      Tooltip(
+                        message: activities[index].title,
+                        child: Text(
+                          activities[index].title!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: activities[index].titleStyle,
+                        ),
+                      ),
                 ),
                 if (activities[index].actions?.isNotEmpty == true)
                   Row(

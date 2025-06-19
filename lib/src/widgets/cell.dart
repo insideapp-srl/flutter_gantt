@@ -49,11 +49,13 @@ class _GanttCellState extends State<GanttCell> {
           ),
           color: color.withValues(alpha: color.a * (mouseOver ? 0.7 : 1)),
         ),
-        child: Text(
-          widget.activity.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        child:
+            widget.activity.titleWidget ??
+            Text(
+              widget.activity.title!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
       ),
     ),
   );

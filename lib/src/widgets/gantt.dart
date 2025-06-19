@@ -132,9 +132,8 @@ class _GanttState extends State<Gantt> {
         children: [
           SizedBox(
             height: 4,
-            child: _loading? LinearProgressIndicator():Container(),
-          )
-          ,
+            child: _loading ? LinearProgressIndicator() : Container(),
+          ),
           Expanded(
             child: Row(
               children: [
