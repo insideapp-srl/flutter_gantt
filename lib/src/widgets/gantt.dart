@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
-import '../classes/activity.dart';
-import '../classes/theme.dart';
+import '../../flutter_gantt.dart';
 import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
-import 'controller.dart';
 
 class Gantt extends StatefulWidget {
   final DateTime? startDate;
@@ -18,6 +16,13 @@ class Gantt extends StatefulWidget {
     List<GantActivity> activities,
   )?
   activitiesAsync;
+  final List<GantDateHoliday>? holidays;
+  final Future<List<GantDateHoliday>> Function(
+    DateTime startDate,
+    DateTime endDate,
+    List<GantDateHoliday> holidays,
+  )?
+  holidaysAsync;
   final GanttTheme? theme;
   final GanttController? controller;
 
@@ -27,10 +32,13 @@ class Gantt extends StatefulWidget {
     this.theme,
     this.activities,
     this.activitiesAsync,
+    this.holidays,
+    this.holidaysAsync,
     this.controller,
   }) : assert(
          (startDate != null || controller != null) &&
-             ((activities == null) != (activitiesAsync == null)),
+             ((activities == null) != (activitiesAsync == null)) &&
+             ((holidays == null) != (holidaysAsync == null)),
        );
 
   @override
@@ -40,7 +48,6 @@ class Gantt extends StatefulWidget {
 class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
-  List<GantActivity> _activities = [];
 
   Offset? _lastPosition;
 
@@ -58,8 +65,11 @@ class _GanttState extends State<Gantt> {
     controller =
         widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
+    if (widget.holidays != null) {
+      controller.setHolidays(widget.holidays!, notify: false);
+    }
     if (widget.activities != null) {
-      _activities = widget.activities!;
+      controller.setActivities(widget.activities!, notify: false);
     } else {
       controller.fetch();
     }
@@ -103,22 +113,33 @@ class _GanttState extends State<Gantt> {
   }
 
   Future<void> _getAsync() async {
-    if (widget.activitiesAsync != null) {
+    if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
+      var activities = <GantActivity>[];
+      var holidays = <GantDateHoliday>[];
       setState(() {
         _loading = true;
       });
-      _activities = await widget.activitiesAsync!(
-        controller.startDate,
-        controller.endDate,
-        activities,
-      );
+      if (widget.activitiesAsync != null) {
+        activities = await widget.activitiesAsync!(
+          controller.startDate,
+          controller.endDate,
+          controller.activities,
+        );
+        controller.setActivities(activities, notify: false);
+      }
+      if (widget.holidaysAsync != null) {
+        holidays = await widget.holidaysAsync!(
+          controller.startDate,
+          controller.endDate,
+          controller.holidays,
+        );
+        controller.setHolidays(holidays, notify: false);
+      }
       setState(() {
         _loading = false;
       });
     }
   }
-
-  List<GantActivity> get activities => _activities;
 
   @override
   Widget build(BuildContext context) => MultiProvider(
@@ -140,7 +161,7 @@ class _GanttState extends State<Gantt> {
                 Expanded(
                   flex: 1,
                   child: ActivitiesList(
-                    activities: activities,
+                    activities: c.activities,
                     controller: _listController,
                   ),
                 ),
@@ -167,9 +188,9 @@ class _GanttState extends State<Gantt> {
                             Positioned.fill(
                               child: Container(color: theme.backgroundColor),
                             ),
-                            CalendarGrid(),
+                            CalendarGrid(holidays: widget.holidays),
                             ActivitiesGrid(
-                              activities: activities,
+                              activities: c.activities,
                               controller: _gridColumnsController,
                             ),
                           ],

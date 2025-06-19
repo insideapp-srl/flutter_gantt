@@ -5,15 +5,26 @@ import '../../flutter_gantt.dart';
 import '../utils/datetime.dart';
 import 'controller_extension.dart';
 
-extension _DayColorEx on DateTime {
-  Color get dayColor =>
-      (weekday == 6 || weekday == 7)
-          ? Colors.black.withValues(alpha: .2)
-          : Colors.transparent;
-}
-
 class CalendarGrid extends StatelessWidget {
-  const CalendarGrid({super.key});
+  final List<GantDateHoliday>? holidays;
+
+  const CalendarGrid({super.key, this.holidays});
+
+  Color getDayColor(GanttTheme theme, DateTime date) {
+    if ((holidays ?? []).map((e) => e.date).contains(date)) {
+      return theme.holidayColor;
+    }
+    if (date.isWeekend) {
+      return theme.weekendColor;
+    }
+    return Colors.transparent;
+  }
+
+  String? getDayHoliday(DateTime date) =>
+      (holidays ?? [])
+          .where((e) => e.date.isAtSameMomentAs(date))
+          .firstOrNull
+          ?.holiday;
 
   @override
   Widget build(BuildContext context) => Consumer<GanttController>(
@@ -58,32 +69,33 @@ class CalendarGrid extends StatelessWidget {
               child: Row(
                 children: List.generate(c.days.length, (i) {
                   final day = c.days[i];
+                  final holiday = getDayHoliday(day);
+                  final child = Text(
+                    '${day.day}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight:
+                          day.isToday ? FontWeight.bold : FontWeight.normal,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  );
                   return Expanded(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Container(
-                            color: day.dayColor,
+                            color: getDayColor(context.watch<GanttTheme>(), day),
                             height: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 4.0,
                               ),
-                              child: Text(
-                                '${day.day}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodySmall?.copyWith(
-                                  fontWeight:
-                                      day.isToday
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
+                              child:
+                                  holiday != null
+                                      ? Tooltip(message: holiday, child: child)
+                                      : child,
                             ),
                           ),
                         ),

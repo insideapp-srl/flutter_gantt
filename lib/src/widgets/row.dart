@@ -22,10 +22,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   @override
   void initState() {
     super.initState();
-    _ctrl = GanttActivityCtrl(
-      controller: context.read<GanttController>(),
-      activity: widget.activity,
-    );
+    _createController();
   }
 
   @override
@@ -33,12 +30,16 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.activity != widget.activity) {
       _ctrl.dispose();
-      _ctrl = GanttActivityCtrl(
-        controller: context.read<GanttController>(),
-        activity: widget.activity,
-      );
+      _createController();
       setState(() {});
     }
+  }
+
+  void _createController() {
+    _ctrl = GanttActivityCtrl(
+      controller: context.read<GanttController>(),
+      activity: widget.activity,
+    );
   }
 
   @override
@@ -67,17 +68,32 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(
-            flex: ctrl.cellsFlex,
-            child: Tooltip(
-              message: activity.tooltipMessage,
-              richMessage:
-                  activity.tooltipWidget != null
-                      ? WidgetSpan(child: activity.tooltipWidget!)
-                      : null,
-              child: GanttCell(activity: activity),
+             if (activity.cellBuilder == null)
+            Expanded(
+              flex: ctrl.cellsFlex,
+              child: Tooltip(
+    message: activity.tooltipMessage,
+    richMessage:
+    activity.tooltipWidget != null
+    ? WidgetSpan(child: activity.tooltipWidget!)
+        : null,
+    child: GanttCell(activity: activity),
+    ),
             ),
-          ),
+          if (activity.cellBuilder != null)
+            ...List<Widget>.generate(
+              ctrl.cellsFlex,
+              (index) => Expanded(
+                child: activity.cellBuilder!(
+                  context
+                      .read<GanttController>()
+                      .clampToGanttRange(activity.start)
+                      .add(Duration(days: index)),
+                ),
+              ),
+            ),
+
+
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );
