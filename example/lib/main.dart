@@ -51,12 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
       end: DateTime(2025, 4, 12),
       title: 'Task 1',
       tooltipMessage: 'Description 1',
-     cellBuilder: (cellDate) => Container(
+      cellBuilder: (cellDate) => Container(
         color: Colors.blue,
         child: Text(cellDate.day.toString()),
       ),
-
-
       onCellTap: (activity) {
         // ToDo
       },

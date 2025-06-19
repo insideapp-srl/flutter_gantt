@@ -68,17 +68,17 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-             if (activity.cellBuilder == null)
+          if (activity.cellBuilder == null)
             Expanded(
               flex: ctrl.cellsFlex,
               child: Tooltip(
-    message: activity.tooltipMessage,
-    richMessage:
-    activity.tooltipWidget != null
-    ? WidgetSpan(child: activity.tooltipWidget!)
-        : null,
-    child: GanttCell(activity: activity),
-    ),
+                message: activity.tooltipMessage,
+                richMessage:
+                    activity.tooltipWidget != null
+                        ? WidgetSpan(child: activity.tooltipWidget!)
+                        : null,
+                child: GanttCell(activity: activity),
+              ),
             ),
           if (activity.cellBuilder != null)
             ...List<Widget>.generate(
@@ -92,7 +92,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ),
               ),
             ),
-
 
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
