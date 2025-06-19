@@ -65,34 +65,33 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     if (!activity.showCell) return Container();
 
     if (ctrl.cellVisible) {
+      final cell =
+          activity.cellBuilder == null
+              ? Tooltip(
+            message: activity.tooltipMessage,
+            richMessage:
+            activity.tooltipWidget != null
+                ? WidgetSpan(child: activity.tooltipWidget!)
+                : null,
+            child: GanttCell(activity: activity),
+          )
+              : Row(
+                children: List<Widget>.generate(
+                  ctrl.cellsFlex,
+                  (index) => Expanded(
+                    child: activity.cellBuilder!(
+                      context
+                          .read<GanttController>()
+                          .clampToGanttRange(activity.start)
+                          .add(Duration(days: index)),
+                    ),
+                  ),
+                ),
+              );
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          if (activity.cellBuilder == null)
-            Expanded(
-              flex: ctrl.cellsFlex,
-              child: Tooltip(
-                message: activity.tooltipMessage,
-                richMessage:
-                    activity.tooltipWidget != null
-                        ? WidgetSpan(child: activity.tooltipWidget!)
-                        : null,
-                child: GanttCell(activity: activity),
-              ),
-            ),
-          if (activity.cellBuilder != null)
-            ...List<Widget>.generate(
-              ctrl.cellsFlex,
-              (index) => Expanded(
-                child: activity.cellBuilder!(
-                  context
-                      .read<GanttController>()
-                      .clampToGanttRange(activity.start)
-                      .add(Duration(days: index)),
-                ),
-              ),
-            ),
-
+          Expanded(flex: ctrl.cellsFlex, child: cell),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );
