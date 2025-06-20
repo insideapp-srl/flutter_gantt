@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'controller.dart';
 
+/// Provides navigation controls for the Gantt chart timeline
 class GanttRangeSelector extends StatelessWidget {
+  /// The controller to manipulate the timeline
   final GanttController controller;
 
+  /// Creates a range selector for the specified controller
   const GanttRangeSelector({super.key, required this.controller});
 
   @override

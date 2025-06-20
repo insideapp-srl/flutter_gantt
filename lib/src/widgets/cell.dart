@@ -5,9 +5,12 @@ import '../classes/activity.dart';
 import '../classes/theme.dart';
 import '../widgets/controller_extension.dart';
 
+/// A single cell representing an activity's duration in the Gantt chart.
 class GanttCell extends StatefulWidget {
+  /// The activity this cell represents
   final GantActivity activity;
 
+  /// Creates a Gantt cell for the specified activity
   const GanttCell({super.key, required this.activity});
 
   @override
@@ -17,6 +20,7 @@ class GanttCell extends StatefulWidget {
 class _GanttCellState extends State<GanttCell> {
   bool mouseOver = false;
 
+  /// Gets the cell color, falling back to theme's default if not specified
   Color get color =>
       widget.activity.color ?? context.watch<GanttTheme>().defaultCellColor;
 
@@ -24,16 +28,8 @@ class _GanttCellState extends State<GanttCell> {
   Widget build(BuildContext context) => InkWell(
     onTap: () => widget.activity.onCellTap?.call(widget.activity),
     child: MouseRegion(
-      onEnter: (event) {
-        setState(() {
-          mouseOver = true;
-        });
-      },
-      onExit: (event) {
-        setState(() {
-          mouseOver = false;
-        });
-      },
+      onEnter: (event) => setState(() => mouseOver = true),
+      onExit: (event) => setState(() => mouseOver = false),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         decoration: BoxDecoration(
