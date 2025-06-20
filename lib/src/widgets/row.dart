@@ -22,10 +22,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   @override
   void initState() {
     super.initState();
-    _ctrl = GanttActivityCtrl(
-      controller: context.read<GanttController>(),
-      activity: widget.activity,
-    );
+    _createController();
   }
 
   @override
@@ -33,12 +30,16 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.activity != widget.activity) {
       _ctrl.dispose();
-      _ctrl = GanttActivityCtrl(
-        controller: context.read<GanttController>(),
-        activity: widget.activity,
-      );
+      _createController();
       setState(() {});
     }
+  }
+
+  void _createController() {
+    _ctrl = GanttActivityCtrl(
+      controller: context.read<GanttController>(),
+      activity: widget.activity,
+    );
   }
 
   @override
@@ -64,16 +65,33 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     if (!activity.showCell) return Container();
 
     if (ctrl.cellVisible) {
+      final cell =
+          activity.cellBuilder == null
+              ? Tooltip(
+                message: activity.tooltipMessage,
+                richMessage:
+                    activity.tooltipWidget != null
+                        ? WidgetSpan(child: activity.tooltipWidget!)
+                        : null,
+                child: GanttCell(activity: activity),
+              )
+              : Row(
+                children: List<Widget>.generate(
+                  ctrl.cellsFlex,
+                  (index) => Expanded(
+                    child: activity.cellBuilder!(
+                      context
+                          .read<GanttController>()
+                          .clampToGanttRange(activity.start)
+                          .add(Duration(days: index)),
+                    ),
+                  ),
+                ),
+              );
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(
-            flex: ctrl.cellsFlex,
-            child: Tooltip(
-              message: activity.description,
-              child: GanttCell(activity: activity),
-            ),
-          ),
+          Expanded(flex: ctrl.cellsFlex, child: cell),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );
@@ -84,8 +102,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
     final children =
         isBefore
-            ? [Icon(icon), Text(activity.title)]
-            : [Text(activity.title), Icon(icon)];
+            ? [Icon(icon), activity.titleWidget ?? Text(activity.title!)]
+            : [activity.titleWidget ?? Text(activity.title!), Icon(icon)];
 
     return Align(
       alignment: alignment,
