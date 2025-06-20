@@ -86,7 +86,10 @@ class CalendarGrid extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Container(
-                            color: getDayColor(context.watch<GanttTheme>(), day),
+                            color: getDayColor(
+                              context.watch<GanttTheme>(),
+                              day,
+                            ),
                             height: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

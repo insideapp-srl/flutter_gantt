@@ -50,13 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
       start: DateTime(2025, 3, 30),
       end: DateTime(2025, 4, 12),
       title: 'Task 1',
-      description: 'Description 1',
-     cellBuilder: (cellDate) => Container(
+      tooltipMessage: 'Description 1',
+      cellBuilder: (cellDate) => Container(
         color: Colors.blue,
         child: Text(cellDate.day.toString()),
       ),
-
-
       onCellTap: (activity) {
         // ToDo
       },
@@ -87,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
           start: DateTime(2025, 3, 30),
           end: DateTime(2025, 4, 12),
           title: 'Task 2, titolo lungo',
-          description: 'Description 2',
+          tooltipMessage: 'Description 2',
           color: Colors.green,
           actions: [
             GantActivityAction(
@@ -100,14 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
           start: DateTime(2025, 3, 30),
           end: DateTime(2025, 4, 12),
           title: 'Task 3, Ciaone',
-          description: 'Description 2',
+          tooltipMessage: 'Description 2',
           color: Colors.green,
           children: [
             GantActivity(
               start: DateTime(2025, 4, 1),
               end: DateTime(2025, 4, 12),
               title: 'Task 2, titolo lungo',
-              description: 'Description 2',
+              tooltipMessage: 'Description 2',
               color: Colors.redAccent,
               actions: [
                 GantActivityAction(
@@ -120,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
               start: DateTime(2025, 4, 2),
               end: DateTime(2025, 4, 11),
               title: 'Task 3, Ciaone',
-              description: 'Description 2',
+              tooltipMessage: 'Description 2',
               color: Colors.redAccent,
             ),
           ],
@@ -131,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       start: DateTime(2025, 4, 9),
       end: DateTime(2025, 4, 23),
       title: 'Task 2, titolo lungo',
-      description: 'Description 2',
+      tooltipMessage: 'Description 2',
       actions: [
         GantActivityAction(
           icon: Icons.add,
@@ -143,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
       start: DateTime(2025, 3, 28),
       end: DateTime(2025, 4, 17),
       title: 'Task 3, Ciaone',
-      description: 'Description 2',
+      tooltipMessage: 'Description 2',
     ),
   ];
 
@@ -166,7 +164,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 //activities: _activities,
                 holidays: [
                   GantDateHoliday(
-                      date: DateTime(2025, 12, 25), holiday: 'Natale')
+                    date: DateTime(2025, 12, 25),
+                    holiday: 'Natale',
+                  ),
                 ],
               ),
             ),

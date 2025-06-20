@@ -38,7 +38,7 @@ class Gantt extends StatefulWidget {
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
-             ((holidays == null) != (holidaysAsync == null)),
+             (holidays == null || holidaysAsync == null),
        );
 
   @override
@@ -188,7 +188,7 @@ class _GanttState extends State<Gantt> {
                             Positioned.fill(
                               child: Container(color: theme.backgroundColor),
                             ),
-                            CalendarGrid(holidays: widget.holidays),
+                            CalendarGrid(holidays: c.holidays),
                             ActivitiesGrid(
                               activities: c.activities,
                               controller: _gridColumnsController,

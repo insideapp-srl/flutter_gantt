@@ -13,8 +13,10 @@ class GantActivityAction {
 class GantActivity {
   late DateTime start;
   late DateTime end;
-  final String title;
-  final String description;
+  final String? title;
+  final Widget? titleWidget;
+  final String? tooltipMessage;
+  final Widget? tooltipWidget;
   final TextStyle? titleStyle;
   final Widget? iconTitle;
   final List<GantActivitySegment>? segments;
@@ -28,8 +30,10 @@ class GantActivity {
   GantActivity({
     required DateTime start,
     required DateTime end,
-    required this.title,
-    required this.description,
+    this.title,
+    this.titleWidget,
+    this.tooltipMessage,
+    this.tooltipWidget,
     this.titleStyle,
     this.iconTitle,
     this.segments,
@@ -39,7 +43,11 @@ class GantActivity {
     this.color,
     this.actions,
     this.showCell = true,
-  }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
+  }) : assert(
+         start.toDate.isBeforeOrSame(end.toDate) &&
+             ((tooltipMessage == null) != (tooltipWidget == null)) &&
+             ((title == null) != (titleWidget == null)),
+       ) {
     this.start = start.toDate;
     this.end = end.toDate;
     if (segments != null) {
