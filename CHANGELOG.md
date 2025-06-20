@@ -1,3 +1,9 @@
+## [0.0.5] - 2025-06-20
+
+@RichiB20 @rickypid
+
+* Add holidays.
+ 
 ## [0.0.4] - 2025-05-09
 
 @RichiB20 @rickypid
