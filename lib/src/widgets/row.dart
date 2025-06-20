@@ -7,9 +7,12 @@ import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
+/// A single row in the Gantt chart representing an activity
 class GanttActivityRow extends StatefulWidget {
+  /// The activity to display in this row
   final GantActivity activity;
 
+  /// Creates a row for the specified activity
   const GanttActivityRow({super.key, required this.activity});
 
   @override
@@ -58,6 +61,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ),
   );
 
+  /// Builds the row content based on activity visibility
   Widget _buildContent(BuildContext context) {
     final activity = widget.activity;
     final ctrl = context.watch<GanttActivityCtrl>();

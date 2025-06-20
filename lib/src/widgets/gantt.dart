@@ -7,25 +7,48 @@ import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
 
+/// A customizable Gantt chart widget for Flutter.
+///
+/// This widget displays activities in a timeline view with configurable
+/// appearance and behavior.
 class Gantt extends StatefulWidget {
+  /// The initial start date to display.
   final DateTime? startDate;
+
+  /// The list of activities to display (mutually exclusive with [activitiesAsync]).
   final List<GantActivity>? activities;
+
+  /// Async function to load activities (mutually exclusive with [activities]).
   final Future<List<GantActivity>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantActivity> activities,
   )?
   activitiesAsync;
+
+  /// The list of holidays to highlight (mutually exclusive with [holidaysAsync]).
   final List<GantDateHoliday>? holidays;
+
+  /// Async function to load holidays (mutually exclusive with [holidays]).
   final Future<List<GantDateHoliday>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantDateHoliday> holidays,
   )?
   holidaysAsync;
+
+  /// The theme to use for the Gantt chart.
   final GanttTheme? theme;
+
+  /// The controller for managing Gantt chart state.
   final GanttController? controller;
 
+  /// Creates a Gantt chart widget.
+  ///
+  /// Throws an [AssertionError] if:
+  /// - Neither [startDate] nor [controller] is provided
+  /// - Both [activities] and [activitiesAsync] are provided or both are null
+  /// - Both [holidays] and [holidaysAsync] are provided
   const Gantt({
     super.key,
     this.startDate,

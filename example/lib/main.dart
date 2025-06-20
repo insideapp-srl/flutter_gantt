@@ -162,7 +162,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 activitiesAsync: (startDate, endDate, activity) async =>
                     _activities,
                 //activities: _activities,
-                holidays: [
+                // holidays: [
+                //   GantDateHoliday(
+                //     date: DateTime(2025, 12, 25),
+                //     holiday: 'Natale',
+                //   ),
+                // ],
+                holidaysAsync: (startDate, endDate, holidays) async => [
                   GantDateHoliday(
                     date: DateTime(2025, 12, 25),
                     holiday: 'Natale',
