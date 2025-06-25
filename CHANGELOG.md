@@ -1,3 +1,10 @@
+## [0.0.6] - 2025-06-25
+
+@RichiB20
+
+* Add customization widget and text for activities list title and cell title.
+* Add indication for current day.
+
 ## [0.0.5] - 2025-06-20
 
 @RichiB20 @rickypid

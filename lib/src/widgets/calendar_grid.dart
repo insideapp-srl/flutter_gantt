@@ -70,15 +70,29 @@ class CalendarGrid extends StatelessWidget {
                 children: List.generate(c.days.length, (i) {
                   final day = c.days[i];
                   final holiday = getDayHoliday(day);
-                  final child = Text(
-                    '${day.day}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight:
-                          day.isToday ? FontWeight.bold : FontWeight.normal,
+                  final child = Container(
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          day.isToday
+                              ? context.watch<GanttTheme>().todayBackgroundColor
+                              : null,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
+                    child: Text(
+                      '${day.day}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color:
+                            day.isToday
+                                ? context.watch<GanttTheme>().todayTextColor
+                                : null,
+                        fontWeight:
+                            day.isToday ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
                   );
                   return Expanded(
                     child: Row(
@@ -91,14 +105,20 @@ class CalendarGrid extends StatelessWidget {
                               day,
                             ),
                             height: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4.0,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                child:
+                                    holiday != null
+                                        ? Tooltip(
+                                          message: holiday,
+                                          child: child,
+                                        )
+                                        : child,
                               ),
-                              child:
-                                  holiday != null
-                                      ? Tooltip(message: holiday, child: child)
-                                      : child,
                             ),
                           ),
                         ),

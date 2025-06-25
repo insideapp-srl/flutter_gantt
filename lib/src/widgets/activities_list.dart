@@ -35,11 +35,19 @@ class ActivitiesList extends StatelessWidget {
                   ),
                 Expanded(
                   child:
+                      activities[index].listTitleWidget ??
                       activities[index].titleWidget ??
                       Tooltip(
-                        message: activities[index].title,
+                        message: activities[index].tooltipMessage,
+                        richMessage:
+                            activities[index].tooltipWidget != null
+                                ? WidgetSpan(
+                                  child: activities[index].tooltipWidget!,
+                                )
+                                : null,
                         child: Text(
-                          activities[index].title!,
+                          activities[index].listTitle ??
+                              activities[index].title!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: activities[index].titleStyle,
