@@ -4,6 +4,8 @@ class GanttTheme extends ChangeNotifier {
   final Color backgroundColor;
   final Color holidayColor;
   final Color weekendColor;
+  final Color todayBackgroundColor;
+  final Color todayTextColor;
   final Color defaultCellColor;
   final double cellHeight;
   final double rowPadding;
@@ -15,6 +17,8 @@ class GanttTheme extends ChangeNotifier {
     this.backgroundColor = Colors.transparent,
     this.holidayColor = Colors.orangeAccent,
     this.weekendColor = Colors.redAccent,
+    this.todayBackgroundColor = Colors.amberAccent,
+    this.todayTextColor = Colors.black,
     this.defaultCellColor = Colors.purple,
     this.cellHeight = 24.0,
     this.rowPadding = 4.0,

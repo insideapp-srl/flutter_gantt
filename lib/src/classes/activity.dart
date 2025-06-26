@@ -15,6 +15,8 @@ class GantActivity {
   late DateTime end;
   final String? title;
   final Widget? titleWidget;
+  final String? listTitle;
+  final Widget? listTitleWidget;
   final String? tooltipMessage;
   final Widget? tooltipWidget;
   final TextStyle? titleStyle;
@@ -32,6 +34,8 @@ class GantActivity {
     required DateTime end,
     this.title,
     this.titleWidget,
+    this.listTitle,
+    this.listTitleWidget,
     this.tooltipMessage,
     this.tooltipWidget,
     this.titleStyle,
@@ -46,7 +50,8 @@ class GantActivity {
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&
              ((tooltipMessage == null) != (tooltipWidget == null)) &&
-             ((title == null) != (titleWidget == null)),
+             ((title == null) != (titleWidget == null)) &&
+             ((listTitle == null) || (listTitleWidget == null)),
        ) {
     this.start = start.toDate;
     this.end = end.toDate;
