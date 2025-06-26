@@ -93,6 +93,24 @@ extension GanttCtrlInternal on GanttController {
     final clampedEnd = clampToGanttRange(activity.end);
     return endDate.diffInDays(clampedEnd);
   }
+
+  void onActivityStartChange(GantActivity activity, DateTime start) {
+    for (var listener in onStartChangeListeners) {
+      listener(activity, start);
+    }
+  }
+
+  void onActivityEndChange(GantActivity activity, DateTime start) {
+    for (var listener in onEndChangeListeners) {
+      listener(activity, start);
+    }
+  }
+
+  void onActivityMoved(GantActivity activity, int days) {
+    for (var listener in onMoveListeners) {
+      listener(activity, days);
+    }
+  }
 }
 
 /// Controls the display state of a single activity row

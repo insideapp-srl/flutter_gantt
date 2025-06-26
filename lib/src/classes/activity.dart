@@ -18,7 +18,7 @@ class GantActivityAction {
 }
 
 /// Represents an activity in the Gantt chart.
-class GantActivity {
+class GantActivity<T> {
   /// The start date of the activity.
   late DateTime start;
 
@@ -67,6 +67,8 @@ class GantActivity {
   /// Whether to show the activity cell.
   final bool showCell;
 
+  final T? data;
+
   /// Creates a Gantt activity with the specified properties.
   ///
   /// Throws an [AssertionError] if:
@@ -93,6 +95,7 @@ class GantActivity {
     this.color,
     this.actions,
     this.showCell = true,
+    this.data,
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&
              ((tooltipMessage == null) != (tooltipWidget == null)) &&
@@ -121,6 +124,9 @@ class GantActivity {
 
   /// The duration of the activity in days.
   int get daysDuration => end.diffInDays(start) + 1;
+
+  @override
+  String toString() => title ?? super.toString();
 }
 
 /// A segment of a Gantt activity.
@@ -157,4 +163,7 @@ class GantActivitySegment {
     this.start = start.toDate;
     this.end = end.toDate;
   }
+
+  @override
+  String toString() => title;
 }

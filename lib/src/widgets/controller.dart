@@ -4,12 +4,32 @@ import '../classes/activity.dart';
 import '../classes/date_holiday.dart';
 import '../utils/datetime.dart';
 
+typedef GantActivityOnStartChangeEvent =
+    void Function(GantActivity activity, DateTime start);
+typedef GantActivityOnEndChangeEvent =
+    void Function(GantActivity activity, DateTime end);
+typedef GantActivityOnMoveEvent =
+    void Function(GantActivity activity, int days);
+
 /// Controls the state and behavior of a [Gantt] widget.
 class GanttController extends ChangeNotifier {
   DateTime _startDate;
   List<GantActivity> _activities = [];
   List<GantDateHoliday> _holidays = [];
   int _daysViews;
+  final List<GantActivityOnStartChangeEvent> _onStartChangeListeners = [];
+
+  List<GantActivityOnStartChangeEvent> get onStartChangeListeners =>
+      _onStartChangeListeners;
+
+  final List<GantActivityOnEndChangeEvent> _onEndChangeListeners = [];
+
+  List<GantActivityOnEndChangeEvent> get onEndChangeListeners =>
+      _onEndChangeListeners;
+
+  final List<GantActivityOnMoveEvent> _onMoveListeners = [];
+
+  List<GantActivityOnMoveEvent> get onMoveListeners => _onMoveListeners;
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -120,4 +140,28 @@ class GanttController extends ChangeNotifier {
           (startDate?.toDate ??
               DateTime.now().toDate.subtract(Duration(days: 30))),
       _daysViews = 30;
+
+  void addOnStartChangeListener(GantActivityOnStartChangeEvent listener) {
+    _onStartChangeListeners.add(listener);
+  }
+
+  void removeOnStartChangeListener(GantActivityOnStartChangeEvent listener) {
+    _onStartChangeListeners.remove(listener);
+  }
+
+  void addOnEndChangeListener(GantActivityOnEndChangeEvent listener) {
+    _onEndChangeListeners.add(listener);
+  }
+
+  void removeOnEndChangeListener(GantActivityOnEndChangeEvent listener) {
+    _onEndChangeListeners.remove(listener);
+  }
+
+  void addOnMoveListener(GantActivityOnMoveEvent listener) {
+    _onMoveListeners.add(listener);
+  }
+
+  void removeOnMoveListener(GantActivityOnMoveEvent listener) {
+    _onMoveListeners.remove(listener);
+  }
 }

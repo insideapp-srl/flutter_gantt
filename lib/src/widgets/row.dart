@@ -132,7 +132,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           if (renderBox == null) return;
 
           final boxWidth = renderBox.size.width;
-          final daysVisible = context.read<GanttController>().daysViews;
+          final daysVisible = _ctrl.daysViews;
           _daysDelta = (dxTotal / boxWidth * daysVisible).round();
         },
         onDragEnd: (_) {
@@ -146,6 +146,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 Duration(days: _daysDelta!),
               );
             });
+            _ctrl.controller.onActivityMoved(widget.activity, _daysDelta!);
           }
           _startDx = null;
         },

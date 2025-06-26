@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     controller =
         GanttController(startDate: now.subtract(const Duration(days: 14)));
 
+    controller.addOnMoveListener(_onActivityMoved);
     _activities = [
       // ✅ Main activity with children inside range
       GantActivity(
@@ -207,6 +208,15 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
+  void _onActivityMoved(activity, days) =>
+      debugPrint('$activity was moved by $days days (Event on controller)');
+
+  @override
+  void dispose() {
+    controller.removeOnMoveListener(_onActivityMoved);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -263,6 +273,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ];
                 },
+                onActivityMoved: (activity, days) =>
+                    debugPrint('$activity was moved by $days days'),
               ),
             ),
           ],
