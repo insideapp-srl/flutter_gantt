@@ -21,6 +21,7 @@ class GanttActivityRow extends StatefulWidget {
 
 class _GanttActivityRowState extends State<GanttActivityRow> {
   late GanttActivityCtrl _ctrl;
+  double? _startDx;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     if (!activity.showCell) return Container();
 
     if (ctrl.cellVisible) {
-      final cell =
+      final cellContent =
           activity.cellBuilder == null
               ? Tooltip(
                 message: activity.tooltipMessage,
@@ -92,10 +93,69 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   ),
                 ),
               );
+      final theme = context.read<GanttTheme>();
+      double? _dragStartDx;
+      int? _daysDelta;
+      final dragCell = LongPressDraggable<GantActivity>(
+        data: activity,
+        axis: Axis.horizontal,
+        feedback: Material(
+          elevation: 6,
+          color: Colors.transparent,
+          child: ChangeNotifierProvider.value(
+            value: _ctrl,
+            builder:
+                (context, child) => ChangeNotifierProvider.value(
+                  value: theme,
+                  builder:
+                      (context, child) => Opacity(
+                        opacity: 0.85,
+                        child: SizedBox(
+                          width: ctrl.cellsFlex * theme.dayMinWidth,
+                          height: theme.cellHeight,
+                          child: cellContent,
+                        ),
+                      ),
+                ),
+          ),
+        ),
+
+        childWhenDragging: const SizedBox.shrink(),
+        onDragStarted: () {
+          _startDx = null;
+        },
+        onDragUpdate: (details) {
+          _startDx ??= details.globalPosition.dx;
+
+          final dxTotal = details.globalPosition.dx - _startDx!;
+          final renderBox = context.findRenderObject() as RenderBox?;
+          if (renderBox == null) return;
+
+          final boxWidth = renderBox.size.width;
+          final daysVisible = context.read<GanttController>().daysViews;
+          _daysDelta = (dxTotal / boxWidth * daysVisible).round();
+        },
+        onDragEnd: (_) {
+          if (_daysDelta != null && _daysDelta != 0) {
+            //ToDo emettere evento al posto di modificare la posizione della activity, ora solo per test
+            setState(() {
+              widget.activity.start = widget.activity.start.add(
+                Duration(days: _daysDelta!),
+              );
+              widget.activity.end = widget.activity.end.add(
+                Duration(days: _daysDelta!),
+              );
+            });
+          }
+          _startDx = null;
+        },
+        child: cellContent,
+      );
+
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(flex: ctrl.cellsFlex, child: cell),
+          Expanded(flex: ctrl.cellsFlex, child: dragCell),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );
