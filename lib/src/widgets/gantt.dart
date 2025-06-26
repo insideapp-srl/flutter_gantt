@@ -172,60 +172,60 @@ class _GanttState extends State<Gantt> {
     ],
     builder: (context, child) {
       final c = context.watch<GanttController>();
-      return Column(
-        children: [
-          SizedBox(
-            height: 4,
-            child: _loading ? LinearProgressIndicator() : Container(),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ActivitiesList(
-                    activities: c.activities,
-                    controller: _listController,
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final newDaysViews =
-                          (constraints.maxWidth / theme.dayMinWidth).floor();
-                      if (newDaysViews != c.daysViews) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          c.daysViews = newDaysViews;
-                        });
-                      }
-                      return GestureDetector(
-                        onPanStart: _handlePanStart,
-                        onPanUpdate:
-                            (details) =>
-                                _handlePanUpdate(details, constraints.maxWidth),
-                        onPanEnd: _handlePanEnd,
-                        onPanCancel: _handlePanCancel,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(color: theme.backgroundColor),
-                            ),
-                            CalendarGrid(holidays: c.holidays),
-                            ActivitiesGrid(
-                              activities: c.activities,
-                              controller: _gridColumnsController,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+      return Container(
+        color: theme.backgroundColor,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 4,
+              child: _loading ? LinearProgressIndicator() : Container(),
             ),
-          ),
-        ],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ActivitiesList(
+                      activities: c.activities,
+                      controller: _listController,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final newDaysViews =
+                            (constraints.maxWidth / theme.dayMinWidth).floor();
+                        if (newDaysViews != c.daysViews) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            c.daysViews = newDaysViews;
+                          });
+                        }
+                        return GestureDetector(
+                          onPanStart: _handlePanStart,
+                          onPanUpdate:
+                              (details) =>
+                                  _handlePanUpdate(details, constraints.maxWidth),
+                          onPanEnd: _handlePanEnd,
+                          onPanCancel: _handlePanCancel,
+                          child: Stack(
+                            children: [
+                              CalendarGrid(holidays: c.holidays),
+                              ActivitiesGrid(
+                                activities: c.activities,
+                                controller: _gridColumnsController,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     },
   );
