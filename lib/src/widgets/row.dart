@@ -136,6 +136,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
+            //ToDo limit movement by parent limit
             _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
           }
           _startDx = null;
