@@ -4,7 +4,6 @@ import '../classes/activity.dart';
 import '../classes/date_holiday.dart';
 import '../utils/datetime.dart';
 
-
 /// Controls the state and behavior of a [Gantt] widget.
 class GanttController extends ChangeNotifier {
   DateTime _startDate;

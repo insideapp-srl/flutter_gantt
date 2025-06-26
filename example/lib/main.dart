@@ -160,7 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-
       // ✅ Standalone task near today
       GantActivity(
         start: now.add(const Duration(days: 1)),

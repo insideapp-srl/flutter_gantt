@@ -71,41 +71,41 @@ class GanttTheme extends ChangeNotifier {
   ///
   /// You can override individual styling by providing specific color values.
   factory GanttTheme.of(
-      BuildContext context, {
+    BuildContext context, {
 
-        /// The background color of the Gantt chart (default: `colorScheme.surfaceContainerHighest`).
-        Color? backgroundColor,
+    /// The background color of the Gantt chart (default: `colorScheme.surfaceContainerHighest`).
+    Color? backgroundColor,
 
-        /// The color used to highlight holidays (default: `colorScheme.surfaceContainer`).
-        Color? holidayColor,
+    /// The color used to highlight holidays (default: `colorScheme.surfaceContainer`).
+    Color? holidayColor,
 
-        /// The color used to highlight weekends (default: `colorScheme.surfaceContainerLow`).
-        Color? weekendColor,
+    /// The color used to highlight weekends (default: `colorScheme.surfaceContainerLow`).
+    Color? weekendColor,
 
-        /// The background color for the current day cell (default: `colorScheme.primary`).
-        Color? todayBackgroundColor,
+    /// The background color for the current day cell (default: `colorScheme.primary`).
+    Color? todayBackgroundColor,
 
-        /// The text color used on the current day cell (default: `colorScheme.onPrimary`).
-        Color? todayTextColor,
+    /// The text color used on the current day cell (default: `colorScheme.onPrimary`).
+    Color? todayTextColor,
 
-        /// The default color used for normal Gantt cells (default: `colorScheme.primary`).
-        Color? defaultCellColor,
+    /// The default color used for normal Gantt cells (default: `colorScheme.primary`).
+    Color? defaultCellColor,
 
-        /// The height of each cell row in the Gantt chart.
-        double cellHeight = _defaultCellHeight,
+    /// The height of each cell row in the Gantt chart.
+    double cellHeight = _defaultCellHeight,
 
-        /// Padding inside each row (top & bottom).
-        double rowPadding = _defaultRowPadding,
+    /// Padding inside each row (top & bottom).
+    double rowPadding = _defaultRowPadding,
 
-        /// Padding between grouped row items.
-        double rowsGroupPadding = _defaultRowsGroupPadding,
+    /// Padding between grouped row items.
+    double rowsGroupPadding = _defaultRowsGroupPadding,
 
-        /// Height of the header row showing dates.
-        double headerHeight = _defaultHeaderHeight,
+    /// Height of the header row showing dates.
+    double headerHeight = _defaultHeaderHeight,
 
-        /// Minimum width of each day column.
-        double dayMinWidth = _defaultDayMinWidth,
-      }) {
+    /// Minimum width of each day column.
+    double dayMinWidth = _defaultDayMinWidth,
+  }) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GanttTheme(
@@ -122,7 +122,6 @@ class GanttTheme extends ChangeNotifier {
       dayMinWidth: dayMinWidth,
     );
   }
-
 
   /// The border radius for activity cells, calculated as 1/3 of [cellHeight].
   double get cellRounded => cellHeight / 3;

@@ -204,8 +204,10 @@ class _GanttState extends State<Gantt> {
                         return GestureDetector(
                           onPanStart: _handlePanStart,
                           onPanUpdate:
-                              (details) =>
-                                  _handlePanUpdate(details, constraints.maxWidth),
+                              (details) => _handlePanUpdate(
+                                details,
+                                constraints.maxWidth,
+                              ),
                           onPanEnd: _handlePanEnd,
                           onPanCancel: _handlePanCancel,
                           child: Stack(
