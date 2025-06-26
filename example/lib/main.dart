@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
           ),
         ),
-        home: const MyHomePage(title: 'Flutter Gantt (Dynamic Dates)'),
+        home: const MyHomePage(title: 'Flutter Gantt'),
       );
 }
 
