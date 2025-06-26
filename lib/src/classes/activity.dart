@@ -19,6 +19,8 @@ class GantActivityAction {
 
 /// Represents an activity in the Gantt chart.
 class GantActivity<T> {
+  late String key;
+
   /// The start date of the activity.
   late DateTime start;
 
@@ -69,6 +71,10 @@ class GantActivity<T> {
 
   final T? data;
 
+  GantActivity? _parent;
+
+  GantActivity? get parent => _parent;
+
   /// Creates a Gantt activity with the specified properties.
   ///
   /// Throws an [AssertionError] if:
@@ -78,6 +84,7 @@ class GantActivity<T> {
   /// - Any segment dates fall outside the activity dates
   /// - Any child activity dates fall outside this activity's dates
   GantActivity({
+    required this.key,
     required DateTime start,
     required DateTime end,
     this.title,
@@ -118,6 +125,7 @@ class GantActivity<T> {
           child.start.isDateBetween(this.start, this.end) &&
               child.end.isDateBetween(this.start, this.end),
         );
+        child._parent = this;
       }
     }
   }
@@ -127,6 +135,23 @@ class GantActivity<T> {
 
   @override
   String toString() => title ?? super.toString();
+
+  List<GantActivity> get plainList => [this, ...children?.plainList ?? []];
+}
+
+extension E on List<GantActivity> {
+  List<GantActivity> get plainList {
+    final as = <GantActivity>[];
+    for (var a in this) {
+      as.addAll(a.plainList);
+    }
+    return as;
+  }
+
+  GantActivity? getFromKey(String key) {
+    final i = plainList.indexWhere((e) => e.key == key);
+    return i < 0 ? null : plainList[i];
+  }
 }
 
 /// A segment of a Gantt activity.

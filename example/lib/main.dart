@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _activities = [
       // ✅ Main activity with children inside range
       GantActivity(
+        key: 'task1',
         start: now.subtract(const Duration(days: 3)),
         end: now.add(const Duration(days: 6)),
         title: 'Main Task',
@@ -79,8 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
         cellBuilder: (cellDate) => Container(
           color: const Color(0xFF00796B),
           child: Center(
-              child: Text(cellDate.day.toString(),
-                  style: const TextStyle(color: Colors.white))),
+            child: Text(
+              cellDate.day.toString(),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
         ),
         actions: [
           GantActivityAction(
@@ -101,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         children: [
           GantActivity(
+            key: 'task1.sub1',
             start: now.subtract(const Duration(days: 2)),
             end: now.add(const Duration(days: 1)),
             title: 'Subtask 1',
@@ -115,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           GantActivity(
+            key: 'task1.sub2',
             start: now,
             end: now.add(const Duration(days: 5)),
             title: 'Subtask 2',
@@ -129,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
             children: [
               GantActivity(
+                key: 'task1.sub2.subA',
                 start: now.add(const Duration(days: 1)),
                 end: now.add(const Duration(days: 3)),
                 title: 'Nested Subtask A',
@@ -143,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               GantActivity(
+                key: 'task1.sub2.subB',
                 start: now.add(const Duration(days: 2)),
                 end: now.add(const Duration(days: 4)),
                 title: 'Nested Subtask B',
@@ -163,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // ✅ Standalone task near today
       GantActivity(
+        key: 'task2',
         start: now.add(const Duration(days: 1)),
         end: now.add(const Duration(days: 8)),
         title: 'Independent Task',
@@ -172,6 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // ✅ Activity from one month ago
       GantActivity(
+        key: 'task3',
         start: monthAgo.subtract(const Duration(days: 3)),
         end: monthAgo.add(const Duration(days: 3)),
         title: 'Archived Task',
@@ -181,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // ✅ Activity a few days ago
       GantActivity(
+        key: 'task4',
         start: now.subtract(const Duration(days: 10)),
         end: now.subtract(const Duration(days: 4)),
         title: 'Older Task',
@@ -190,6 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // ✅ Future activity
       GantActivity(
+        key: 'task5',
         start: monthLater.subtract(const Duration(days: 5)),
         end: monthLater.add(const Duration(days: 2)),
         title: 'Planned Future Task',
@@ -199,6 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // ✅ Long-term task
       GantActivity(
+        key: 'task6',
         start: now.subtract(const Duration(days: 10)),
         end: monthLater,
         title: 'Ongoing Project',
@@ -273,8 +286,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ];
                 },
-                onActivityMoved: (activity, days) =>
-                    debugPrint('$activity was moved by $days days'),
+                onActivityMoved: (activity, days) {
+                  debugPrint('$activity was moved by $days days');
+                  _activities.getFromKey(activity.key)!.start =
+                      activity.start.add(Duration(days: days));
+                  _activities.getFromKey(activity.key)!.end =
+                      activity.end.add(Duration(days: days));
+                  controller.update();
+                },
               ),
             ),
           ],

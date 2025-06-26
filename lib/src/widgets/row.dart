@@ -94,8 +94,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ),
               );
       final theme = context.read<GanttTheme>();
-      double? _dragStartDx;
-      int? _daysDelta;
+      int? daysDelta;
       final dragCell = LongPressDraggable<GantActivity>(
         data: activity,
         axis: Axis.horizontal,
@@ -133,20 +132,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
 
           final boxWidth = renderBox.size.width;
           final daysVisible = _ctrl.daysViews;
-          _daysDelta = (dxTotal / boxWidth * daysVisible).round();
+          daysDelta = (dxTotal / boxWidth * daysVisible).round();
         },
         onDragEnd: (_) {
-          if (_daysDelta != null && _daysDelta != 0) {
-            //ToDo emettere evento al posto di modificare la posizione della activity, ora solo per test
-            setState(() {
-              widget.activity.start = widget.activity.start.add(
-                Duration(days: _daysDelta!),
-              );
-              widget.activity.end = widget.activity.end.add(
-                Duration(days: _daysDelta!),
-              );
-            });
-            _ctrl.controller.onActivityMoved(widget.activity, _daysDelta!);
+          if (daysDelta != null && daysDelta != 0) {
+            _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
           }
           _startDx = null;
         },
