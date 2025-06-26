@@ -16,6 +16,8 @@ class GanttTheme extends ChangeNotifier {
   /// The color used to highlight weekend dates.
   /// Defaults to [Colors.redAccent].
   final Color weekendColor;
+  final Color todayBackgroundColor;
+  final Color todayTextColor;
 
   /// The default color for activity cells.
   /// Defaults to [Colors.purple].
@@ -46,6 +48,8 @@ class GanttTheme extends ChangeNotifier {
     this.backgroundColor = Colors.transparent,
     this.holidayColor = Colors.orangeAccent,
     this.weekendColor = Colors.redAccent,
+    this.todayBackgroundColor = Colors.amberAccent,
+    this.todayTextColor = Colors.black,
     this.defaultCellColor = Colors.purple,
     this.cellHeight = 24.0,
     this.rowPadding = 4.0,

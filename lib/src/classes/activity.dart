@@ -31,6 +31,9 @@ class GantActivity {
   /// A custom widget for the activity title (mutually exclusive with [title]).
   final Widget? titleWidget;
 
+  final String? listTitle;
+  final Widget? listTitleWidget;
+
   /// The tooltip message (mutually exclusive with [tooltipWidget]).
   final String? tooltipMessage;
 
@@ -77,6 +80,8 @@ class GantActivity {
     required DateTime end,
     this.title,
     this.titleWidget,
+    this.listTitle,
+    this.listTitleWidget,
     this.tooltipMessage,
     this.tooltipWidget,
     this.titleStyle,
@@ -91,7 +96,8 @@ class GantActivity {
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&
              ((tooltipMessage == null) != (tooltipWidget == null)) &&
-             ((title == null) != (titleWidget == null)),
+             ((title == null) != (titleWidget == null)) &&
+             ((listTitle == null) || (listTitleWidget == null)),
        ) {
     this.start = start.toDate;
     this.end = end.toDate;
