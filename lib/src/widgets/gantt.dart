@@ -7,25 +7,52 @@ import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
 
+/// A customizable Gantt chart widget for Flutter.
+///
+/// This widget displays activities in a timeline view with configurable
+/// appearance and behavior.
 class Gantt extends StatefulWidget {
+  /// The initial start date to display.
   final DateTime? startDate;
+
+  /// The list of activities to display (mutually exclusive with [activitiesAsync]).
   final List<GantActivity>? activities;
+
+  /// Async function to load activities (mutually exclusive with [activities]).
   final Future<List<GantActivity>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantActivity> activities,
   )?
   activitiesAsync;
+
+  /// The list of holidays to highlight (mutually exclusive with [holidaysAsync]).
   final List<GantDateHoliday>? holidays;
+
+  /// Async function to load holidays (mutually exclusive with [holidays]).
   final Future<List<GantDateHoliday>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantDateHoliday> holidays,
   )?
   holidaysAsync;
+
+  /// The theme to use for the Gantt chart.
   final GanttTheme? theme;
+
+  /// The controller for managing Gantt chart state.
   final GanttController? controller;
 
+  final GantActivityOnStartChangeEvent? onActivityChangeStart;
+  final GantActivityOnEndChangeEvent? onActivityChangeEnd;
+  final GantActivityOnMoveEvent? onActivityMoved;
+
+  /// Creates a Gantt chart widget.
+  ///
+  /// Throws an [AssertionError] if:
+  /// - Neither [startDate] nor [controller] is provided
+  /// - Both [activities] and [activitiesAsync] are provided or both are null
+  /// - Both [holidays] and [holidaysAsync] are provided
   const Gantt({
     super.key,
     this.startDate,
@@ -35,6 +62,9 @@ class Gantt extends StatefulWidget {
     this.holidays,
     this.holidaysAsync,
     this.controller,
+    this.onActivityChangeStart,
+    this.onActivityChangeEnd,
+    this.onActivityMoved,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -65,6 +95,15 @@ class _GanttState extends State<Gantt> {
     controller =
         widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
+    if (widget.onActivityChangeStart != null) {
+      controller.addOnStartChangeListener(widget.onActivityChangeStart!);
+    }
+    if (widget.onActivityChangeEnd != null) {
+      controller.addOnEndChangeListener(widget.onActivityChangeEnd!);
+    }
+    if (widget.onActivityMoved != null) {
+      controller.addOnMoveListener(widget.onActivityMoved!);
+    }
     if (widget.holidays != null) {
       controller.setHolidays(widget.holidays!, notify: false);
     }
@@ -79,6 +118,15 @@ class _GanttState extends State<Gantt> {
   @override
   void dispose() {
     controller.removeFetchListener(_getAsync);
+    if (widget.onActivityChangeStart != null) {
+      controller.removeOnStartChangeListener(widget.onActivityChangeStart!);
+    }
+    if (widget.onActivityChangeEnd != null) {
+      controller.removeOnEndChangeListener(widget.onActivityChangeEnd!);
+    }
+    if (widget.onActivityMoved != null) {
+      controller.removeOnMoveListener(widget.onActivityMoved!);
+    }
     if (widget.controller == null) {
       controller.dispose();
     }
@@ -149,60 +197,62 @@ class _GanttState extends State<Gantt> {
     ],
     builder: (context, child) {
       final c = context.watch<GanttController>();
-      return Column(
-        children: [
-          SizedBox(
-            height: 4,
-            child: _loading ? LinearProgressIndicator() : Container(),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ActivitiesList(
-                    activities: c.activities,
-                    controller: _listController,
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final newDaysViews =
-                          (constraints.maxWidth / theme.dayMinWidth).floor();
-                      if (newDaysViews != c.daysViews) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          c.daysViews = newDaysViews;
-                        });
-                      }
-                      return GestureDetector(
-                        onPanStart: _handlePanStart,
-                        onPanUpdate:
-                            (details) =>
-                                _handlePanUpdate(details, constraints.maxWidth),
-                        onPanEnd: _handlePanEnd,
-                        onPanCancel: _handlePanCancel,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(color: theme.backgroundColor),
-                            ),
-                            CalendarGrid(holidays: c.holidays),
-                            ActivitiesGrid(
-                              activities: c.activities,
-                              controller: _gridColumnsController,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+      return Container(
+        color: theme.backgroundColor,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 4,
+              child: _loading ? LinearProgressIndicator() : Container(),
             ),
-          ),
-        ],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ActivitiesList(
+                      activities: c.activities,
+                      controller: _listController,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final newDaysViews =
+                            (constraints.maxWidth / theme.dayMinWidth).floor();
+                        if (newDaysViews != c.daysViews) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            c.daysViews = newDaysViews;
+                          });
+                        }
+                        return GestureDetector(
+                          onPanStart: _handlePanStart,
+                          onPanUpdate:
+                              (details) => _handlePanUpdate(
+                                details,
+                                constraints.maxWidth,
+                              ),
+                          onPanEnd: _handlePanEnd,
+                          onPanCancel: _handlePanCancel,
+                          child: Stack(
+                            children: [
+                              CalendarGrid(holidays: c.holidays),
+                              ActivitiesGrid(
+                                activities: c.activities,
+                                controller: _gridColumnsController,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     },
   );

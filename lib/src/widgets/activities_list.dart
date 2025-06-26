@@ -3,12 +3,18 @@ import 'package:provider/provider.dart';
 
 import '../../flutter_gantt.dart';
 
+/// Displays the list of activity names on the left side of the Gantt chart.
 class ActivitiesList extends StatelessWidget {
+  /// The list of activities to display
   final List<GantActivity> activities;
+
+  /// Optional scroll controller for the list
   final ScrollController? controller;
 
+  /// Creates an activities list with required activities
   const ActivitiesList({super.key, required this.activities, this.controller});
 
+  /// Recursively builds widgets for activities and their children
   List<Widget> getItems(
     List<GantActivity> activities,
     GanttTheme theme, {

@@ -3,12 +3,20 @@ import 'package:provider/provider.dart';
 
 import '../../flutter_gantt.dart';
 
+/// Displays the activities grid portion of the Gantt chart.
+///
+/// Shows activity rows with their durations and optional child activities.
 class ActivitiesGrid extends StatelessWidget {
+  /// The list of activities to display
   final List<GantActivity> activities;
+
+  /// Optional scroll controller for the grid
   final ScrollController? controller;
 
+  /// Creates an activities grid with required activities
   const ActivitiesGrid({super.key, required this.activities, this.controller});
 
+  /// Recursively builds widgets for activities and their children
   List<Widget> getItems(
     List<GantActivity> activities,
     GanttTheme theme, {

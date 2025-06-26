@@ -7,9 +7,12 @@ import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
+/// A single row in the Gantt chart representing an activity
 class GanttActivityRow extends StatefulWidget {
+  /// The activity to display in this row
   final GantActivity activity;
 
+  /// Creates a row for the specified activity
   const GanttActivityRow({super.key, required this.activity});
 
   @override
@@ -18,6 +21,7 @@ class GanttActivityRow extends StatefulWidget {
 
 class _GanttActivityRowState extends State<GanttActivityRow> {
   late GanttActivityCtrl _ctrl;
+  double? _startDx;
 
   @override
   void initState() {
@@ -58,6 +62,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ),
   );
 
+  /// Builds the row content based on activity visibility
   Widget _buildContent(BuildContext context) {
     final activity = widget.activity;
     final ctrl = context.watch<GanttActivityCtrl>();
@@ -65,7 +70,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     if (!activity.showCell) return Container();
 
     if (ctrl.cellVisible) {
-      final cell =
+      final cellContent =
           activity.cellBuilder == null
               ? Tooltip(
                 message: activity.tooltipMessage,
@@ -88,10 +93,61 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   ),
                 ),
               );
+      final theme = context.read<GanttTheme>();
+      int? daysDelta;
+      final dragCell = LongPressDraggable<GantActivity>(
+        data: activity,
+        axis: Axis.horizontal,
+        feedback: Material(
+          elevation: 6,
+          color: Colors.transparent,
+          child: ChangeNotifierProvider.value(
+            value: _ctrl,
+            builder:
+                (context, child) => ChangeNotifierProvider.value(
+                  value: theme,
+                  builder:
+                      (context, child) => Opacity(
+                        opacity: 0.85,
+                        child: SizedBox(
+                          width: ctrl.cellsFlex * theme.dayMinWidth,
+                          height: theme.cellHeight,
+                          child: cellContent,
+                        ),
+                      ),
+                ),
+          ),
+        ),
+
+        childWhenDragging: const SizedBox.shrink(),
+        onDragStarted: () {
+          _startDx = null;
+        },
+        onDragUpdate: (details) {
+          _startDx ??= details.globalPosition.dx;
+
+          final dxTotal = details.globalPosition.dx - _startDx!;
+          final renderBox = context.findRenderObject() as RenderBox?;
+          if (renderBox == null) return;
+
+          final boxWidth = renderBox.size.width;
+          final daysVisible = _ctrl.daysViews;
+          daysDelta = (dxTotal / boxWidth * daysVisible).round();
+        },
+        onDragEnd: (_) {
+          if (daysDelta != null && daysDelta != 0) {
+            //ToDo limit movement by parent limit
+            _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
+          }
+          _startDx = null;
+        },
+        child: cellContent,
+      );
+
       return Row(
         children: [
           Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(flex: ctrl.cellsFlex, child: cell),
+          Expanded(flex: ctrl.cellsFlex, child: dragCell),
           Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
         ],
       );
