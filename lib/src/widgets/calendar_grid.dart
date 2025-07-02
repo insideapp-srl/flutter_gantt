@@ -71,7 +71,9 @@ class CalendarGrid extends StatelessWidget {
                   final day = c.days[i];
                   final holiday = getDayHoliday(day);
                   final child = Container(
-                    padding: EdgeInsets.all(3),
+                    width: 22,
+                    height: 22,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color:
