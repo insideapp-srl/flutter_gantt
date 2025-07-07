@@ -9,8 +9,11 @@ import 'calendar_grid.dart';
 
 /// A customizable Gantt chart widget for Flutter.
 ///
-/// This widget displays activities in a timeline view with configurable
-/// appearance and behavior.
+/// Displays activities in a timeline view with configurable appearance and behavior.
+/// The chart consists of three main components:
+/// 1. ActivitiesList - Shows activity names on the left
+/// 2. CalendarGrid - Shows date headers at the top
+/// 3. ActivitiesGrid - Shows activity durations on the right
 class Gantt extends StatefulWidget {
   /// The initial start date to display.
   final DateTime? startDate;
@@ -19,6 +22,8 @@ class Gantt extends StatefulWidget {
   final List<GantActivity>? activities;
 
   /// Async function to load activities (mutually exclusive with [activities]).
+  ///
+  /// This function is called when the date range changes to fetch new activities.
   final Future<List<GantActivity>> Function(
     DateTime startDate,
     DateTime endDate,
@@ -43,11 +48,16 @@ class Gantt extends StatefulWidget {
   /// The controller for managing Gantt chart state.
   final GanttController? controller;
 
+  /// Callback when an activity's start date changes.
   final GantActivityOnStartChangeEvent? onActivityChangeStart;
+
+  /// Callback when an activity's end date changes.
   final GantActivityOnEndChangeEvent? onActivityChangeEnd;
+
+  /// Callback when an activity is moved.
   final GantActivityOnMoveEvent? onActivityMoved;
 
-  /// Creates a Gantt chart widget.
+  /// Creates a [Gantt] chart widget.
   ///
   /// Throws an [AssertionError] if:
   /// - Neither [startDate] nor [controller] is provided
@@ -78,9 +88,7 @@ class Gantt extends StatefulWidget {
 class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
-
   Offset? _lastPosition;
-
   late LinkedScrollControllerGroup _linkedControllers;
   late ScrollController _listController;
   late ScrollController _gridColumnsController;
@@ -88,6 +96,7 @@ class _GanttState extends State<Gantt> {
 
   @override
   void initState() {
+    super.initState();
     _linkedControllers = LinkedScrollControllerGroup();
     _listController = _linkedControllers.addAndGet();
     _gridColumnsController = _linkedControllers.addAndGet();
@@ -112,7 +121,6 @@ class _GanttState extends State<Gantt> {
     } else {
       controller.fetch();
     }
-    super.initState();
   }
 
   @override

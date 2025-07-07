@@ -7,12 +7,15 @@ import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
-/// A single row in the Gantt chart representing an activity
+/// A single row in the Gantt chart representing an activity.
+///
+/// This widget handles the display and interaction for a single activity,
+/// including drag-to-move and resize functionality.
 class GanttActivityRow extends StatefulWidget {
-  /// The activity to display in this row
+  /// The [GantActivity] to display in this row.
   final GantActivity activity;
 
-  /// Creates a row for the specified activity
+  /// Creates a row for the specified activity.
   const GanttActivityRow({super.key, required this.activity});
 
   @override
@@ -66,7 +69,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ),
   );
 
-  /// Builds the row content based on activity visibility
+  /// Builds the row content based on activity visibility.
   Widget _buildContent(BuildContext context) {
     final activity = widget.activity;
     final ctrl = context.watch<GanttActivityCtrl>();
@@ -126,13 +129,12 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
                   daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
-                  //ToDo limit
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
               onDragEnd: (_) {
                 if (daysDelta != null && daysDelta != 0) {
-                  //ToDo limit movement by parent limit
+                  //ToDo limit
                   //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
                 }
                 _movementStartX = null;
@@ -157,13 +159,12 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
                   daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
-                  //ToDo limit
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
               onDragEnd: (_) {
                 if (daysDelta != null && daysDelta != 0) {
-                  //ToDo limit movement by parent limit
+                  //ToDo limit
                   //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
                 }
                 _movementEndX = null;
@@ -196,7 +197,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ),
           ),
         ),
-
         childWhenDragging: const SizedBox.shrink(),
         onDragStarted: () {
           _movementX = null;
@@ -208,7 +208,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
-            //ToDo limit movement by parent limit
+            //ToDo limit
             _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
           }
           _movementX = null;

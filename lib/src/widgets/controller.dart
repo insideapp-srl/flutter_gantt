@@ -4,33 +4,30 @@ import '../classes/activity.dart';
 import '../classes/date_holiday.dart';
 import '../utils/datetime.dart';
 
+/// Callback type for activity start date changes.
 typedef GantActivityOnStartChangeEvent =
     void Function(GantActivity activity, DateTime start);
+
+/// Callback type for activity end date changes.
 typedef GantActivityOnEndChangeEvent =
     void Function(GantActivity activity, DateTime end);
+
+/// Callback type for activity movement events.
 typedef GantActivityOnMoveEvent =
     void Function(GantActivity activity, int days);
 
 /// Controls the state and behavior of a [Gantt] widget.
+///
+/// This controller manages the timeline view, activities data, and handles
+/// user interactions like date range changes and activity modifications.
 class GanttController extends ChangeNotifier {
   DateTime _startDate;
   List<GantActivity> _activities = [];
   List<GantDateHoliday> _holidays = [];
   int _daysViews;
   final List<GantActivityOnStartChangeEvent> _onStartChangeListeners = [];
-
-  List<GantActivityOnStartChangeEvent> get onStartChangeListeners =>
-      _onStartChangeListeners;
-
   final List<GantActivityOnEndChangeEvent> _onEndChangeListeners = [];
-
-  List<GantActivityOnEndChangeEvent> get onEndChangeListeners =>
-      _onEndChangeListeners;
-
   final List<GantActivityOnMoveEvent> _onMoveListeners = [];
-
-  List<GantActivityOnMoveEvent> get onMoveListeners => _onMoveListeners;
-
   double gridWidth = 0;
 
   /// The current start date of the visible range.
@@ -74,6 +71,7 @@ class GanttController extends ChangeNotifier {
   /// The number of days currently visible in the chart.
   int get daysViews => _daysViews;
 
+  /// The calculated width of each day column based on current grid width.
   double get dayColumnWidth => gridWidth / daysViews;
 
   /// Sets the number of visible days and notifies listeners if changed.
@@ -88,10 +86,16 @@ class GanttController extends ChangeNotifier {
   DateTime get endDate => startDate.add(Duration(days: daysViews - 1));
 
   /// Moves the view forward by [days] and optionally fetches new data.
+  ///
+  /// [days] - Number of days to move forward (default: 1)
+  /// [fetchData] - Whether to trigger data fetch (default: true)
   void next({int days = 1, bool fetchData = true}) =>
       _addStartDate(days: -days, fetchData: fetchData);
 
   /// Moves the view backward by [days] and optionally fetches new data.
+  ///
+  /// [days] - Number of days to move backward (default: 1)
+  /// [fetchData] - Whether to trigger data fetch (default: true)
   void prev({int days = 1, bool fetchData = true}) =>
       _addStartDate(days: days, fetchData: fetchData);
 
@@ -136,7 +140,7 @@ class GanttController extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Creates a Gantt controller with optional start date.
+  /// Creates a [GanttController] with optional start date.
   ///
   /// If no [startDate] is provided, defaults to 30 days before today.
   GanttController({DateTime? startDate})
@@ -145,27 +149,44 @@ class GanttController extends ChangeNotifier {
               DateTime.now().toDate.subtract(Duration(days: 30))),
       _daysViews = 30;
 
+  /// Adds a listener for activity start date changes.
   void addOnStartChangeListener(GantActivityOnStartChangeEvent listener) {
     _onStartChangeListeners.add(listener);
   }
 
+  /// Removes a listener for activity start date changes.
   void removeOnStartChangeListener(GantActivityOnStartChangeEvent listener) {
     _onStartChangeListeners.remove(listener);
   }
 
+  /// Adds a listener for activity end date changes.
   void addOnEndChangeListener(GantActivityOnEndChangeEvent listener) {
     _onEndChangeListeners.add(listener);
   }
 
+  /// Removes a listener for activity end date changes.
   void removeOnEndChangeListener(GantActivityOnEndChangeEvent listener) {
     _onEndChangeListeners.remove(listener);
   }
 
+  /// Adds a listener for activity movement events.
   void addOnMoveListener(GantActivityOnMoveEvent listener) {
     _onMoveListeners.add(listener);
   }
 
+  /// Removes a listener for activity movement events.
   void removeOnMoveListener(GantActivityOnMoveEvent listener) {
     _onMoveListeners.remove(listener);
   }
+
+  /// Gets the list of start date change listeners.
+  List<GantActivityOnStartChangeEvent> get onStartChangeListeners =>
+      _onStartChangeListeners;
+
+  /// Gets the list of end date change listeners.
+  List<GantActivityOnEndChangeEvent> get onEndChangeListeners =>
+      _onEndChangeListeners;
+
+  /// Gets the list of activity movement listeners.
+  List<GantActivityOnMoveEvent> get onMoveListeners => _onMoveListeners;
 }

@@ -6,11 +6,16 @@ import '../classes/theme.dart';
 import '../widgets/controller_extension.dart';
 
 /// A single cell representing an activity's duration in the Gantt chart.
+///
+/// Each cell visually represents the duration of an activity in the timeline.
+/// Supports hover effects, tap actions, and custom styling.
 class GanttCell extends StatefulWidget {
-  /// The activity this cell represents
+  /// The [GantActivity] this cell represents.
   final GantActivity activity;
 
-  /// Creates a Gantt cell for the specified activity
+  /// Creates a [GanttCell] for the specified activity.
+  ///
+  /// [activity] must not be null.
   const GanttCell({super.key, required this.activity});
 
   @override
@@ -20,7 +25,10 @@ class GanttCell extends StatefulWidget {
 class _GanttCellState extends State<GanttCell> {
   bool mouseOver = false;
 
-  /// Gets the cell color, falling back to theme's default if not specified
+  /// Gets the cell color, falling back to theme's default if not specified.
+  ///
+  /// Returns the activity's custom color if set, otherwise returns the
+  /// default cell color from the current [GanttTheme].
   Color get color =>
       widget.activity.color ?? context.watch<GanttTheme>().defaultCellColor;
 

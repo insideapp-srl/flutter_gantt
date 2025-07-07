@@ -4,17 +4,28 @@ import 'package:provider/provider.dart';
 import '../../flutter_gantt.dart';
 
 /// Displays the list of activity names on the left side of the Gantt chart.
+///
+/// This widget shows activity titles, optional icons, and action buttons in a
+/// scrollable list that synchronizes with the [ActivitiesGrid].
 class ActivitiesList extends StatelessWidget {
-  /// The list of activities to display
+  /// The list of [GantActivity] items to display.
+  ///
+  /// Can contain hierarchical activities with parent-child relationships.
   final List<GantActivity> activities;
 
-  /// Optional scroll controller for the list
+  /// Optional [ScrollController] to synchronize scrolling with the grid view.
   final ScrollController? controller;
 
-  /// Creates an activities list with required activities
+  /// Creates an [ActivitiesList] widget.
+  ///
+  /// [activities] must not be null and should contain at least one activity.
   const ActivitiesList({super.key, required this.activities, this.controller});
 
-  /// Recursively builds widgets for activities and their children
+  /// Recursively builds widgets for activities and their children.
+  ///
+  /// [activities] - The list of activities to build widgets for
+  /// [theme] - The current [GanttTheme] for styling
+  /// [nested] - The current nesting level (used for indentation)
   List<Widget> getItems(
     List<GantActivity> activities,
     GanttTheme theme, {

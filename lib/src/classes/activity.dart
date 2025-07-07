@@ -14,11 +14,19 @@ class GantActivityAction {
   final String? tooltip;
 
   /// Creates an activity action with an icon, tap handler, and optional tooltip.
-  GantActivityAction({required this.icon, required this.onTap, this.tooltip});
+  const GantActivityAction({
+    required this.icon,
+    required this.onTap,
+    this.tooltip,
+  });
 }
 
 /// Represents an activity in the Gantt chart.
+///
+/// Each activity has a start/end date, title, and optional styling properties.
+/// Activities can be hierarchical with parent-child relationships.
 class GantActivity<T> {
+  /// Unique identifier for the activity.
   late String key;
 
   /// The start date of the activity.
@@ -33,8 +41,10 @@ class GantActivity<T> {
   /// A custom widget for the activity title (mutually exclusive with [title]).
   final Widget? titleWidget;
 
+  /// Alternative title for the list view (optional).
   final String? listTitle;
 
+  /// Custom widget for the list view title (optional).
   final Widget? listTitleWidget;
 
   /// The tooltip message (mutually exclusive with [tooltipWidget]).
@@ -70,13 +80,15 @@ class GantActivity<T> {
   /// Whether to show the activity cell.
   final bool showCell;
 
+  /// Optional custom data associated with the activity.
   final T? data;
 
   GantActivity? _parent;
 
+  /// The parent activity, if this is a child activity.
   GantActivity? get parent => _parent;
 
-  /// Creates a Gantt activity with the specified properties.
+  /// Creates a [GantActivity] with the specified properties.
   ///
   /// Throws an [AssertionError] if:
   /// - Start date is after end date
@@ -137,10 +149,13 @@ class GantActivity<T> {
   @override
   String toString() => title ?? super.toString();
 
+  /// Gets a flat list of this activity and all its descendants.
   List<GantActivity> get plainList => [this, ...children?.plainList ?? []];
 }
 
-extension E on List<GantActivity> {
+/// Extension methods for working with lists of [GantActivity].
+extension GantActivityListExtension on List<GantActivity> {
+  /// Gets a flat list of all activities and their descendants.
   List<GantActivity> get plainList {
     final as = <GantActivity>[];
     for (var a in this) {
@@ -149,6 +164,7 @@ extension E on List<GantActivity> {
     return as;
   }
 
+  /// Finds an activity by its key in the flattened list.
   GantActivity? getFromKey(String key) {
     final i = plainList.indexWhere((e) => e.key == key);
     return i < 0 ? null : plainList[i];
@@ -156,6 +172,8 @@ extension E on List<GantActivity> {
 }
 
 /// A segment of a Gantt activity.
+///
+/// Activities can be divided into segments to show progress or phases.
 class GantActivitySegment {
   /// The start date of the segment.
   late DateTime start;
@@ -175,7 +193,7 @@ class GantActivitySegment {
   /// The color of the segment.
   final Color? color;
 
-  /// Creates a Gantt activity segment.
+  /// Creates a [GantActivitySegment].
   ///
   /// Throws an [AssertionError] if start date is after end date.
   GantActivitySegment({

@@ -5,18 +5,29 @@ import '../../flutter_gantt.dart';
 
 /// Displays the activities grid portion of the Gantt chart.
 ///
-/// Shows activity rows with their durations and optional child activities.
+/// The grid shows activity rows with their durations and optional child activities
+/// in a timeline view. It synchronizes scrolling with the [ActivitiesList] widget.
 class ActivitiesGrid extends StatelessWidget {
-  /// The list of activities to display
+  /// The list of [GantActivity] items to display in the grid.
+  ///
+  /// This list can contain parent activities with nested child activities.
   final List<GantActivity> activities;
 
-  /// Optional scroll controller for the grid
+  /// Optional [ScrollController] to synchronize scrolling with other widgets.
+  ///
+  /// Typically used with [LinkedScrollControllerGroup] to sync with the activity list.
   final ScrollController? controller;
 
-  /// Creates an activities grid with required activities
+  /// Creates an [ActivitiesGrid] widget.
+  ///
+  /// [activities] must not be null and should contain at least one activity.
   const ActivitiesGrid({super.key, required this.activities, this.controller});
 
-  /// Recursively builds widgets for activities and their children
+  /// Recursively builds widgets for activities and their children.
+  ///
+  /// [activities] - The list of activities to build widgets for
+  /// [theme] - The current [GanttTheme] for styling
+  /// [nested] - The current nesting level (used for indentation)
   List<Widget> getItems(
     List<GantActivity> activities,
     GanttTheme theme, {

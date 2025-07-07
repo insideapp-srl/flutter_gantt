@@ -2,46 +2,52 @@ import 'package:flutter/material.dart';
 
 /// A customizable theme for Gantt chart widgets.
 ///
-/// This class provides styling options for various elements of the Gantt chart,
+/// Provides styling options for various elements of the Gantt chart,
 /// including colors, dimensions, and spacing.
 class GanttTheme {
   /// The background color of the Gantt chart.
-  /// Defaults to [Colors.transparent].
-  late Color backgroundColor;
+  /// Defaults to [Color(0xFFF9F9F9)].
+  final Color backgroundColor;
 
   /// The color used to highlight holiday dates.
-  /// Defaults to [Colors.orangeAccent].
-  late Color holidayColor;
+  /// Defaults to [Color(0xFFFF6F61)].
+  final Color holidayColor;
 
   /// The color used to highlight weekend dates.
-  /// Defaults to [Colors.redAccent].
-  late Color weekendColor;
-  late Color todayBackgroundColor;
-  late Color todayTextColor;
+  /// Defaults to [Color(0xFFECEFF1)].
+  final Color weekendColor;
+
+  /// The background color for today's date cell.
+  /// Defaults to [Color(0xFF2979FF)].
+  final Color todayBackgroundColor;
+
+  /// The text color for today's date cell.
+  /// Defaults to [Colors.white].
+  final Color todayTextColor;
 
   /// The default color for activity cells.
-  /// Defaults to [Colors.purple].
-  late Color defaultCellColor;
+  /// Defaults to [Color(0xFF81D4FA)].
+  final Color defaultCellColor;
 
   /// The height of each activity cell in pixels.
   /// Defaults to 24.0.
-  late double cellHeight;
+  final double cellHeight;
 
   /// The vertical padding between rows.
   /// Defaults to 4.0.
-  late double rowPadding;
+  final double rowPadding;
 
   /// The vertical padding between groups of rows.
   /// Defaults to 16.0.
-  late double rowsGroupPadding;
+  final double rowsGroupPadding;
 
   /// The height of the header section.
   /// Defaults to 44.0.
-  late double headerHeight;
+  final double headerHeight;
 
   /// The minimum width of a day column in pixels.
   /// Defaults to 30.0.
-  late double dayMinWidth;
+  final double dayMinWidth;
 
   static const double _defaultCellHeight = 24.0;
   static const double _defaultRowPadding = 4.0;
@@ -49,8 +55,8 @@ class GanttTheme {
   static const double _defaultHeaderHeight = 44.0;
   static const double _defaultDayMinWidth = 30.0;
 
-  /// Creates a Gantt theme with customizable properties.
-  GanttTheme({
+  /// Creates a [GanttTheme] with customizable properties.
+  const GanttTheme({
     this.backgroundColor = const Color(0xFFF9F9F9),
     this.holidayColor = const Color(0xFFFF6F61),
     this.weekendColor = const Color(0xFFECEFF1),
@@ -66,44 +72,22 @@ class GanttTheme {
 
   /// Creates a [GanttTheme] based on the current [Theme] of the [BuildContext].
   ///
-  /// This factory uses the provided theme's `ColorScheme` to fill in missing
+  /// This factory uses the provided theme's [ColorScheme] to fill in missing
   /// colors, allowing the Gantt chart to adapt automatically to light or dark themes.
   ///
   /// You can override individual styling by providing specific color values.
   factory GanttTheme.of(
     BuildContext context, {
-
-    /// The background color of the Gantt chart (default: `colorScheme.surfaceContainerHighest`).
     Color? backgroundColor,
-
-    /// The color used to highlight holidays (default: `colorScheme.surfaceContainer`).
     Color? holidayColor,
-
-    /// The color used to highlight weekends (default: `colorScheme.surfaceContainerLow`).
     Color? weekendColor,
-
-    /// The background color for the current day cell (default: `colorScheme.primary`).
     Color? todayBackgroundColor,
-
-    /// The text color used on the current day cell (default: `colorScheme.onPrimary`).
     Color? todayTextColor,
-
-    /// The default color used for normal Gantt cells (default: `colorScheme.primary`).
     Color? defaultCellColor,
-
-    /// The height of each cell row in the Gantt chart.
     double cellHeight = _defaultCellHeight,
-
-    /// Padding inside each row (top & bottom).
     double rowPadding = _defaultRowPadding,
-
-    /// Padding between grouped row items.
     double rowsGroupPadding = _defaultRowsGroupPadding,
-
-    /// Height of the header row showing dates.
     double headerHeight = _defaultHeaderHeight,
-
-    /// Minimum width of each day column.
     double dayMinWidth = _defaultDayMinWidth,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
