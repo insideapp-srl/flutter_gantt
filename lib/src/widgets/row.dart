@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
+import '../utils/datetime.dart';
 import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
@@ -29,6 +30,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   double? _movementStartOffset;
   double? _movementEndX;
   double? _movementEndOffset;
+  int? daysDelta;
 
   @override
   void initState() {
@@ -77,7 +79,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     if (!activity.showCell) return Container();
 
     final theme = context.read<GanttTheme>();
-    int? daysDelta;
     if (ctrl.cellVisible) {
       final Widget draggableEdge = MouseRegion(
         cursor: SystemMouseCursors.resizeRight,
@@ -134,8 +135,10 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               },
               onDragEnd: (_) {
                 if (daysDelta != null && daysDelta != 0) {
-                  //ToDo limit
-                  //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
+                  _ctrl.controller.onActivityChanged(
+                    widget.activity,
+                    start: widget.activity.start.addDays(daysDelta!),
+                  );
                 }
                 _movementStartX = null;
                 _movementStartOffset = null;
@@ -164,8 +167,10 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               },
               onDragEnd: (_) {
                 if (daysDelta != null && daysDelta != 0) {
-                  //ToDo limit
-                  //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
+                  _ctrl.controller.onActivityChanged(
+                    widget.activity,
+                    end: widget.activity.end.addDays(daysDelta!),
+                  );
                 }
                 _movementEndX = null;
                 _movementEndOffset = null;
@@ -208,8 +213,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
-            //ToDo limit
-            _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
+            _ctrl.controller.onActivityChanged(
+              widget.activity,
+              start: widget.activity.start.addDays(daysDelta!),
+              end: widget.activity.end.addDays(daysDelta!),
+            );
           }
           _movementX = null;
         },

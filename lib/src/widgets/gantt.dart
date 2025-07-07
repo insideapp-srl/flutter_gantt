@@ -48,14 +48,8 @@ class Gantt extends StatefulWidget {
   /// The controller for managing Gantt chart state.
   final GanttController? controller;
 
-  /// Callback when an activity's start date changes.
-  final GantActivityOnStartChangeEvent? onActivityChangeStart;
-
-  /// Callback when an activity's end date changes.
-  final GantActivityOnEndChangeEvent? onActivityChangeEnd;
-
-  /// Callback when an activity is moved.
-  final GantActivityOnMoveEvent? onActivityMoved;
+  /// Callback when an activity's dates changes.
+  final GantActivityOnChangedEvent? onActivityChanged;
 
   /// Creates a [Gantt] chart widget.
   ///
@@ -72,9 +66,7 @@ class Gantt extends StatefulWidget {
     this.holidays,
     this.holidaysAsync,
     this.controller,
-    this.onActivityChangeStart,
-    this.onActivityChangeEnd,
-    this.onActivityMoved,
+    this.onActivityChanged,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -104,14 +96,8 @@ class _GanttState extends State<Gantt> {
     controller =
         widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
-    if (widget.onActivityChangeStart != null) {
-      controller.addOnStartChangeListener(widget.onActivityChangeStart!);
-    }
-    if (widget.onActivityChangeEnd != null) {
-      controller.addOnEndChangeListener(widget.onActivityChangeEnd!);
-    }
-    if (widget.onActivityMoved != null) {
-      controller.addOnMoveListener(widget.onActivityMoved!);
+    if (widget.onActivityChanged != null) {
+      controller.addOnActivityChangedListener(widget.onActivityChanged!);
     }
     if (widget.holidays != null) {
       controller.setHolidays(widget.holidays!, notify: false);
@@ -126,14 +112,8 @@ class _GanttState extends State<Gantt> {
   @override
   void dispose() {
     controller.removeFetchListener(_getAsync);
-    if (widget.onActivityChangeStart != null) {
-      controller.removeOnStartChangeListener(widget.onActivityChangeStart!);
-    }
-    if (widget.onActivityChangeEnd != null) {
-      controller.removeOnEndChangeListener(widget.onActivityChangeEnd!);
-    }
-    if (widget.onActivityMoved != null) {
-      controller.removeOnMoveListener(widget.onActivityMoved!);
+    if (widget.onActivityChanged != null) {
+      controller.removeOnActivityChangedListener(widget.onActivityChanged!);
     }
     if (widget.controller == null) {
       controller.dispose();

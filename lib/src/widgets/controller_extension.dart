@@ -1,3 +1,4 @@
+// controller_extension.dart
 import 'package:flutter/material.dart';
 
 import '../classes/activity.dart';
@@ -101,24 +102,14 @@ extension GanttCtrlInternal on GanttController {
     return endDate.diffInDays(clampedEnd);
   }
 
-  /// Notifies listeners when an activity's start date changes.
-  void onActivityStartChange(GantActivity activity, DateTime start) {
-    for (var listener in onStartChangeListeners) {
-      listener(activity, start);
-    }
-  }
-
-  /// Notifies listeners when an activity's end date changes.
-  void onActivityEndChange(GantActivity activity, DateTime start) {
-    for (var listener in onEndChangeListeners) {
-      listener(activity, start);
-    }
-  }
-
-  /// Notifies listeners when an activity is moved.
-  void onActivityMoved(GantActivity activity, int days) {
-    for (var listener in onMoveListeners) {
-      listener(activity, days);
+  /// Notifies listeners when an activity's dates changes.
+  void onActivityChanged(
+    GantActivity activity, {
+    DateTime? start,
+    DateTime? end,
+  }) {
+    for (var listener in onActivityChangedListeners) {
+      listener(activity, start, end);
     }
   }
 }

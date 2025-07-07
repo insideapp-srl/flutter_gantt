@@ -29,4 +29,6 @@ extension DateTimeEx on DateTime {
 
   /// Whether this date falls on a weekend (Saturday or Sunday).
   bool get isWeekend => weekday == 6 || weekday == 7;
+
+  DateTime addDays(int days) => add(Duration(days: days));
 }

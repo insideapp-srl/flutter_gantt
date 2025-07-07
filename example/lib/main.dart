@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     controller =
         GanttController(startDate: now.subtract(const Duration(days: 14)));
 
-    controller.addOnMoveListener(_onActivityMoved);
+    controller.addOnActivityChangedListener(_onActivityChanged);
     _activities = [
       // ✅ Main activity with children inside range
       GantActivity(
@@ -221,12 +221,19 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  void _onActivityMoved(activity, days) =>
-      debugPrint('$activity was moved by $days days (Event on controller)');
+  void _onActivityChanged(activity, DateTime? start, DateTime? end) {
+    if (start != null && end != null) {
+      debugPrint('$activity was moved (Event on controller)');
+    } else if (start != null) {
+      debugPrint('$activity start was moved (Event on controller)');
+    } else if (end != null) {
+      debugPrint('$activity end was moved (Event on controller)');
+    }
+  }
 
   @override
   void dispose() {
-    controller.removeOnMoveListener(_onActivityMoved);
+    controller.removeOnActivityChangedListener(_onActivityChanged);
     super.dispose();
   }
 
@@ -286,12 +293,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ];
                 },
-                onActivityMoved: (activity, days) {
-                  debugPrint('$activity was moved by $days days');
-                  _activities.getFromKey(activity.key)!.start =
-                      activity.start.add(Duration(days: days));
-                  _activities.getFromKey(activity.key)!.end =
-                      activity.end.add(Duration(days: days));
+                onActivityChanged: (activity, start, end) {
+                  if (start != null && end != null) {
+                    debugPrint('$activity was moved (Event on widget)');
+                  } else if (start != null) {
+                    debugPrint(
+                      '$activity start was moved (Event on widget)',
+                    );
+                  } else if (end != null) {
+                    debugPrint('$activity end was moved (Event on widget)');
+                  }
+                  if (start != null) {
+                    _activities.getFromKey(activity.key)!.start = start;
+                  }
+                  if (end != null) {
+                    _activities.getFromKey(activity.key)!.end = end;
+                  }
                   controller.update();
                 },
               ),
