@@ -150,3 +150,4 @@ MIT – See [LICENSE](LICENSE) for details.
 - Added limitations when dragging
 - Improving documentation
 - Implementing cell segments
+- Improving mobile usability
