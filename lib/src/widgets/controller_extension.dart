@@ -148,19 +148,27 @@ class GanttActivityCtrl extends ChangeNotifier {
   /// Whether the activity is completely after the visible range
   bool get showAfter => !cellVisible && activity.start.isAfter(endDate);
 
+  double get dayColumnWidth => controller.dayColumnWidth;
+
   /// Days before activity start that are visible
-  int get cellsFlexStart => controller.getCellDaysBefore(activity);
+  int get daysBefore => controller.getCellDaysBefore(activity);
+
+  double get spaceBefore => dayColumnWidth * daysBefore;
 
   /// Visible days for the activity
-  int get cellsFlex => controller.getCellDays(activity);
+  int get cellVisibleDays => controller.getCellDays(activity);
+
+  double get cellVisibleWidth => dayColumnWidth * cellVisibleDays;
 
   /// Days after activity end that are visible
-  int get cellsFlexEnd => controller.getCellsDaysAfter(activity);
+  int get daysAfter => controller.getCellsDaysAfter(activity);
+
+  double get spaceAfter => dayColumnWidth * daysAfter;
 
   /// Whether the activity starts exactly at the visible start
   bool get cellsNotVisibleBefore =>
-      cellsFlexStart == 0 && startDate != activity.start;
+      daysBefore == 0 && startDate != activity.start;
 
   /// Whether the activity ends exactly at the visible end
-  bool get cellsNotVisibleAfter => cellsFlexEnd == 0 && endDate != activity.end;
+  bool get cellsNotVisibleAfter => daysAfter == 0 && endDate != activity.end;
 }

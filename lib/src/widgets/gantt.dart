@@ -192,7 +192,7 @@ class _GanttState extends State<Gantt> {
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: [
-      ChangeNotifierProvider<GanttTheme>.value(value: theme),
+      Provider<GanttTheme>.value(value: theme),
       ChangeNotifierProvider<GanttController>.value(value: controller),
     ],
     builder: (context, child) {
@@ -238,9 +238,14 @@ class _GanttState extends State<Gantt> {
                           child: Stack(
                             children: [
                               CalendarGrid(holidays: c.holidays),
-                              ActivitiesGrid(
-                                activities: c.activities,
-                                controller: _gridColumnsController,
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  controller.gridWidth = constraints.maxWidth;
+                                  return ActivitiesGrid(
+                                    activities: c.activities,
+                                    controller: _gridColumnsController,
+                                  );
+                                },
                               ),
                             ],
                           ),

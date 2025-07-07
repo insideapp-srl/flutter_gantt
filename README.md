@@ -6,7 +6,7 @@
 
 A production-ready, fully customizable Gantt chart widget for Flutter applications.
 
-![Gantt Chart Demo](https://raw.githubusercontent.com/insideapp-srl/flutter_gantt/main/assets/demo.gif)
+![Gantt Chart Demo](https://raw.githubusercontent.com/insideapp-srl/flutter_gantt/main/doc/static/img/preview.gif)
 
 ---
 
@@ -159,3 +159,9 @@ We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING
 ## License
 
 MIT – See [LICENSE](LICENSE) for details.
+
+## Roadmap
+
+- Added limitations when dragging
+- Improving documentation
+- Implementing cell segments

@@ -21,7 +21,11 @@ class GanttActivityRow extends StatefulWidget {
 
 class _GanttActivityRowState extends State<GanttActivityRow> {
   late GanttActivityCtrl _ctrl;
-  double? _startDx;
+  double? _movementX;
+  double? _movementStartX;
+  double? _movementStartOffset;
+  double? _movementEndX;
+  double? _movementEndOffset;
 
   @override
   void initState() {
@@ -69,8 +73,20 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
 
     if (!activity.showCell) return Container();
 
+    final theme = context.read<GanttTheme>();
+    int? daysDelta;
     if (ctrl.cellVisible) {
-      final cellContent =
+      final Widget draggableEdge = MouseRegion(
+        cursor: SystemMouseCursors.resizeRight,
+        child: Container(
+          color: Colors.white.withValues(alpha: .3),
+          width: 4,
+          height: theme.cellHeight / 1.5,
+        ),
+      );
+      final cellContent = Stack(
+        fit: StackFit.expand,
+        children: [
           activity.cellBuilder == null
               ? Tooltip(
                 message: activity.tooltipMessage,
@@ -82,7 +98,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               )
               : Row(
                 children: List<Widget>.generate(
-                  ctrl.cellsFlex,
+                  ctrl.cellVisibleDays,
                   (index) => Expanded(
                     child: activity.cellBuilder!(
                       context
@@ -92,63 +108,131 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                     ),
                   ),
                 ),
-              );
-      final theme = context.read<GanttTheme>();
-      int? daysDelta;
+              ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: LongPressDraggable<GantActivity>(
+              feedback: draggableEdge,
+              data: activity,
+              axis: Axis.horizontal,
+              child: draggableEdge,
+              onDragStarted: () {
+                _movementStartX = null;
+                _movementStartOffset = null;
+              },
+              onDragUpdate: (details) {
+                setState(() {
+                  _movementStartX ??= details.globalPosition.dx;
+                  final dxTotal = details.globalPosition.dx - _movementStartX!;
+                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  //ToDo limit
+                  _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
+                });
+              },
+              onDragEnd: (_) {
+                if (daysDelta != null && daysDelta != 0) {
+                  //ToDo limit movement by parent limit
+                  //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
+                }
+                _movementStartX = null;
+                _movementStartOffset = null;
+              },
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: LongPressDraggable<GantActivity>(
+              feedback: draggableEdge,
+              data: activity,
+              axis: Axis.horizontal,
+              child: draggableEdge,
+              onDragStarted: () {
+                _movementEndX = null;
+                _movementEndOffset = null;
+              },
+              onDragUpdate: (details) {
+                setState(() {
+                  _movementEndX ??= details.globalPosition.dx;
+                  final dxTotal = details.globalPosition.dx - _movementEndX!;
+                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  //ToDo limit
+                  _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
+                });
+              },
+              onDragEnd: (_) {
+                if (daysDelta != null && daysDelta != 0) {
+                  //ToDo limit movement by parent limit
+                  //_ctrl.controller.onActivityStartChange(widget.activity, daysDelta!);
+                }
+                _movementEndX = null;
+                _movementEndOffset = null;
+              },
+            ),
+          ),
+        ],
+      );
+
       final dragCell = LongPressDraggable<GantActivity>(
         data: activity,
         axis: Axis.horizontal,
         feedback: Material(
           elevation: 6,
           color: Colors.transparent,
-          child: ChangeNotifierProvider.value(
-            value: _ctrl,
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: _ctrl),
+              Provider.value(value: theme),
+            ],
             builder:
-                (context, child) => ChangeNotifierProvider.value(
-                  value: theme,
-                  builder:
-                      (context, child) => Opacity(
-                        opacity: 0.85,
-                        child: SizedBox(
-                          width: ctrl.cellsFlex * theme.dayMinWidth,
-                          height: theme.cellHeight,
-                          child: cellContent,
-                        ),
-                      ),
+                (context, child) => Opacity(
+                  opacity: 0.85,
+                  child: SizedBox(
+                    width: ctrl.cellVisibleWidth,
+                    height: theme.cellHeight,
+                    child: cellContent,
+                  ),
                 ),
           ),
         ),
 
         childWhenDragging: const SizedBox.shrink(),
         onDragStarted: () {
-          _startDx = null;
+          _movementX = null;
         },
         onDragUpdate: (details) {
-          _startDx ??= details.globalPosition.dx;
-
-          final dxTotal = details.globalPosition.dx - _startDx!;
-          final renderBox = context.findRenderObject() as RenderBox?;
-          if (renderBox == null) return;
-
-          final boxWidth = renderBox.size.width;
-          final daysVisible = _ctrl.daysViews;
-          daysDelta = (dxTotal / boxWidth * daysVisible).round();
+          _movementX ??= details.globalPosition.dx;
+          final dxTotal = details.globalPosition.dx - _movementX!;
+          daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
             //ToDo limit movement by parent limit
             _ctrl.controller.onActivityMoved(widget.activity, daysDelta!);
           }
-          _startDx = null;
+          _movementX = null;
         },
         child: cellContent,
       );
 
       return Row(
         children: [
-          Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(flex: ctrl.cellsFlex, child: dragCell),
-          Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
+          SizedBox(
+            width: ctrl.spaceBefore + (_movementStartOffset ?? 0),
+            child: Container(),
+          ),
+          SizedBox(
+            width:
+                ctrl.cellVisibleWidth -
+                (_movementStartOffset ?? 0) +
+                (_movementEndOffset ?? 0),
+            child: dragCell,
+          ),
+          SizedBox(
+            width: ctrl.spaceAfter - (_movementEndOffset ?? 0),
+            child: Container(),
+          ),
         ],
       );
     }

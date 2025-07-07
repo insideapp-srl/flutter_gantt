@@ -31,6 +31,8 @@ class GanttController extends ChangeNotifier {
 
   List<GantActivityOnMoveEvent> get onMoveListeners => _onMoveListeners;
 
+  double gridWidth = 0;
+
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
 
@@ -71,6 +73,8 @@ class GanttController extends ChangeNotifier {
 
   /// The number of days currently visible in the chart.
   int get daysViews => _daysViews;
+
+  double get dayColumnWidth => gridWidth / daysViews;
 
   /// Sets the number of visible days and notifies listeners if changed.
   set daysViews(int value) {

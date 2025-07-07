@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// This class provides styling options for various elements of the Gantt chart,
 /// including colors, dimensions, and spacing.
-class GanttTheme extends ChangeNotifier {
+class GanttTheme {
   /// The background color of the Gantt chart.
   /// Defaults to [Colors.transparent].
   late Color backgroundColor;

@@ -34,6 +34,7 @@ class GantActivity<T> {
   final Widget? titleWidget;
 
   final String? listTitle;
+
   final Widget? listTitleWidget;
 
   /// The tooltip message (mutually exclusive with [tooltipWidget]).
