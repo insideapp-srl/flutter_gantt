@@ -1,8 +1,8 @@
 # Flutter Gantt Chart
 
-[![Pub Version](https://img.shields.io/pub/v/flutter_gantt)](https://pub.dev/packages/flutter_gantt)  
-[![Pub Points](https://img.shields.io/pub/points/flutter_gantt)](https://pub.dev/packages/flutter_gantt/score)  
-[![License](https://img.shields.io/github/license/insideapp-srl/flutter_gantt)](https://github.com/insideapp-srl/flutter_gantt/blob/main/LICENSE)
+[![Pub Version](https://img.shields.io/pub/v/flutter_gantt)(https://pub.dev/packages/flutter_gantt)  
+[![Pub Points](https://img.shields.io/pub/points/flutter_gantt)(ttps://pub.dev/packages/flutter_gantt/score)  
+[![License](https://img.shields.io/github/license/insideapp-srl/flutter_gantt)(ttps://github.com/insideapp-srl/flutter_gantt/blob/main/LICENSE)
 
 A production-ready, fully customizable Gantt chart widget for Flutter applications.
 
@@ -12,30 +12,31 @@ A production-ready, fully customizable Gantt chart widget for Flutter applicatio
 
 ## Features
 
-- 🗓 Interactive timeline navigation (scroll/pan/zoom)  
-- 🎨 Complete visual customization  
-- 🌳 Hierarchical activities with parent/child relationships  
-- 🏷 Activity segments with custom styling  
-- 📅 Built-in date utilities and calculations  
-- 🚀 Optimized for performance  
-- 📱 Responsive across all platforms  
+- 💓 Scrollable timeline view
+- ↔  Draggable
+- 🎈 Complete visual customization
+- 🛳  Hierarchical activities with parent/child relationships
+- 🙳  Activity segments with custom styling
+- 👅 Built-in date utilities and calculations
+- 🚀 Optimized for performance
+- 😱 Responsive across all platforms
 
 ---
 
 ## Installation
 
-Aggiungi al tuo `pubspec.yaml`:
+Add to your `pubspec.yaml`:
 
-```yaml
+`yaml
 dependencies:
-  flutter_gantt: ^1.0.0
-```
+  flutter_gantt: <latest-version>
+`
 
-Poi esegui:
+Then run:
 
-```bash
+`bash
 flutter pub get
-```
+`
 
 ---
 
@@ -45,37 +46,21 @@ flutter pub get
 import 'package:flutter_gantt/flutter_gantt.dart';
 
 Gantt(
-  startDate: DateTime(2023, 1, 1),
-  activities: [
-    GantActivity(
-      start: DateTime(2023, 1, 1),
-      end: DateTime(2023, 1, 10),
-      title: 'Project Phase 1',
-      color: Colors.blue,
-      children: [
-        GantActivity(
-          start: DateTime(2023, 1, 1),
-          end: DateTime(2023, 1, 5),
-          title: 'Development',
-          segments: [
-            GantActivitySegment(
-              start: DateTime(2023, 1, 3),
-              end: DateTime(2023, 1, 4),
-              title: 'Review',
-              color: Colors.orange,
-            ),
-          ],
-        ),
-      ],
-    ),
-  ],
-  holidays: [
-    GantDateHoliday(
-      date: DateTime(2023, 1, 6),
-      holiday: 'Team Offsite',
-    ),
-  ],
-)
+  theme: GanttTheme.of(context),
+  activitiesAsync: (startDate, endDate, activity) async => _activities,
+  holidaysAsync: (startDate, endDate, holidays) async _holidays,
+  onActivityChanged: (activity, start, end) {
+    if (start != null && end != null) {
+      debugPrint('$activity was moved (Event on widget)');
+    } else if (start != null) {
+      debugPrint(
+        '$activity start was moved (Event on widget)',
+      );
+    } else if (end != null) {
+      debugPrint('$activity end was moved (Event on widget)');
+    }
+  },
+),
 ```
 
 ---
@@ -88,13 +73,13 @@ Gantt(
 
 The main chart container with these key properties:
 
-| Property       | Type                        | Description                 |
-|----------------|-----------------------------|-----------------------------|
-| `startDate`    | `DateTime`                  | Initial visible date        |
-| `activities`   | `List<GantActivity>`        | Activities to display       |
-| `holidays`     | `List<GantDateHoliday>`     | Special dates to highlight  |
-| `theme`        | `GanttTheme`                | Visual customization        |
-| `controller`   | `GanttController`           | Programmatic control        |
+| Property         | Type                    | Description                |
+|------------------|-------------------------|----------------------------|
+| `startDate`    ` | DateTime`               | Initial visible date       |
+| `activities`   ` | List<GantActivity>`     | Activities to display      |
+| `holidays`    `  | List<GantDateHoliday>`, | Special dates to highlight |
+| `theme`       `  | GanttTheme`             | Visual customization       |
+| `controller`   ` | GanttController`        | Programmatic control       |
 
 #### `GantActivity`
 
@@ -117,12 +102,12 @@ GantActivity(
 
 ### Advanced Features
 
-**Programmatic Control:**
+[**Programmatic Control:**]
 
 ```dart
 final controller = GanttController(
-  startDate: DateTime.now(),
-  daysViews: 30,
+    startDate: DateTime.now(),
+    daysViews: 30,
 );
 
 // Navigate timeline
@@ -133,7 +118,7 @@ controller.prev(days: 14);  // Move backward
 controller.setActivities(newActivities);
 ```
 
-**Custom Builders:**
+[**Custom Builders:**]
 
 ```dart
 GantActivity(
@@ -146,13 +131,13 @@ GantActivity(
 
 ## Examples
 
-Explore complete examples in the [example folder](https://github.com/insideapp-srl/flutter_gantt/tree/main/example).
+[Explore complete examples](https://github.com/insideapp-srl/flutter_gantt/tree/main/example) in the example folder.
 
 ---
 
 ## Contributing
 
-We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md).
+We welcome contributions!
 
 ---
 
