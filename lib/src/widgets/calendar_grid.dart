@@ -5,11 +5,27 @@ import '../../flutter_gantt.dart';
 import '../utils/datetime.dart';
 import 'controller_extension.dart';
 
+/// Displays the calendar grid portion of the Gantt chart.
+///
+/// Shows month headers and day cells with weekend/holiday highlighting.
+/// This grid appears above the activities grid to provide date context.
 class CalendarGrid extends StatelessWidget {
+  /// The list of holidays to highlight in the calendar.
+  ///
+  /// Holidays will be displayed with special background color and tooltips.
   final List<GantDateHoliday>? holidays;
 
+  /// Creates a [CalendarGrid] widget.
+  ///
+  /// [holidays] is optional and can be null if no holidays need to be shown.
   const CalendarGrid({super.key, this.holidays});
 
+  /// Gets the background color for a specific date based on theme and holidays.
+  ///
+  /// Returns:
+  /// - [GanttTheme.holidayColor] for holidays
+  /// - [GanttTheme.weekendColor] for weekends
+  /// - [Colors.transparent] for normal weekdays
   Color getDayColor(GanttTheme theme, DateTime date) {
     if ((holidays ?? []).map((e) => e.date).contains(date)) {
       return theme.holidayColor;
@@ -20,6 +36,10 @@ class CalendarGrid extends StatelessWidget {
     return Colors.transparent;
   }
 
+  /// Gets the holiday name for a specific date, if any.
+  ///
+  /// Returns the holiday name if the date matches a holiday in [holidays],
+  /// otherwise returns null.
   String? getDayHoliday(DateTime date) =>
       (holidays ?? [])
           .where((e) => e.date.isAtSameMomentAs(date))
@@ -31,6 +51,7 @@ class CalendarGrid extends StatelessWidget {
     builder:
         (context, c, child) => Column(
           children: [
+            // Month headers row
             Builder(
               builder: (context) {
                 final months = c.months.entries.toList();
@@ -65,6 +86,7 @@ class CalendarGrid extends StatelessWidget {
                 );
               },
             ),
+            // Days grid
             Expanded(
               child: Row(
                 children: List.generate(c.days.length, (i) {

@@ -3,13 +3,20 @@ import 'package:provider/provider.dart';
 
 import '../classes/activity.dart';
 import '../classes/theme.dart';
+import '../utils/datetime.dart';
 import 'cell.dart';
 import 'controller.dart';
 import 'controller_extension.dart';
 
+/// A single row in the Gantt chart representing an activity.
+///
+/// This widget handles the display and interaction for a single activity,
+/// including drag-to-move and resize functionality.
 class GanttActivityRow extends StatefulWidget {
+  /// The [GantActivity] to display in this row.
   final GantActivity activity;
 
+  /// Creates a row for the specified activity.
   const GanttActivityRow({super.key, required this.activity});
 
   @override
@@ -18,6 +25,12 @@ class GanttActivityRow extends StatefulWidget {
 
 class _GanttActivityRowState extends State<GanttActivityRow> {
   late GanttActivityCtrl _ctrl;
+  double? _movementX;
+  double? _movementStartX;
+  double? _movementStartOffset;
+  double? _movementEndX;
+  double? _movementEndOffset;
+  int? daysDelta;
 
   @override
   void initState() {
@@ -58,14 +71,26 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ),
   );
 
+  /// Builds the row content based on activity visibility.
   Widget _buildContent(BuildContext context) {
     final activity = widget.activity;
     final ctrl = context.watch<GanttActivityCtrl>();
 
     if (!activity.showCell) return Container();
 
+    final theme = context.read<GanttTheme>();
     if (ctrl.cellVisible) {
-      final cell =
+      final Widget draggableEdge = MouseRegion(
+        cursor: SystemMouseCursors.resizeRight,
+        child: Container(
+          color: Colors.white.withValues(alpha: .3),
+          width: 4,
+          height: theme.cellHeight / 1.5,
+        ),
+      );
+      final cellContent = Stack(
+        fit: StackFit.expand,
+        children: [
           activity.cellBuilder == null
               ? Tooltip(
                 message: activity.tooltipMessage,
@@ -77,7 +102,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               )
               : Row(
                 children: List<Widget>.generate(
-                  ctrl.cellsFlex,
+                  ctrl.cellVisibleDays,
                   (index) => Expanded(
                     child: activity.cellBuilder!(
                       context
@@ -87,12 +112,135 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                     ),
                   ),
                 ),
-              );
+              ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: LongPressDraggable<GantActivity>(
+              feedback: draggableEdge,
+              data: activity,
+              axis: Axis.horizontal,
+              child: draggableEdge,
+              onDragStarted: () {
+                _movementStartX = null;
+                _movementStartOffset = null;
+              },
+              onDragUpdate: (details) {
+                setState(() {
+                  _movementStartX ??= details.globalPosition.dx;
+                  final dxTotal = details.globalPosition.dx - _movementStartX!;
+                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
+                });
+              },
+              onDragEnd: (_) {
+                if (daysDelta != null && daysDelta != 0) {
+                  _ctrl.controller.onActivityChanged(
+                    widget.activity,
+                    start: widget.activity.start.addDays(daysDelta!),
+                  );
+                }
+                _movementStartX = null;
+                _movementStartOffset = null;
+              },
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: LongPressDraggable<GantActivity>(
+              feedback: draggableEdge,
+              data: activity,
+              axis: Axis.horizontal,
+              child: draggableEdge,
+              onDragStarted: () {
+                _movementEndX = null;
+                _movementEndOffset = null;
+              },
+              onDragUpdate: (details) {
+                setState(() {
+                  _movementEndX ??= details.globalPosition.dx;
+                  final dxTotal = details.globalPosition.dx - _movementEndX!;
+                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
+                });
+              },
+              onDragEnd: (_) {
+                if (daysDelta != null && daysDelta != 0) {
+                  _ctrl.controller.onActivityChanged(
+                    widget.activity,
+                    end: widget.activity.end.addDays(daysDelta!),
+                  );
+                }
+                _movementEndX = null;
+                _movementEndOffset = null;
+              },
+            ),
+          ),
+        ],
+      );
+
+      final dragCell = LongPressDraggable<GantActivity>(
+        data: activity,
+        axis: Axis.horizontal,
+        feedback: Material(
+          elevation: 6,
+          color: Colors.transparent,
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: _ctrl),
+              Provider.value(value: theme),
+            ],
+            builder:
+                (context, child) => Opacity(
+                  opacity: 0.85,
+                  child: SizedBox(
+                    width: ctrl.cellVisibleWidth,
+                    height: theme.cellHeight,
+                    child: cellContent,
+                  ),
+                ),
+          ),
+        ),
+        childWhenDragging: const SizedBox.shrink(),
+        onDragStarted: () {
+          _movementX = null;
+        },
+        onDragUpdate: (details) {
+          _movementX ??= details.globalPosition.dx;
+          final dxTotal = details.globalPosition.dx - _movementX!;
+          daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+        },
+        onDragEnd: (_) {
+          if (daysDelta != null && daysDelta != 0) {
+            _ctrl.controller.onActivityChanged(
+              widget.activity,
+              start: widget.activity.start.addDays(daysDelta!),
+              end: widget.activity.end.addDays(daysDelta!),
+            );
+          }
+          _movementX = null;
+        },
+        child: cellContent,
+      );
+
       return Row(
         children: [
-          Expanded(flex: ctrl.cellsFlexStart, child: Container()),
-          Expanded(flex: ctrl.cellsFlex, child: cell),
-          Expanded(flex: ctrl.cellsFlexEnd, child: Container()),
+          SizedBox(
+            width: ctrl.spaceBefore + (_movementStartOffset ?? 0),
+            child: Container(),
+          ),
+          SizedBox(
+            width:
+                ctrl.cellVisibleWidth -
+                (_movementStartOffset ?? 0) +
+                (_movementEndOffset ?? 0),
+            child: dragCell,
+          ),
+          SizedBox(
+            width: ctrl.spaceAfter - (_movementEndOffset ?? 0),
+            child: Container(),
+          ),
         ],
       );
     }

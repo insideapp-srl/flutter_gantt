@@ -7,25 +7,56 @@ import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
 
+/// A customizable Gantt chart widget for Flutter.
+///
+/// Displays activities in a timeline view with configurable appearance and behavior.
+/// The chart consists of three main components:
+/// 1. ActivitiesList - Shows activity names on the left
+/// 2. CalendarGrid - Shows date headers at the top
+/// 3. ActivitiesGrid - Shows activity durations on the right
 class Gantt extends StatefulWidget {
+  /// The initial start date to display.
   final DateTime? startDate;
+
+  /// The list of activities to display (mutually exclusive with [activitiesAsync]).
   final List<GantActivity>? activities;
+
+  /// Async function to load activities (mutually exclusive with [activities]).
+  ///
+  /// This function is called when the date range changes to fetch new activities.
   final Future<List<GantActivity>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantActivity> activities,
   )?
   activitiesAsync;
+
+  /// The list of holidays to highlight (mutually exclusive with [holidaysAsync]).
   final List<GantDateHoliday>? holidays;
+
+  /// Async function to load holidays (mutually exclusive with [holidays]).
   final Future<List<GantDateHoliday>> Function(
     DateTime startDate,
     DateTime endDate,
     List<GantDateHoliday> holidays,
   )?
   holidaysAsync;
+
+  /// The theme to use for the Gantt chart.
   final GanttTheme? theme;
+
+  /// The controller for managing Gantt chart state.
   final GanttController? controller;
 
+  /// Callback when an activity's dates changes.
+  final GantActivityOnChangedEvent? onActivityChanged;
+
+  /// Creates a [Gantt] chart widget.
+  ///
+  /// Throws an [AssertionError] if:
+  /// - Neither [startDate] nor [controller] is provided
+  /// - Both [activities] and [activitiesAsync] are provided or both are null
+  /// - Both [holidays] and [holidaysAsync] are provided
   const Gantt({
     super.key,
     this.startDate,
@@ -35,6 +66,7 @@ class Gantt extends StatefulWidget {
     this.holidays,
     this.holidaysAsync,
     this.controller,
+    this.onActivityChanged,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -48,9 +80,7 @@ class Gantt extends StatefulWidget {
 class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
-
   Offset? _lastPosition;
-
   late LinkedScrollControllerGroup _linkedControllers;
   late ScrollController _listController;
   late ScrollController _gridColumnsController;
@@ -58,6 +88,7 @@ class _GanttState extends State<Gantt> {
 
   @override
   void initState() {
+    super.initState();
     _linkedControllers = LinkedScrollControllerGroup();
     _listController = _linkedControllers.addAndGet();
     _gridColumnsController = _linkedControllers.addAndGet();
@@ -65,6 +96,9 @@ class _GanttState extends State<Gantt> {
     controller =
         widget.controller ?? GanttController(startDate: widget.startDate);
     controller.addFetchListener(_getAsync);
+    if (widget.onActivityChanged != null) {
+      controller.addOnActivityChangedListener(widget.onActivityChanged!);
+    }
     if (widget.holidays != null) {
       controller.setHolidays(widget.holidays!, notify: false);
     }
@@ -73,12 +107,14 @@ class _GanttState extends State<Gantt> {
     } else {
       controller.fetch();
     }
-    super.initState();
   }
 
   @override
   void dispose() {
     controller.removeFetchListener(_getAsync);
+    if (widget.onActivityChanged != null) {
+      controller.removeOnActivityChangedListener(widget.onActivityChanged!);
+    }
     if (widget.controller == null) {
       controller.dispose();
     }
@@ -144,65 +180,72 @@ class _GanttState extends State<Gantt> {
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: [
-      ChangeNotifierProvider<GanttTheme>.value(value: theme),
+      Provider<GanttTheme>.value(value: theme),
       ChangeNotifierProvider<GanttController>.value(value: controller),
     ],
     builder: (context, child) {
       final c = context.watch<GanttController>();
-      return Column(
-        children: [
-          SizedBox(
-            height: 4,
-            child: _loading ? LinearProgressIndicator() : Container(),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ActivitiesList(
-                    activities: c.activities,
-                    controller: _listController,
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final newDaysViews =
-                          (constraints.maxWidth / theme.dayMinWidth).floor();
-                      if (newDaysViews != c.daysViews) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          c.daysViews = newDaysViews;
-                        });
-                      }
-                      return GestureDetector(
-                        onPanStart: _handlePanStart,
-                        onPanUpdate:
-                            (details) =>
-                                _handlePanUpdate(details, constraints.maxWidth),
-                        onPanEnd: _handlePanEnd,
-                        onPanCancel: _handlePanCancel,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(color: theme.backgroundColor),
-                            ),
-                            CalendarGrid(holidays: c.holidays),
-                            ActivitiesGrid(
-                              activities: c.activities,
-                              controller: _gridColumnsController,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+      return Container(
+        color: theme.backgroundColor,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 4,
+              child: _loading ? LinearProgressIndicator() : Container(),
             ),
-          ),
-        ],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ActivitiesList(
+                      activities: c.activities,
+                      controller: _listController,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final newDaysViews =
+                            (constraints.maxWidth / theme.dayMinWidth).floor();
+                        if (newDaysViews != c.daysViews) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            c.daysViews = newDaysViews;
+                          });
+                        }
+                        return GestureDetector(
+                          onPanStart: _handlePanStart,
+                          onPanUpdate:
+                              (details) => _handlePanUpdate(
+                                details,
+                                constraints.maxWidth,
+                              ),
+                          onPanEnd: _handlePanEnd,
+                          onPanCancel: _handlePanCancel,
+                          child: Stack(
+                            children: [
+                              CalendarGrid(holidays: c.holidays),
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  controller.gridWidth = constraints.maxWidth;
+                                  return ActivitiesGrid(
+                                    activities: c.activities,
+                                    controller: _gridColumnsController,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     },
   );
