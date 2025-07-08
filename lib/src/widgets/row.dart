@@ -93,24 +93,23 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         children: [
           activity.builder != null
               ? activity.builder!(activity)
-              :
-          activity.cellBuilder != null
-              ?
-          Row(
-            children: List<Widget>.generate(
-              ctrl.cellVisibleDays,
+              : activity.cellBuilder != null
+              ? Row(
+                children: List<Widget>.generate(
+                  ctrl.cellVisibleDays,
                   (index) => Expanded(
-                child: activity.cellBuilder!(
-                  context
-                      .read<GanttController>()
-                      .clampToGanttRange(activity.start)
-                      .add(Duration(days: index)),
+                    child: activity.cellBuilder!(
+                      context
+                          .read<GanttController>()
+                          .clampToGanttRange(activity.start)
+                          .add(Duration(days: index)),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ) : Tooltip(
-            message: activity.tooltipMessage ?? '',
-            child: GanttCell(activity: activity),
+              )
+              : Tooltip(
+                message: activity.tooltipMessage ?? '',
+                child: GanttCell(activity: activity),
               ),
           Positioned(
             left: 0,

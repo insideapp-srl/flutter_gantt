@@ -65,7 +65,7 @@ class GantActivity<T> {
   /// Callback when the activity cell is tapped.
   final Function(GantActivity activity)? onCellTap;
 
-  /// Builder function for custom cell rendering.
+  /// Builder function for custom single cell rendering.
   final Widget Function(DateTime cellDate)? cellBuilder;
 
   /// The color of the activity cell.
@@ -74,9 +74,8 @@ class GantActivity<T> {
   /// Whether to show the activity cell.
   final bool showCell;
 
+  /// Builder function for custom cell rendering.
   final Widget Function(GantActivity activity)? builder;
-
-  final List<DateTime>? highlightedDates;
 
   /// Optional custom data associated with the activity.
   final T? data;
@@ -112,7 +111,6 @@ class GantActivity<T> {
     this.actions,
     this.showCell = true,
     this.builder,
-    this.highlightedDates,
     this.data,
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&

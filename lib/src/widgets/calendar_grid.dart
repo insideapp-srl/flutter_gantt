@@ -150,9 +150,9 @@ class CalendarGrid extends StatelessWidget {
                           height: double.infinity,
                           width: 1,
                           color:
-                              (i < c.days.length - 1)
-                                  ? Colors.grey
-                                  : Colors.transparent,
+                              c.dateToHighlight(day)
+                                  ? context.watch<GanttTheme>().defaultCellColor
+                                  : Colors.grey,
                         ),
                       ],
                     ),
