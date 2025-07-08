@@ -131,7 +131,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
-                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays -
+                          (dxTotal / _ctrl.dayColumnWidth).round() >
+                      0) {
+                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
@@ -163,7 +167,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
-                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays +
+                          (dxTotal / _ctrl.dayColumnWidth).round() >
+                      0) {
+                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
