@@ -51,6 +51,8 @@ class Gantt extends StatefulWidget {
   /// Callback when an activity's dates changes.
   final GantActivityOnChangedEvent? onActivityChanged;
 
+  final bool enableDraggable;
+
   /// The list of dates to highlight
   final List<DateTime>? highlightedDates;
 
@@ -71,6 +73,7 @@ class Gantt extends StatefulWidget {
     this.controller,
     this.onActivityChanged,
     this.highlightedDates,
+    this.enableDraggable = true,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -114,6 +117,7 @@ class _GanttState extends State<Gantt> {
     if (widget.highlightedDates != null) {
       controller.setHighlightedDates(widget.highlightedDates!, notify: false);
     }
+    controller.enableDraggable = widget.enableDraggable;
   }
 
   @override

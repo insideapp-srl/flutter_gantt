@@ -88,9 +88,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           height: theme.cellHeight / 1.5,
         ),
       );
-      final cellContent = Stack(
-        fit: StackFit.expand,
-        children: [
+
+      final cell =
           activity.builder != null
               ? activity.builder!(activity)
               : activity.cellBuilder != null
@@ -110,7 +109,12 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               : Tooltip(
                 message: activity.tooltipMessage ?? '',
                 child: GanttCell(activity: activity),
-              ),
+              );
+
+      final cellContent = Stack(
+        fit: StackFit.expand,
+        children: [
+          cell,
           Positioned(
             left: 0,
             bottom: 0,
@@ -233,7 +237,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ctrl.cellVisibleWidth -
                 (_movementStartOffset ?? 0) +
                 (_movementEndOffset ?? 0),
-            child: dragCell,
+            child: _ctrl.controller.enableDraggable ? dragCell : cell,
           ),
           SizedBox(
             width: ctrl.spaceAfter - (_movementEndOffset ?? 0),

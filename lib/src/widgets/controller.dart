@@ -20,6 +20,7 @@ class GanttController extends ChangeNotifier {
   final List<GantActivityOnChangedEvent> _onActivityChangedListeners = [];
   double gridWidth = 0;
   List<DateTime> _highlightedDates = [];
+  bool _enableDraggable = true;
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -69,6 +70,17 @@ class GanttController extends ChangeNotifier {
       if (notify) {
         notifyListeners();
       }
+    }
+  }
+
+  /// The enable draggable value.
+  bool get enableDraggable => _enableDraggable;
+
+  /// Sets the enable draggable value.
+  set enableDraggable(bool value) {
+    if (value != _enableDraggable) {
+      _enableDraggable = value;
+      notifyListeners();
     }
   }
 
