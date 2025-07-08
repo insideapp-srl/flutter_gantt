@@ -1,3 +1,11 @@
+## [0.9.1] - 2025-07-07
+
+@rickypid
+
+* Draggable start/end activity
+* Draggable activity
+* Add documentations
+
 ## [0.0.6] - 2025-06-25
 
 @RichiB20
