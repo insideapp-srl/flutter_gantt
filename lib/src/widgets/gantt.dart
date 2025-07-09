@@ -51,6 +51,7 @@ class Gantt extends StatefulWidget {
   /// Callback when an activity's dates changes.
   final GantActivityOnChangedEvent? onActivityChanged;
 
+  /// Enable draggable cell
   final bool enableDraggable;
 
   /// The list of dates to highlight

@@ -73,6 +73,12 @@ class GanttController extends ChangeNotifier {
     }
   }
 
+  /// Return if a date has to be highlighted.
+  bool dateToHighlight(DateTime date) =>
+      _highlightedDates.map((e) => e.toDate).contains(date.toDate) == true ||
+      _highlightedDates.map((e) => e.toDate).contains(date.addDays(1).toDate) ==
+          true;
+
   /// The enable draggable value.
   bool get enableDraggable => _enableDraggable;
 
@@ -83,12 +89,6 @@ class GanttController extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  /// Return if a date has to be highlighted.
-  bool dateToHighlight(DateTime date) =>
-      _highlightedDates.map((e) => e.toDate).contains(date.toDate) == true ||
-      _highlightedDates.map((e) => e.toDate).contains(date.addDays(1).toDate) ==
-          true;
 
   /// The number of days currently visible in the chart.
   int get daysViews => _daysViews;

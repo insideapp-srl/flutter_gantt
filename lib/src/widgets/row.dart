@@ -107,7 +107,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ),
               )
               : Tooltip(
-                message: activity.tooltipMessage ?? '',
+                message: activity.tooltip ?? '',
                 child: GanttCell(activity: activity),
               );
 

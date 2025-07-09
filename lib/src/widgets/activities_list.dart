@@ -55,7 +55,7 @@ class ActivitiesList extends StatelessWidget {
                       activities[index].listTitleWidget ??
                       activities[index].titleWidget ??
                       Tooltip(
-                        message: activities[index].tooltipMessage ?? '',
+                        message: activities[index].tooltip ?? '',
                         child: Text(
                           activities[index].listTitle ??
                               activities[index].title!,
