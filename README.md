@@ -1,6 +1,6 @@
 # Flutter Gantt Chart
 
-[![Pub Version](https://img.shields.io/pub/v/flutter_gantt)](https://pub.dev/packages/flutter_gantt) [![Pub Points](https://img.shields.io/pub/points/flutter_gantt)](ttps://pub.dev/packages/flutter_gantt/score) [![License](https://img.shields.io/github/license/insideapp-srl/flutter_gantt)](ttps://github.com/insideapp-srl/flutter_gantt/blob/main/LICENSE)
+[![Pub Version](https://img.shields.io/pub/v/flutter_gantt)](https://pub.dev/packages/flutter_gantt) [![Pub Points](https://img.shields.io/pub/points/flutter_gantt)](https://pub.dev/packages/flutter_gantt/score) [![License](https://img.shields.io/github/license/insideapp-srl/flutter_gantt)](https://github.com/insideapp-srl/flutter_gantt/blob/main/LICENSE)
 
 A production-ready, fully customizable Gantt chart widget for Flutter applications.
 

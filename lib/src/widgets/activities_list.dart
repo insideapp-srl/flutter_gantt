@@ -55,19 +55,12 @@ class ActivitiesList extends StatelessWidget {
                       activities[index].listTitleWidget ??
                       activities[index].titleWidget ??
                       Tooltip(
-                        message: activities[index].tooltipMessage,
-                        richMessage:
-                            activities[index].tooltipWidget != null
-                                ? WidgetSpan(
-                                  child: activities[index].tooltipWidget!,
-                                )
-                                : null,
+                        message: activities[index].tooltip ?? '',
                         child: Text(
                           activities[index].listTitle ??
                               activities[index].title!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: activities[index].titleStyle,
                         ),
                       ),
                 ),

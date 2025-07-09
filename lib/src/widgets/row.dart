@@ -88,19 +88,12 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           height: theme.cellHeight / 1.5,
         ),
       );
-      final cellContent = Stack(
-        fit: StackFit.expand,
-        children: [
-          activity.cellBuilder == null
-              ? Tooltip(
-                message: activity.tooltipMessage,
-                richMessage:
-                    activity.tooltipWidget != null
-                        ? WidgetSpan(child: activity.tooltipWidget!)
-                        : null,
-                child: GanttCell(activity: activity),
-              )
-              : Row(
+
+      final cell =
+          activity.builder != null
+              ? activity.builder!(activity)
+              : activity.cellBuilder != null
+              ? Row(
                 children: List<Widget>.generate(
                   ctrl.cellVisibleDays,
                   (index) => Expanded(
@@ -112,7 +105,16 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                     ),
                   ),
                 ),
-              ),
+              )
+              : Tooltip(
+                message: activity.tooltip ?? '',
+                child: GanttCell(activity: activity),
+              );
+
+      final cellContent = Stack(
+        fit: StackFit.expand,
+        children: [
+          cell,
           Positioned(
             left: 0,
             bottom: 0,
@@ -129,7 +131,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
-                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays -
+                          (dxTotal / _ctrl.dayColumnWidth).round() >
+                      0) {
+                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
@@ -161,7 +167,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
-                  daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays +
+                          (dxTotal / _ctrl.dayColumnWidth).round() >
+                      0) {
+                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
               },
@@ -235,7 +245,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 ctrl.cellVisibleWidth -
                 (_movementStartOffset ?? 0) +
                 (_movementEndOffset ?? 0),
-            child: dragCell,
+            child: _ctrl.controller.enableDraggable ? dragCell : cell,
           ),
           SizedBox(
             width: ctrl.spaceAfter - (_movementEndOffset ?? 0),

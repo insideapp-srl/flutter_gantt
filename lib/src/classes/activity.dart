@@ -47,14 +47,8 @@ class GantActivity<T> {
   /// Custom widget for the list view title (optional).
   final Widget? listTitleWidget;
 
-  /// The tooltip message (mutually exclusive with [tooltipWidget]).
-  final String? tooltipMessage;
-
-  /// A custom widget for the tooltip (mutually exclusive with [tooltipMessage]).
-  final Widget? tooltipWidget;
-
-  /// The text style for the activity title.
-  final TextStyle? titleStyle;
+  /// The tooltip message.
+  final String? tooltip;
 
   /// An optional icon to display with the title.
   final Widget? iconTitle;
@@ -71,7 +65,7 @@ class GantActivity<T> {
   /// Callback when the activity cell is tapped.
   final Function(GantActivity activity)? onCellTap;
 
-  /// Builder function for custom cell rendering.
+  /// Builder function for custom single cell rendering.
   final Widget Function(DateTime cellDate)? cellBuilder;
 
   /// The color of the activity cell.
@@ -79,6 +73,9 @@ class GantActivity<T> {
 
   /// Whether to show the activity cell.
   final bool showCell;
+
+  /// Builder function for custom cell rendering.
+  final Widget Function(GantActivity activity)? builder;
 
   /// Optional custom data associated with the activity.
   final T? data;
@@ -92,8 +89,7 @@ class GantActivity<T> {
   ///
   /// Throws an [AssertionError] if:
   /// - Start date is after end date
-  /// - Both [title] and [titleWidget] are provided or both are null
-  /// - Both [tooltipMessage] and [tooltipWidget] are provided or both are null
+  /// - Only one between [title] and [titleWidget] must be provided
   /// - Any segment dates fall outside the activity dates
   /// - Any child activity dates fall outside this activity's dates
   GantActivity({
@@ -104,9 +100,7 @@ class GantActivity<T> {
     this.titleWidget,
     this.listTitle,
     this.listTitleWidget,
-    this.tooltipMessage,
-    this.tooltipWidget,
-    this.titleStyle,
+    this.tooltip,
     this.iconTitle,
     this.segments,
     this.children,
@@ -115,11 +109,12 @@ class GantActivity<T> {
     this.color,
     this.actions,
     this.showCell = true,
+    this.builder,
     this.data,
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&
-             ((tooltipMessage == null) != (tooltipWidget == null)) &&
              ((title == null) != (titleWidget == null)) &&
+             ((cellBuilder == null) || (builder == null)) &&
              ((listTitle == null) || (listTitleWidget == null)),
        ) {
     this.start = start.toDate;

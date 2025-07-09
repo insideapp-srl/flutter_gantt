@@ -19,6 +19,8 @@ class GanttController extends ChangeNotifier {
   int _daysViews;
   final List<GantActivityOnChangedEvent> _onActivityChangedListeners = [];
   double gridWidth = 0;
+  List<DateTime> _highlightedDates = [];
+  bool _enableDraggable = true;
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -55,6 +57,36 @@ class GanttController extends ChangeNotifier {
       if (notify) {
         notifyListeners();
       }
+    }
+  }
+
+  /// The list of highlighted dates in the Gantt chart.
+  List<DateTime> get highlightedDates => _highlightedDates;
+
+  /// Sets the highlighted dates list and optionally notifies listeners.
+  void setHighlightedDates(List<DateTime> value, {bool notify = true}) {
+    if (value != _highlightedDates) {
+      _highlightedDates = value;
+      if (notify) {
+        notifyListeners();
+      }
+    }
+  }
+
+  /// Return if a date has to be highlighted.
+  bool dateToHighlight(DateTime date) =>
+      _highlightedDates.map((e) => e.toDate).contains(date.toDate) == true ||
+      _highlightedDates.map((e) => e.toDate).contains(date.addDays(1).toDate) ==
+          true;
+
+  /// The enable draggable value.
+  bool get enableDraggable => _enableDraggable;
+
+  /// Sets the enable draggable value.
+  set enableDraggable(bool value) {
+    if (value != _enableDraggable) {
+      _enableDraggable = value;
+      notifyListeners();
     }
   }
 

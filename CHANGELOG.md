@@ -1,10 +1,13 @@
-## [0.9.1] - 2025-07-07
+## [0.9.2] - 2025-07-08
 
 @rickypid
+@RichiB20
 
 * Draggable start/end activity
 * Draggable activity
 * Add documentations
+* Add activity builder
+* Add highlighted dates
 
 ## [0.0.6] - 2025-06-25
 

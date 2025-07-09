@@ -51,6 +51,12 @@ class Gantt extends StatefulWidget {
   /// Callback when an activity's dates changes.
   final GantActivityOnChangedEvent? onActivityChanged;
 
+  /// Enable draggable cell
+  final bool enableDraggable;
+
+  /// The list of dates to highlight
+  final List<DateTime>? highlightedDates;
+
   /// Creates a [Gantt] chart widget.
   ///
   /// Throws an [AssertionError] if:
@@ -67,6 +73,8 @@ class Gantt extends StatefulWidget {
     this.holidaysAsync,
     this.controller,
     this.onActivityChanged,
+    this.highlightedDates,
+    this.enableDraggable = true,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -107,6 +115,10 @@ class _GanttState extends State<Gantt> {
     } else {
       controller.fetch();
     }
+    if (widget.highlightedDates != null) {
+      controller.setHighlightedDates(widget.highlightedDates!, notify: false);
+    }
+    controller.enableDraggable = widget.enableDraggable;
   }
 
   @override
