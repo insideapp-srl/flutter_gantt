@@ -31,6 +31,7 @@ class ActivitiesGrid extends StatelessWidget {
   List<Widget> getItems(
     List<GantActivity> activities,
     GanttTheme theme, {
+    GantActivity? activityParent,
     int nested = 0,
   }) => List.generate(
     activities.length,
@@ -41,9 +42,17 @@ class ActivitiesGrid extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          GanttActivityRow(activity: activities[index]),
+          GanttActivityRow(
+            activity: activities[index],
+            activityParent: activityParent,
+          ),
           if (activities[index].children?.isNotEmpty == true)
-            ...getItems(activities[index].children!, theme, nested: nested + 1),
+            ...getItems(
+              activities[index].children!,
+              theme,
+              activityParent: activities[index],
+              nested: nested + 1,
+            ),
         ],
       ),
     ),

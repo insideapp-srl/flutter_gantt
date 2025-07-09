@@ -15,9 +15,14 @@ import 'controller_extension.dart';
 class GanttActivityRow extends StatefulWidget {
   /// The [GantActivity] to display in this row.
   final GantActivity activity;
+  final GantActivity? activityParent;
 
   /// Creates a row for the specified activity.
-  const GanttActivityRow({super.key, required this.activity});
+  const GanttActivityRow({
+    super.key,
+    required this.activity,
+    this.activityParent,
+  });
 
   @override
   State<GanttActivityRow> createState() => _GanttActivityRowState();
@@ -131,10 +136,15 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
-                  if (_ctrl.cellVisibleDays -
-                          (dxTotal / _ctrl.dayColumnWidth).round() >
-                      0) {
-                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp =
+                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays - daysDeltaTemp > 0) {
+                    if (widget.activityParent == null ||
+                        widget.activity.start
+                            .addDays(daysDeltaTemp)
+                            .isAfterOrSame(widget.activityParent!.start)) {
+                      daysDelta = daysDeltaTemp;
+                    }
                   }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -167,10 +177,15 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
-                  if (_ctrl.cellVisibleDays +
-                          (dxTotal / _ctrl.dayColumnWidth).round() >
-                      0) {
-                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp =
+                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays + daysDeltaTemp > 0) {
+                    if (widget.activityParent == null ||
+                        widget.activity.end
+                            .addDays(daysDeltaTemp)
+                            .isBeforeOrSame(widget.activityParent!.end)) {
+                      daysDelta = daysDeltaTemp;
+                    }
                   }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -219,7 +234,16 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         onDragUpdate: (details) {
           _movementX ??= details.globalPosition.dx;
           final dxTotal = details.globalPosition.dx - _movementX!;
-          daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+          final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth).round();
+          if (widget.activityParent == null ||
+              (widget.activity.start
+                      .addDays(daysDeltaTemp)
+                      .isAfterOrSame(widget.activityParent!.start) &&
+                  widget.activity.end
+                      .addDays(daysDeltaTemp)
+                      .isBeforeOrSame(widget.activityParent!.end))) {
+            daysDelta = daysDeltaTemp;
+          }
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
