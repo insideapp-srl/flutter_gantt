@@ -66,6 +66,47 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     super.dispose();
   }
 
+  bool validMove(int daysDelta) =>
+      validStartMove(daysDelta) && validEndMove(daysDelta);
+
+  bool validStartMove(int daysDelta) =>
+      validStartMoveToParent(daysDelta) && validStartMoveToChildren(daysDelta);
+
+  bool validEndMove(int daysDelta) =>
+      validEndMoveToParent(daysDelta) && validEndMoveToChildren(daysDelta);
+
+  bool validStartMoveToParent(int daysDelta) =>
+      widget.activityParent == null ||
+      widget.activity.start
+          .addDays(daysDelta)
+          .isAfterOrSame(widget.activityParent!.start);
+
+  bool validStartMoveToChildren(int daysDelta) =>
+      (widget.activity.children?.isEmpty ?? true) == true ||
+      widget.activity.start
+          .addDays(daysDelta)
+          .isBeforeOrSame(
+            DateTimeEx.firstDateFromList(
+              widget.activity.children!.map((e) => e.start).toList(),
+            ),
+          );
+
+  bool validEndMoveToParent(int daysDelta) =>
+      widget.activityParent == null ||
+      widget.activity.end
+          .addDays(daysDelta)
+          .isBeforeOrSame(widget.activityParent!.end);
+
+  bool validEndMoveToChildren(int daysDelta) =>
+      (widget.activity.children?.isEmpty ?? true) == true ||
+      widget.activity.end
+          .addDays(daysDelta)
+          .isAfterOrSame(
+            DateTimeEx.lastDateFromList(
+              widget.activity.children!.map((e) => e.end).toList(),
+            ),
+          );
+
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(
     value: _ctrl,
@@ -138,13 +179,9 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
                   final daysDeltaTemp =
                       (dxTotal / _ctrl.dayColumnWidth).round();
-                  if (_ctrl.cellVisibleDays - daysDeltaTemp > 0) {
-                    if (widget.activityParent == null ||
-                        widget.activity.start
-                            .addDays(daysDeltaTemp)
-                            .isAfterOrSame(widget.activityParent!.start)) {
-                      daysDelta = daysDeltaTemp;
-                    }
+                  if (_ctrl.cellVisibleDays - daysDeltaTemp > 0 &&
+                      validStartMove(daysDeltaTemp)) {
+                    daysDelta = daysDeltaTemp;
                   }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -179,13 +216,9 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
                   final daysDeltaTemp =
                       (dxTotal / _ctrl.dayColumnWidth).round();
-                  if (_ctrl.cellVisibleDays + daysDeltaTemp > 0) {
-                    if (widget.activityParent == null ||
-                        widget.activity.end
-                            .addDays(daysDeltaTemp)
-                            .isBeforeOrSame(widget.activityParent!.end)) {
-                      daysDelta = daysDeltaTemp;
-                    }
+                  if (_ctrl.cellVisibleDays + daysDeltaTemp > 0 &&
+                      validEndMove(daysDeltaTemp)) {
+                    daysDelta = daysDeltaTemp;
                   }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -235,13 +268,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           _movementX ??= details.globalPosition.dx;
           final dxTotal = details.globalPosition.dx - _movementX!;
           final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth).round();
-          if (widget.activityParent == null ||
-              (widget.activity.start
-                      .addDays(daysDeltaTemp)
-                      .isAfterOrSame(widget.activityParent!.start) &&
-                  widget.activity.end
-                      .addDays(daysDeltaTemp)
-                      .isBeforeOrSame(widget.activityParent!.end))) {
+          if (validMove(daysDeltaTemp)) {
             daysDelta = daysDeltaTemp;
           }
         },
