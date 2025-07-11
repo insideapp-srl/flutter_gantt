@@ -40,11 +40,9 @@ extension DateTimeEx on DateTime {
   static DateTime lastDate(DateTime d1, DateTime d2) =>
       d1.isAfterOrSame(d2) ? d1 : d2;
 
-  static DateTime firstDateFromList(List<DateTime> dates) => dates.reduce(
-        (value, element) => DateTimeEx.firstDate(value, element),
-  );
+  static DateTime firstDateFromList(List<DateTime> dates) =>
+      dates.reduce((value, element) => DateTimeEx.firstDate(value, element));
 
-  static DateTime lastDateFromList(List<DateTime> dates) => dates.reduce(
-        (value, element) => DateTimeEx.lastDate(value, element),
-  );
+  static DateTime lastDateFromList(List<DateTime> dates) =>
+      dates.reduce((value, element) => DateTimeEx.lastDate(value, element));
 }
