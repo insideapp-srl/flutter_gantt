@@ -146,6 +146,39 @@ class GantActivity<T> {
 
   /// Gets a flat list of this activity and all its descendants.
   List<GantActivity> get plainList => [this, ...children?.plainList ?? []];
+
+  bool validStartMoveToParent(int daysDelta) =>
+      parent == null || start.addDays(daysDelta).isAfterOrSame(parent!.start);
+
+  bool validStartMoveToChildren(int daysDelta) =>
+      (children?.isEmpty ?? true) == true ||
+      start
+          .addDays(daysDelta)
+          .isBeforeOrSame(
+            DateTimeEx.firstDateFromList(
+              children!.map((e) => e.start).toList(),
+            ),
+          );
+
+  bool validEndMoveToParent(int daysDelta) =>
+      parent == null || end.addDays(daysDelta).isBeforeOrSame(parent!.end);
+
+  bool validEndMoveToChildren(int daysDelta) =>
+      (children?.isEmpty ?? true) == true ||
+      end
+          .addDays(daysDelta)
+          .isAfterOrSame(
+            DateTimeEx.lastDateFromList(children!.map((e) => e.end).toList()),
+          );
+
+  bool validStartMove(int daysDelta) =>
+      validStartMoveToParent(daysDelta) && validStartMoveToChildren(daysDelta);
+
+  bool validEndMove(int daysDelta) =>
+      validEndMoveToParent(daysDelta) && validEndMoveToChildren(daysDelta);
+
+  bool validMove(int daysDelta) =>
+      validStartMove(daysDelta) && validEndMove(daysDelta);
 }
 
 /// Extension methods for working with lists of [GantActivity].

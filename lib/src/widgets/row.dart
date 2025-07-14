@@ -15,14 +15,9 @@ import 'controller_extension.dart';
 class GanttActivityRow extends StatefulWidget {
   /// The [GantActivity] to display in this row.
   final GantActivity activity;
-  final GantActivity? activityParent;
 
   /// Creates a row for the specified activity.
-  const GanttActivityRow({
-    super.key,
-    required this.activity,
-    this.activityParent,
-  });
+  const GanttActivityRow({super.key, required this.activity});
 
   @override
   State<GanttActivityRow> createState() => _GanttActivityRowState();
@@ -65,47 +60,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     _ctrl.dispose();
     super.dispose();
   }
-
-  bool validMove(int daysDelta) =>
-      validStartMove(daysDelta) && validEndMove(daysDelta);
-
-  bool validStartMove(int daysDelta) =>
-      validStartMoveToParent(daysDelta) && validStartMoveToChildren(daysDelta);
-
-  bool validEndMove(int daysDelta) =>
-      validEndMoveToParent(daysDelta) && validEndMoveToChildren(daysDelta);
-
-  bool validStartMoveToParent(int daysDelta) =>
-      widget.activityParent == null ||
-      widget.activity.start
-          .addDays(daysDelta)
-          .isAfterOrSame(widget.activityParent!.start);
-
-  bool validStartMoveToChildren(int daysDelta) =>
-      (widget.activity.children?.isEmpty ?? true) == true ||
-      widget.activity.start
-          .addDays(daysDelta)
-          .isBeforeOrSame(
-            DateTimeEx.firstDateFromList(
-              widget.activity.children!.map((e) => e.start).toList(),
-            ),
-          );
-
-  bool validEndMoveToParent(int daysDelta) =>
-      widget.activityParent == null ||
-      widget.activity.end
-          .addDays(daysDelta)
-          .isBeforeOrSame(widget.activityParent!.end);
-
-  bool validEndMoveToChildren(int daysDelta) =>
-      (widget.activity.children?.isEmpty ?? true) == true ||
-      widget.activity.end
-          .addDays(daysDelta)
-          .isAfterOrSame(
-            DateTimeEx.lastDateFromList(
-              widget.activity.children!.map((e) => e.end).toList(),
-            ),
-          );
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(
@@ -180,7 +134,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   final daysDeltaTemp =
                       (dxTotal / _ctrl.dayColumnWidth).round();
                   if (_ctrl.cellVisibleDays - daysDeltaTemp > 0 &&
-                      validStartMove(daysDeltaTemp)) {
+                      widget.activity.validStartMove(daysDeltaTemp)) {
                     daysDelta = daysDeltaTemp;
                   }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
@@ -217,7 +171,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                   final daysDeltaTemp =
                       (dxTotal / _ctrl.dayColumnWidth).round();
                   if (_ctrl.cellVisibleDays + daysDeltaTemp > 0 &&
-                      validEndMove(daysDeltaTemp)) {
+                      widget.activity.validEndMove(daysDeltaTemp)) {
                     daysDelta = daysDeltaTemp;
                   }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
@@ -268,7 +222,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           _movementX ??= details.globalPosition.dx;
           final dxTotal = details.globalPosition.dx - _movementX!;
           final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth).round();
-          if (validMove(daysDeltaTemp)) {
+          if (widget.activity.validMove(daysDeltaTemp)) {
             daysDelta = daysDeltaTemp;
           }
         },
@@ -297,10 +251,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 (_movementStartOffset ?? 0) +
                 (_movementEndOffset ?? 0),
             child: _ctrl.controller.enableDraggable ? dragCell : cell,
-          ),
-          SizedBox(
-            width: ctrl.spaceAfter - (_movementEndOffset ?? 0),
-            child: Container(),
           ),
         ],
       );
