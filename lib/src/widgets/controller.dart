@@ -92,7 +92,8 @@ class GanttController extends ChangeNotifier {
   }
 
   /// The allow parent independent date movement value.
-  bool get allowParentIndependentDateMovement => _allowParentIndependentDateMovement;
+  bool get allowParentIndependentDateMovement =>
+      _allowParentIndependentDateMovement;
 
   /// Sets the allow parent independent date movement value.
   set allowParentIndependentDateMovement(bool value) {

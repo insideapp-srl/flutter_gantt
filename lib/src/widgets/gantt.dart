@@ -123,7 +123,8 @@ class _GanttState extends State<Gantt> {
       controller.setHighlightedDates(widget.highlightedDates!, notify: false);
     }
     controller.enableDraggable = widget.enableDraggable;
-    controller.allowParentIndependentDateMovement = widget.allowParentIndependentDateMovement;
+    controller.allowParentIndependentDateMovement =
+        widget.allowParentIndependentDateMovement;
   }
 
   @override
