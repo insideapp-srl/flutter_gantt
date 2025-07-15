@@ -21,6 +21,7 @@ class GanttController extends ChangeNotifier {
   double gridWidth = 0;
   List<DateTime> _highlightedDates = [];
   bool _enableDraggable = true;
+  bool _allowParentIndependentDateMovement = false;
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -86,6 +87,17 @@ class GanttController extends ChangeNotifier {
   set enableDraggable(bool value) {
     if (value != _enableDraggable) {
       _enableDraggable = value;
+      notifyListeners();
+    }
+  }
+
+  /// The allow parent independent date movement value.
+  bool get allowParentIndependentDateMovement => _allowParentIndependentDateMovement;
+
+  /// Sets the allow parent independent date movement value.
+  set allowParentIndependentDateMovement(bool value) {
+    if (value != _allowParentIndependentDateMovement) {
+      _allowParentIndependentDateMovement = value;
       notifyListeners();
     }
   }

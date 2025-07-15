@@ -51,8 +51,11 @@ class Gantt extends StatefulWidget {
   /// Callback when an activity's dates changes.
   final GantActivityOnChangedEvent? onActivityChanged;
 
-  /// Enable draggable cell
+  /// Enable draggable cell.
   final bool enableDraggable;
+
+  /// When set to true, this parameter enables the independent movement of a parent task within the Gantt chart, regardless of the fixed date boundaries of its child tasks.
+  final bool allowParentIndependentDateMovement;
 
   /// The list of dates to highlight
   final List<DateTime>? highlightedDates;
@@ -75,6 +78,7 @@ class Gantt extends StatefulWidget {
     this.onActivityChanged,
     this.highlightedDates,
     this.enableDraggable = true,
+    this.allowParentIndependentDateMovement = false,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -119,6 +123,7 @@ class _GanttState extends State<Gantt> {
       controller.setHighlightedDates(widget.highlightedDates!, notify: false);
     }
     controller.enableDraggable = widget.enableDraggable;
+    controller.allowParentIndependentDateMovement = widget.allowParentIndependentDateMovement;
   }
 
   @override

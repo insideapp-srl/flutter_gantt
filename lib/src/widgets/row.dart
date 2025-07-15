@@ -222,7 +222,9 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           _movementX ??= details.globalPosition.dx;
           final dxTotal = details.globalPosition.dx - _movementX!;
           final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth).round();
-          if (widget.activity.validMove(daysDeltaTemp)) {
+          if (widget.activity.validMove(daysDeltaTemp) ||
+              (_ctrl.controller.allowParentIndependentDateMovement &&
+                  widget.activity.validMoveToParent(daysDeltaTemp))) {
             daysDelta = daysDeltaTemp;
           }
         },
