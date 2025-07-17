@@ -8,10 +8,10 @@ import '../../flutter_gantt.dart';
 /// This widget shows activity titles, optional icons, and action buttons in a
 /// scrollable list that synchronizes with the [ActivitiesGrid].
 class ActivitiesList extends StatelessWidget {
-  /// The list of [GantActivity] items to display.
+  /// The list of [GanttActivity] items to display.
   ///
   /// Can contain hierarchical activities with parent-child relationships.
-  final List<GantActivity> activities;
+  final List<GanttActivity> activities;
 
   /// Optional [ScrollController] to synchronize scrolling with the grid view.
   final ScrollController? controller;
@@ -27,7 +27,7 @@ class ActivitiesList extends StatelessWidget {
   /// [theme] - The current [GanttTheme] for styling
   /// [nested] - The current nesting level (used for indentation)
   List<Widget> getItems(
-    List<GantActivity> activities,
+    List<GanttActivity> activities,
     GanttTheme theme, {
     int nested = 0,
   }) => List.generate(

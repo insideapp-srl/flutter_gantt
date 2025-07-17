@@ -71,20 +71,20 @@ Gantt(
 
 The main chart container with these key properties:
 
-| Property         | Type                    | Description                |
-|------------------|-------------------------|----------------------------|
-| `startDate`    ` | DateTime`               | Initial visible date       |
-| `activities`   ` | List<GantActivity>`     | Activities to display      |
-| `holidays`    `  | List<GantDateHoliday>`, | Special dates to highlight |
-| `theme`       `  | GanttTheme`             | Visual customization       |
-| `controller`   ` | GanttController`        | Programmatic control       |
+| Property     | Type                   | Description                |
+|--------------|------------------------|----------------------------|
+| `startDate`  | DateTime               | Initial visible date       |
+| `activities` | List<GanttActivity>    | Activities to display      |
+| `holidays`   | List<GanttDateHoliday> | Special dates to highlight |
+| `theme`      | GanttTheme             | Visual customization       |
+| `controller` | GanttController        | Programmatic control       |
 
-#### `GantActivity`
+#### `GanttActivity`
 
 Represents a task with:
 
 ```dart
-GantActivity(
+GanttActivity(
   start: DateTime.now(),
   end: DateTime.now().add(Duration(days: 5)),
   title: 'Task Name',
@@ -119,7 +119,7 @@ controller.setActivities(newActivities);
 [**Custom Builders:**]
 
 ```dart
-GantActivity(
+GanttActivity(
   cellBuilder: (date) => YourCustomWidget(date),
   titleWidget: YourTitleWidget(),
 )

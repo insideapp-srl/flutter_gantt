@@ -82,13 +82,13 @@ extension GanttCtrlInternal on GanttController {
   }
 
   /// Calculates days before activity start that are visible.
-  int getCellDaysBefore(GantActivity activity) {
+  int getCellDaysBefore(GanttActivity activity) {
     final clampedStart = clampToGanttRange(activity.start);
     return clampedStart.diffInDays(startDate);
   }
 
   /// Calculates visible days for the activity.
-  int getCellDays(GantActivity activity) {
+  int getCellDays(GanttActivity activity) {
     final clampedStart = clampToGanttRange(activity.start);
     final clampedEnd = clampToGanttRange(
       activity.end,
@@ -97,14 +97,14 @@ extension GanttCtrlInternal on GanttController {
   }
 
   /// Calculates days after activity end that are visible.
-  int getCellsDaysAfter(GantActivity activity) {
+  int getCellsDaysAfter(GanttActivity activity) {
     final clampedEnd = clampToGanttRange(activity.end);
     return endDate.diffInDays(clampedEnd);
   }
 
   /// Notifies listeners when an activity's dates changes.
   void onActivityChanged(
-    GantActivity activity, {
+    GanttActivity activity, {
     DateTime? start,
     DateTime? end,
   }) {
@@ -122,8 +122,8 @@ class GanttActivityCtrl extends ChangeNotifier {
   /// The parent [GanttController].
   final GanttController controller;
 
-  /// The [GantActivity] being controlled.
-  final GantActivity activity;
+  /// The [GanttActivity] being controlled.
+  final GanttActivity activity;
 
   /// Creates a controller for an activity row.
   GanttActivityCtrl({required this.controller, required this.activity});

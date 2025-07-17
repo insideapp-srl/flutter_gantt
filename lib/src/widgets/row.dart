@@ -13,8 +13,8 @@ import 'controller_extension.dart';
 /// This widget handles the display and interaction for a single activity,
 /// including drag-to-move and resize functionality.
 class GanttActivityRow extends StatefulWidget {
-  /// The [GantActivity] to display in this row.
-  final GantActivity activity;
+  /// The [GanttActivity] to display in this row.
+  final GanttActivity activity;
 
   /// Creates a row for the specified activity.
   const GanttActivityRow({super.key, required this.activity});
@@ -118,7 +118,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Positioned(
             left: 0,
             bottom: 0,
-            child: LongPressDraggable<GantActivity>(
+            child: LongPressDraggable<GanttActivity>(
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -131,10 +131,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
-                  if (_ctrl.cellVisibleDays -
-                          (dxTotal / _ctrl.dayColumnWidth).round() >
-                      0) {
-                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp =
+                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays - daysDeltaTemp > 0 &&
+                      widget.activity.validStartMove(daysDeltaTemp)) {
+                    daysDelta = daysDeltaTemp;
                   }
                   _movementStartOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -154,7 +155,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Positioned(
             right: 0,
             top: 0,
-            child: LongPressDraggable<GantActivity>(
+            child: LongPressDraggable<GanttActivity>(
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -167,10 +168,11 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
-                  if (_ctrl.cellVisibleDays +
-                          (dxTotal / _ctrl.dayColumnWidth).round() >
-                      0) {
-                    daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp =
+                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  if (_ctrl.cellVisibleDays + daysDeltaTemp > 0 &&
+                      widget.activity.validEndMove(daysDeltaTemp)) {
+                    daysDelta = daysDeltaTemp;
                   }
                   _movementEndOffset = _ctrl.dayColumnWidth * daysDelta!;
                 });
@@ -190,7 +192,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ],
       );
 
-      final dragCell = LongPressDraggable<GantActivity>(
+      final dragCell = LongPressDraggable<GanttActivity>(
         data: activity,
         axis: Axis.horizontal,
         feedback: Material(
@@ -219,7 +221,12 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         onDragUpdate: (details) {
           _movementX ??= details.globalPosition.dx;
           final dxTotal = details.globalPosition.dx - _movementX!;
-          daysDelta = (dxTotal / _ctrl.dayColumnWidth).round();
+          final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth).round();
+          if (widget.activity.validMove(daysDeltaTemp) ||
+              (_ctrl.controller.allowParentIndependentDateMovement &&
+                  widget.activity.validMoveToParent(daysDeltaTemp))) {
+            daysDelta = daysDeltaTemp;
+          }
         },
         onDragEnd: (_) {
           if (daysDelta != null && daysDelta != 0) {
@@ -246,10 +253,6 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 (_movementStartOffset ?? 0) +
                 (_movementEndOffset ?? 0),
             child: _ctrl.controller.enableDraggable ? dragCell : cell,
-          ),
-          SizedBox(
-            width: ctrl.spaceAfter - (_movementEndOffset ?? 0),
-            child: Container(),
           ),
         ],
       );
