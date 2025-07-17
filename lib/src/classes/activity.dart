@@ -85,6 +85,12 @@ class GantActivity<T> {
   /// The parent activity, if this is a child activity.
   GantActivity? get parent => _parent;
 
+  /// The limit of the start date of the activity.
+  late DateTime? limitStart;
+
+  /// The limit of the end date of the activity.
+  late DateTime? limitEnd;
+
   /// Creates a [GantActivity] with the specified properties.
   ///
   /// Throws an [AssertionError] if:
@@ -111,6 +117,8 @@ class GantActivity<T> {
     this.showCell = true,
     this.builder,
     this.data,
+    this.limitStart,
+    this.limitEnd,
   }) : assert(
          start.toDate.isBeforeOrSame(end.toDate) &&
              ((title == null) != (titleWidget == null)) &&
@@ -148,7 +156,9 @@ class GantActivity<T> {
   List<GantActivity> get plainList => [this, ...children?.plainList ?? []];
 
   bool validStartMoveToParent(int days) =>
-      parent == null || start.addDays(days).isAfterOrSame(parent!.start);
+      parent == null ||
+      !parent!.showCell ||
+      start.addDays(days).isAfterOrSame(parent!.start);
 
   bool validStartMoveToChildren(int days) =>
       (children?.isEmpty ?? true) == true ||
@@ -161,7 +171,9 @@ class GantActivity<T> {
           );
 
   bool validEndMoveToParent(int days) =>
-      parent == null || end.addDays(days).isBeforeOrSame(parent!.end);
+      parent == null ||
+      !parent!.showCell ||
+      end.addDays(days).isBeforeOrSame(parent!.end);
 
   bool validEndMoveToChildren(int days) =>
       (children?.isEmpty ?? true) == true ||
@@ -175,10 +187,14 @@ class GantActivity<T> {
       validStartMoveToParent(days) && validEndMoveToParent(days);
 
   bool validStartMove(int days) =>
-      validStartMoveToParent(days) && validStartMoveToChildren(days);
+      validStartMoveToParent(days) &&
+      validStartMoveToChildren(days) &&
+      (limitStart == null || start.addDays(days).isAfterOrSame(limitStart!));
 
   bool validEndMove(int days) =>
-      validEndMoveToParent(days) && validEndMoveToChildren(days);
+      validEndMoveToParent(days) &&
+      validEndMoveToChildren(days) &&
+      (limitEnd == null || end.addDays(days).isBeforeOrSame(limitEnd!));
 
   bool validMove(int days) => validStartMove(days) && validEndMove(days);
 }
