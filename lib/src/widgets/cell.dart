@@ -10,8 +10,8 @@ import '../widgets/controller_extension.dart';
 /// Each cell visually represents the duration of an activity in the timeline.
 /// Supports hover effects, tap actions, and custom styling.
 class GanttCell extends StatefulWidget {
-  /// The [GantActivity] this cell represents.
-  final GantActivity activity;
+  /// The [GanttActivity] this cell represents.
+  final GanttActivity activity;
 
   /// Creates a [GanttCell] for the specified activity.
   ///

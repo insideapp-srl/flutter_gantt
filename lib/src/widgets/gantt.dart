@@ -19,15 +19,15 @@ class Gantt extends StatefulWidget {
   final DateTime? startDate;
 
   /// The list of activities to display (mutually exclusive with [activitiesAsync]).
-  final List<GantActivity>? activities;
+  final List<GanttActivity>? activities;
 
   /// Async function to load activities (mutually exclusive with [activities]).
   ///
   /// This function is called when the date range changes to fetch new activities.
-  final Future<List<GantActivity>> Function(
+  final Future<List<GanttActivity>> Function(
     DateTime startDate,
     DateTime endDate,
-    List<GantActivity> activities,
+    List<GanttActivity> activities,
   )?
   activitiesAsync;
 
@@ -49,7 +49,7 @@ class Gantt extends StatefulWidget {
   final GanttController? controller;
 
   /// Callback when an activity's dates changes.
-  final GantActivityOnChangedEvent? onActivityChanged;
+  final GanttActivityOnChangedEvent? onActivityChanged;
 
   /// Enable draggable cell.
   final bool enableDraggable;
@@ -168,7 +168,7 @@ class _GanttState extends State<Gantt> {
 
   Future<void> _getAsync() async {
     if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
-      var activities = <GantActivity>[];
+      var activities = <GanttActivity>[];
       var holidays = <GantDateHoliday>[];
       setState(() {
         _loading = true;

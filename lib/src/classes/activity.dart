@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/datetime.dart';
 
 /// An action that can be performed on a Gantt activity.
-class GantActivityAction {
+class GanttActivityAction {
   /// The icon representing the action.
   final IconData icon;
 
@@ -14,7 +14,7 @@ class GantActivityAction {
   final String? tooltip;
 
   /// Creates an activity action with an icon, tap handler, and optional tooltip.
-  const GantActivityAction({
+  const GanttActivityAction({
     required this.icon,
     required this.onTap,
     this.tooltip,
@@ -25,7 +25,7 @@ class GantActivityAction {
 ///
 /// Each activity has a start/end date, title, and optional styling properties.
 /// Activities can be hierarchical with parent-child relationships.
-class GantActivity<T> {
+class GanttActivity<T> {
   /// Unique identifier for the activity.
   late String key;
 
@@ -54,16 +54,16 @@ class GantActivity<T> {
   final Widget? iconTitle;
 
   /// The segments that make up this activity.
-  final List<GantActivitySegment>? segments;
+  final List<GanttActivitySegment>? segments;
 
   /// Child activities that are hierarchically under this one.
-  final List<GantActivity>? children;
+  final List<GanttActivity>? children;
 
   /// Actions that can be performed on this activity.
-  final List<GantActivityAction>? actions;
+  final List<GanttActivityAction>? actions;
 
   /// Callback when the activity cell is tapped.
-  final Function(GantActivity activity)? onCellTap;
+  final Function(GanttActivity activity)? onCellTap;
 
   /// Builder function for custom single cell rendering.
   final Widget Function(DateTime cellDate)? cellBuilder;
@@ -75,15 +75,15 @@ class GantActivity<T> {
   final bool showCell;
 
   /// Builder function for custom cell rendering.
-  final Widget Function(GantActivity activity)? builder;
+  final Widget Function(GanttActivity activity)? builder;
 
   /// Optional custom data associated with the activity.
   final T? data;
 
-  GantActivity? _parent;
+  GanttActivity? _parent;
 
   /// The parent activity, if this is a child activity.
-  GantActivity? get parent => _parent;
+  GanttActivity? get parent => _parent;
 
   /// The limit of the start date of the activity.
   late DateTime? limitStart;
@@ -91,14 +91,14 @@ class GantActivity<T> {
   /// The limit of the end date of the activity.
   late DateTime? limitEnd;
 
-  /// Creates a [GantActivity] with the specified properties.
+  /// Creates a [GanttActivity] with the specified properties.
   ///
   /// Throws an [AssertionError] if:
   /// - Start date is after end date
   /// - Only one between [title] and [titleWidget] must be provided
   /// - Any segment dates fall outside the activity dates
   /// - Any child activity dates fall outside this activity's dates
-  GantActivity({
+  GanttActivity({
     required this.key,
     required DateTime start,
     required DateTime end,
@@ -153,7 +153,7 @@ class GantActivity<T> {
   String toString() => title ?? super.toString();
 
   /// Gets a flat list of this activity and all its descendants.
-  List<GantActivity> get plainList => [this, ...children?.plainList ?? []];
+  List<GanttActivity> get plainList => [this, ...children?.plainList ?? []];
 
   bool validStartMoveToParent(int days) =>
       parent == null ||
@@ -199,11 +199,11 @@ class GantActivity<T> {
   bool validMove(int days) => validStartMove(days) && validEndMove(days);
 }
 
-/// Extension methods for working with lists of [GantActivity].
-extension GantActivityListExtension on List<GantActivity> {
+/// Extension methods for working with lists of [GanttActivity].
+extension GanttActivityListExtension on List<GanttActivity> {
   /// Gets a flat list of all activities and their descendants.
-  List<GantActivity> get plainList {
-    final as = <GantActivity>[];
+  List<GanttActivity> get plainList {
+    final as = <GanttActivity>[];
     for (var a in this) {
       as.addAll(a.plainList);
     }
@@ -211,7 +211,7 @@ extension GantActivityListExtension on List<GantActivity> {
   }
 
   /// Finds an activity by its key in the flattened list.
-  GantActivity? getFromKey(String key) {
+  GanttActivity? getFromKey(String key) {
     final i = plainList.indexWhere((e) => e.key == key);
     return i < 0 ? null : plainList[i];
   }
@@ -220,7 +220,7 @@ extension GantActivityListExtension on List<GantActivity> {
 /// A segment of a Gantt activity.
 ///
 /// Activities can be divided into segments to show progress or phases.
-class GantActivitySegment {
+class GanttActivitySegment {
   /// The start date of the segment.
   late DateTime start;
 
@@ -234,15 +234,15 @@ class GantActivitySegment {
   final String description;
 
   /// Callback when the segment is tapped.
-  final Function(GantActivity activity)? onTap;
+  final Function(GanttActivity activity)? onTap;
 
   /// The color of the segment.
   final Color? color;
 
-  /// Creates a [GantActivitySegment].
+  /// Creates a [GanttActivitySegment].
   ///
   /// Throws an [AssertionError] if start date is after end date.
-  GantActivitySegment({
+  GanttActivitySegment({
     required DateTime start,
     required DateTime end,
     required this.title,

@@ -13,8 +13,8 @@ import 'controller_extension.dart';
 /// This widget handles the display and interaction for a single activity,
 /// including drag-to-move and resize functionality.
 class GanttActivityRow extends StatefulWidget {
-  /// The [GantActivity] to display in this row.
-  final GantActivity activity;
+  /// The [GanttActivity] to display in this row.
+  final GanttActivity activity;
 
   /// Creates a row for the specified activity.
   const GanttActivityRow({super.key, required this.activity});
@@ -118,7 +118,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Positioned(
             left: 0,
             bottom: 0,
-            child: LongPressDraggable<GantActivity>(
+            child: LongPressDraggable<GanttActivity>(
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -155,7 +155,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           Positioned(
             right: 0,
             top: 0,
-            child: LongPressDraggable<GantActivity>(
+            child: LongPressDraggable<GanttActivity>(
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -192,7 +192,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ],
       );
 
-      final dragCell = LongPressDraggable<GantActivity>(
+      final dragCell = LongPressDraggable<GanttActivity>(
         data: activity,
         axis: Axis.horizontal,
         feedback: Material(

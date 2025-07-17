@@ -54,7 +54,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final GanttController controller;
-  late final List<GantActivity> _activities;
+  late final List<GanttActivity> _activities;
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     controller.addOnActivityChangedListener(_onActivityChanged);
     _activities = [
       // ✅ Main activity with children inside range
-      GantActivity(
+      GanttActivity(
         key: 'task1',
         start: now.subtract(const Duration(days: 3)),
         end: now.add(const Duration(days: 6)),
@@ -87,24 +87,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         actions: [
-          GantActivityAction(
+          GanttActivityAction(
             icon: Icons.visibility,
             tooltip: 'View',
             onTap: () => debugPrint('Viewing WO-1001'),
           ),
-          GantActivityAction(
+          GanttActivityAction(
             icon: Icons.edit,
             tooltip: 'Edit',
             onTap: () => debugPrint('Editing WO-1001'),
           ),
-          GantActivityAction(
+          GanttActivityAction(
             icon: Icons.delete,
             tooltip: 'Delete',
             onTap: () => debugPrint('Deleting WO-1001'),
           ),
         ],
         children: [
-          GantActivity(
+          GanttActivity(
             key: 'task1.sub1',
             start: now.subtract(const Duration(days: 2)),
             end: now.add(const Duration(days: 1)),
@@ -112,14 +112,14 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'WO-1001-1 | Subtask',
             color: const Color(0xFF81C784),
             actions: [
-              GantActivityAction(
+              GanttActivityAction(
                 icon: Icons.check,
                 tooltip: 'Mark done',
                 onTap: () => debugPrint('Marking subtask done'),
               ),
             ],
           ),
-          GantActivity(
+          GanttActivity(
             key: 'task1.sub2',
             start: now,
             end: now.add(const Duration(days: 5)),
@@ -127,14 +127,14 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'WO-1001-2 | Subtask with nested children',
             color: const Color(0xFF9575CD),
             actions: [
-              GantActivityAction(
+              GanttActivityAction(
                 icon: Icons.add,
                 tooltip: 'Add nested task',
                 onTap: () => debugPrint('Add nested to WO-1001-2'),
               ),
             ],
             children: [
-              GantActivity(
+              GanttActivity(
                 key: 'task1.sub2.subA',
                 start: now.add(const Duration(days: 1)),
                 end: now.add(const Duration(days: 3)),
@@ -142,14 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 tooltip: 'WO-1001-2A | Second-level task',
                 color: const Color(0xFFBA68C8),
                 actions: [
-                  GantActivityAction(
+                  GanttActivityAction(
                     icon: Icons.edit,
                     tooltip: 'Edit',
                     onTap: () => debugPrint('Editing nested A'),
                   ),
                 ],
               ),
-              GantActivity(
+              GanttActivity(
                 key: 'task1.sub2.subB',
                 start: now.add(const Duration(days: 2)),
                 end: now.add(const Duration(days: 4)),
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 tooltip: 'WO-1001-2B | Continued',
                 color: const Color(0xFFFF8A65),
                 actions: [
-                  GantActivityAction(
+                  GanttActivityAction(
                     icon: Icons.delete,
                     tooltip: 'Delete',
                     onTap: () => debugPrint('Deleting nested B'),
@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       // ✅ Standalone task near today
-      GantActivity(
+      GanttActivity(
         key: 'task2',
         start: now.add(const Duration(days: 1)),
         end: now.add(const Duration(days: 8)),
@@ -180,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       // ✅ Activity from one month ago
-      GantActivity(
+      GanttActivity(
         key: 'task3',
         start: monthAgo.subtract(const Duration(days: 3)),
         end: monthAgo.add(const Duration(days: 3)),
@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       // ✅ Activity a few days ago
-      GantActivity(
+      GanttActivity(
         key: 'task4',
         start: now.subtract(const Duration(days: 10)),
         end: now.subtract(const Duration(days: 4)),
@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       // ✅ Future activity
-      GantActivity(
+      GanttActivity(
         key: 'task5',
         start: monthLater.subtract(const Duration(days: 5)),
         end: monthLater.add(const Duration(days: 2)),
@@ -210,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       // ✅ Long-term task
-      GantActivity(
+      GanttActivity(
         key: 'task6',
         start: now.subtract(const Duration(days: 10)),
         end: monthLater,

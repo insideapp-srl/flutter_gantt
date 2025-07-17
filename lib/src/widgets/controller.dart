@@ -5,8 +5,8 @@ import '../classes/date_holiday.dart';
 import '../utils/datetime.dart';
 
 /// Callback type for activity dates changes.
-typedef GantActivityOnChangedEvent =
-    void Function(GantActivity activity, DateTime? start, DateTime? end);
+typedef GanttActivityOnChangedEvent =
+    void Function(GanttActivity activity, DateTime? start, DateTime? end);
 
 /// Controls the state and behavior of a [Gantt] widget.
 ///
@@ -14,10 +14,10 @@ typedef GantActivityOnChangedEvent =
 /// user interactions like date range changes and activity modifications.
 class GanttController extends ChangeNotifier {
   DateTime _startDate;
-  List<GantActivity> _activities = [];
+  List<GanttActivity> _activities = [];
   List<GantDateHoliday> _holidays = [];
   int _daysViews;
-  final List<GantActivityOnChangedEvent> _onActivityChangedListeners = [];
+  final List<GanttActivityOnChangedEvent> _onActivityChangedListeners = [];
   double gridWidth = 0;
   List<DateTime> _highlightedDates = [];
   bool _enableDraggable = true;
@@ -36,10 +36,10 @@ class GanttController extends ChangeNotifier {
   }
 
   /// The list of activities in the Gantt chart.
-  List<GantActivity> get activities => _activities;
+  List<GanttActivity> get activities => _activities;
 
   /// Sets the activities list and optionally notifies listeners.
-  void setActivities(List<GantActivity> value, {bool notify = true}) {
+  void setActivities(List<GanttActivity> value, {bool notify = true}) {
     if (value != _activities) {
       _activities = value;
       if (notify) {
@@ -185,16 +185,16 @@ class GanttController extends ChangeNotifier {
       _daysViews = 30;
 
   /// Adds a listener for activity dates changes.
-  void addOnActivityChangedListener(GantActivityOnChangedEvent listener) {
+  void addOnActivityChangedListener(GanttActivityOnChangedEvent listener) {
     _onActivityChangedListeners.add(listener);
   }
 
   /// Removes a listener for activity dates changes.
-  void removeOnActivityChangedListener(GantActivityOnChangedEvent listener) {
+  void removeOnActivityChangedListener(GanttActivityOnChangedEvent listener) {
     _onActivityChangedListeners.remove(listener);
   }
 
   /// Gets the list of dates change listeners.
-  List<GantActivityOnChangedEvent> get onActivityChangedListeners =>
+  List<GanttActivityOnChangedEvent> get onActivityChangedListeners =>
       _onActivityChangedListeners;
 }
