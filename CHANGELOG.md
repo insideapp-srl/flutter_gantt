@@ -1,3 +1,11 @@
+## [0.9.3] - 2025-07-17
+
+@RichiB20
+
+* Add parent and children limitation during dragging
+* Add `limitStart` and `limitEnd` for activity
+* Add `allowParentIndependentDateMovement` for gantt
+
 ## [0.9.2] - 2025-07-08
 
 @rickypid
