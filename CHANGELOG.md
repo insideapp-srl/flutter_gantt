@@ -1,3 +1,14 @@
+## [0.10.0] - 2025-07-18
+
+@RichiB20
+
+The version 0.9.3 brings the following breaking changes:
+
+* BREAKING CHANGES - Rename `GantActivity` in `GanttActivity`
+* BREAKING CHANGES - Rename `GantActivityAction` in `GanttActivityAction`
+* BREAKING CHANGES - Rename `GantActivitySegment` in `GanttActivitySegment`
+* BREAKING CHANGES - Rename `GantActivityOnChangedEvent` in `GanttActivityOnChangedEvent`
+
 ## [0.9.3] - 2025-07-17
 
 @RichiB20
