@@ -64,8 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final monthAgo = now.subtract(const Duration(days: 30));
     final monthLater = now.add(const Duration(days: 30));
 
-    controller =
-        GanttController(startDate: now.subtract(const Duration(days: 14)));
+    controller = GanttController(
+      startDate: now.subtract(const Duration(days: 14)),
+      //daysViews: 10, // Optional: you can set the number of days to be displayed
+    );
 
     controller.addOnActivityChangedListener(_onActivityChanged);
     _activities = [

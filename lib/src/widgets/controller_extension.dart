@@ -1,9 +1,8 @@
 // controller_extension.dart
 import 'package:flutter/material.dart';
 
-import '../classes/activity.dart';
+import '../../flutter_gantt.dart';
 import '../utils/datetime.dart';
-import 'controller.dart';
 
 /// Internal extension methods for [GanttController] providing date calculations
 /// and activity positioning logic.
@@ -58,12 +57,27 @@ extension GanttCtrlInternal on GanttController {
     return monthNames[month];
   }
 
+  /// The number of days currently visible in the chart.
+  int get internalDaysViews {
+    if (daysViews != null) {
+      return daysViews!;
+    }
+    return (gridWidth / theme.dayMinWidth).floor();
+  }
+
+  /// The calculated width of each day column based on current grid width.
+  double get dayColumnWidth => gridWidth / internalDaysViews;
+
+  /// The end date of the visible range (calculated).
+  DateTime get endDate => startDate.add(Duration(days: internalDaysViews - 1));
+
   /// The list of dates currently visible in the Gantt chart.
-  List<DateTime> get days => GanttCtrlInternal.getDays(startDate, daysViews);
+  List<DateTime> get days =>
+      GanttCtrlInternal.getDays(startDate, internalDaysViews);
 
   /// The months and day counts currently visible in the Gantt chart.
   Map<String, int> get months =>
-      GanttCtrlInternal.getMonths(startDate, daysViews);
+      GanttCtrlInternal.getMonths(startDate, internalDaysViews);
 
   /// Clamps a date to the currently visible date range.
   ///
@@ -130,9 +144,6 @@ class GanttActivityCtrl extends ChangeNotifier {
 
   /// The start date of the visible range.
   DateTime get startDate => controller.startDate;
-
-  /// The number of days visible in the chart.
-  int get daysViews => controller.daysViews;
 
   /// The list of visible dates.
   List<DateTime> get days => controller.days;
