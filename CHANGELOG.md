@@ -1,3 +1,14 @@
+## [1.0.0] - 2025-08-25
+
+@rickypid
+
+* Add `daysViews` as a controller parameter, this allows you to establish a view with the desired days. (#11)
+
+### Update dependencies
+
+- provider: ^6.1.5+1
+- flutter_lints: ^6.0.0
+
 ## [0.10.0] - 2025-07-18
 
 @RichiB20

@@ -6,6 +6,7 @@ import '../../flutter_gantt.dart';
 import 'activities_grid.dart';
 import 'activities_list.dart';
 import 'calendar_grid.dart';
+import 'controller_extension.dart';
 
 /// A customizable Gantt chart widget for Flutter.
 ///
@@ -107,6 +108,7 @@ class _GanttState extends State<Gantt> {
     theme = widget.theme ?? GanttTheme();
     controller =
         widget.controller ?? GanttController(startDate: widget.startDate);
+    controller.theme = theme;
     controller.addFetchListener(_getAsync);
     if (widget.onActivityChanged != null) {
       controller.addOnActivityChangedListener(widget.onActivityChanged!);
@@ -145,7 +147,7 @@ class _GanttState extends State<Gantt> {
       _lastPosition = details.localPosition;
 
   void _handlePanUpdate(DragUpdateDetails details, double maxWidth) {
-    final dayWidth = maxWidth / controller.daysViews;
+    final dayWidth = maxWidth / controller.internalDaysViews;
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
       if (dx.isNegative) {
@@ -225,13 +227,8 @@ class _GanttState extends State<Gantt> {
                     flex: 4,
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        final newDaysViews =
-                            (constraints.maxWidth / theme.dayMinWidth).floor();
-                        if (newDaysViews != c.daysViews) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            c.daysViews = newDaysViews;
-                          });
-                        }
+                        controller.gridWidth = constraints.maxWidth;
+
                         return GestureDetector(
                           onPanStart: _handlePanStart,
                           onPanUpdate:
@@ -244,14 +241,9 @@ class _GanttState extends State<Gantt> {
                           child: Stack(
                             children: [
                               CalendarGrid(holidays: c.holidays),
-                              LayoutBuilder(
-                                builder: (context, constraints) {
-                                  controller.gridWidth = constraints.maxWidth;
-                                  return ActivitiesGrid(
-                                    activities: c.activities,
-                                    controller: _gridColumnsController,
-                                  );
-                                },
+                              ActivitiesGrid(
+                                activities: c.activities,
+                                controller: _gridColumnsController,
                               ),
                             ],
                           ),

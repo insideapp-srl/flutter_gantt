@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../classes/activity.dart';
-import '../classes/date_holiday.dart';
+import '../../flutter_gantt.dart';
 import '../utils/datetime.dart';
 
 /// Callback type for activity dates changes.
@@ -16,12 +15,18 @@ class GanttController extends ChangeNotifier {
   DateTime _startDate;
   List<GanttActivity> _activities = [];
   List<GantDateHoliday> _holidays = [];
-  int _daysViews;
+  int? _daysViews;
   final List<GanttActivityOnChangedEvent> _onActivityChangedListeners = [];
   double gridWidth = 0;
   List<DateTime> _highlightedDates = [];
   bool _enableDraggable = true;
   bool _allowParentIndependentDateMovement = false;
+
+  GanttTheme? _theme;
+
+  GanttTheme get theme => _theme ?? GanttTheme();
+
+  set theme(GanttTheme? value) => _theme = value;
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -103,22 +108,16 @@ class GanttController extends ChangeNotifier {
     }
   }
 
-  /// The number of days currently visible in the chart.
-  int get daysViews => _daysViews;
+  /// The number of days currently visible in the chart, if null will be calculated automatically
+  int? get daysViews => _daysViews;
 
-  /// The calculated width of each day column based on current grid width.
-  double get dayColumnWidth => gridWidth / daysViews;
-
-  /// Sets the number of visible days and notifies listeners if changed.
-  set daysViews(int value) {
+  /// Sets the number of visible days and notifies listeners if changed, if set to null will be calculated automatically
+  set daysViews(int? value) {
     if (value != _daysViews) {
       _daysViews = value;
       notifyListeners();
     }
   }
-
-  /// The end date of the visible range (calculated).
-  DateTime get endDate => startDate.add(Duration(days: daysViews - 1));
 
   /// Moves the view forward by [days] and optionally fetches new data.
   ///
@@ -178,11 +177,11 @@ class GanttController extends ChangeNotifier {
   /// Creates a [GanttController] with optional start date.
   ///
   /// If no [startDate] is provided, defaults to 30 days before today.
-  GanttController({DateTime? startDate})
+  GanttController({DateTime? startDate, int? daysViews})
     : _startDate =
           (startDate?.toDate ??
               DateTime.now().toDate.subtract(Duration(days: 30))),
-      _daysViews = 30;
+      _daysViews = daysViews;
 
   /// Adds a listener for activity dates changes.
   void addOnActivityChangedListener(GanttActivityOnChangedEvent listener) {
