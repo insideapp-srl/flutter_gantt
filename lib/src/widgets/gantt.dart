@@ -61,6 +61,12 @@ class Gantt extends StatefulWidget {
   /// The list of dates to highlight
   final List<DateTime>? highlightedDates;
 
+  /// The flex ratio for the activities list column (default: 1).
+  final int activitiesListFlex;
+
+  /// The flex ratio for the grid area column (default: 4).
+  final int gridAreaFlex;
+
   /// Creates a [Gantt] chart widget.
   ///
   /// Throws an [AssertionError] if:
@@ -80,6 +86,8 @@ class Gantt extends StatefulWidget {
     this.highlightedDates,
     this.enableDraggable = true,
     this.allowParentIndependentDateMovement = false,
+    this.activitiesListFlex = 1,
+    this.gridAreaFlex = 4,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -217,14 +225,14 @@ class _GanttState extends State<Gantt> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: widget.activitiesListFlex,
                     child: ActivitiesList(
                       activities: c.activities,
                       controller: _listController,
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: widget.gridAreaFlex,
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         controller.gridWidth = constraints.maxWidth;
