@@ -1,3 +1,9 @@
+## [1.0.1] - 2025-11-16
+
+@r1wtn
+
+* Customizable flex ratios for activities list and grid area. (#18)
+ 
 ## [1.0.0] - 2025-08-25
 
 @rickypid
