@@ -224,7 +224,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onActivityChanged(
-      GanttActivity activity, DateTime? start, DateTime? end) {
+    GanttActivity activity,
+    DateTime? start,
+    DateTime? end,
+  ) {
     if (start != null && end != null) {
       debugPrint('$activity was moved (Event on controller)');
     } else if (start != null) {
