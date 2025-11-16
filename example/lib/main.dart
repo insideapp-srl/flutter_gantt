@@ -295,6 +295,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ];
                 },
+                activitiesListFlex: 1,
+                gridAreaFlex: 4,
                 onActivityChanged: (activity, start, end) {
                   if (start != null && end != null) {
                     debugPrint('$activity was moved (Event on widget)');
