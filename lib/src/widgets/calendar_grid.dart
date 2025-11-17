@@ -65,7 +65,7 @@ class CalendarGrid extends StatelessWidget {
             // Month headers row
             Builder(
               builder: (context) {
-                final months = c.months.entries.toList();
+                final months = c.getMonths(Localizations.localeOf(context).toLanguageTag()).entries.toList();
                 return Row(
                   children: List.generate(months.length, (i) {
                     final month = months[i];
@@ -98,40 +98,41 @@ class CalendarGrid extends StatelessWidget {
               },
             ),
             // Week numbers row
-            Builder(
-              builder: (context) {
-                final weeks = c.weeks.entries.toList();
-                return Row(
-                  children: List.generate(weeks.length, (i) {
-                    final week = weeks[i];
-                    return Expanded(
-                      flex: week.value,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                'W${week.key}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+            if (showIsoWeek)
+              Builder(
+                builder: (context) {
+                  final weeks = c.weeks.entries.toList();
+                  return Row(
+                    children: List.generate(weeks.length, (i) {
+                      final week = weeks[i];
+                      return Expanded(
+                        flex: week.value,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  'W${week.key}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            width: 1,
-                            color:
-                                (i < weeks.length - 1)
-                                    ? Colors.grey
-                                    : Colors.transparent,
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                );
-              },
-            ),
+                            Container(
+                              width: 1,
+                              color:
+                                  (i < weeks.length - 1)
+                                      ? Colors.grey
+                                      : Colors.transparent,
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
             // Days grid
             Expanded(
               child: Row(

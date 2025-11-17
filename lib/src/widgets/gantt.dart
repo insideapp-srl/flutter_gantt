@@ -236,6 +236,7 @@ class _GanttState extends State<Gantt> {
                     child: ActivitiesList(
                       activities: c.activities,
                       controller: _listController,
+                      showIsoWeek: widget.showIsoWeek,
                     ),
                   ),
                   Expanded(
@@ -261,6 +262,7 @@ class _GanttState extends State<Gantt> {
                               ActivitiesGrid(
                                 activities: c.activities,
                                 controller: _gridColumnsController,
+                                showIsoWeek: widget.showIsoWeek,
                               ),
                             ],
                           ),

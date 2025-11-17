@@ -19,7 +19,19 @@ class ActivitiesList extends StatelessWidget {
   /// Creates an [ActivitiesList] widget.
   ///
   /// [activities] must not be null and should contain at least one activity.
-  const ActivitiesList({super.key, required this.activities, this.controller});
+  /// [showIsoWeek] enables the ISO week-number row (default: `false`).
+  const ActivitiesList({
+    super.key,
+    required this.activities,
+    this.controller,
+    this.showIsoWeek = false,
+  });
+
+  /// Whether to show the ISO week number row.
+  ///
+  /// If `true`, a row displaying ISO-8601 week numbers is shown
+  /// between the month headers and the day cells.
+  final bool showIsoWeek;
 
   /// Recursively builds widgets for activities and their children.
   ///
@@ -92,7 +104,9 @@ class ActivitiesList extends StatelessWidget {
   Widget build(BuildContext context) => Consumer<GanttTheme>(
     builder:
         (context, theme, child) => Padding(
-          padding: EdgeInsets.only(top: theme.headerHeight),
+          padding: EdgeInsets.only(
+            top: theme.headerHeight + (showIsoWeek ? 10 : 0),
+          ),
           child: ListView(
             controller: controller,
             children: getItems(activities, theme),

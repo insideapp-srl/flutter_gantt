@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gantt/flutter_gantt.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -27,6 +29,16 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
           ),
         ),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'), // English
+          Locale('it'), // Italian
+        ],
+        locale: Locale('en'),
         home: const MyHomePage(title: 'Flutter Gantt'),
       );
 }
@@ -258,6 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: controller,
                 activitiesAsync: (startDate, endDate, activity) async =>
                     _activities,
+                showIsoWeek: true,
                 holidaysAsync: (startDate, endDate, holidays) async {
                   final currentYear = DateTime.now().year;
                   return <GantDateHoliday>[
