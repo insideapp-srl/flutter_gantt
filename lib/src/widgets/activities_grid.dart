@@ -18,10 +18,22 @@ class ActivitiesGrid extends StatelessWidget {
   /// Typically used with [LinkedScrollControllerGroup] to sync with the activity list.
   final ScrollController? controller;
 
+  /// Whether to show the ISO week number row.
+  ///
+  /// If `true`, a row displaying ISO-8601 week numbers is shown
+  /// between the month headers and the day cells.
+  final bool showIsoWeek;
+
   /// Creates an [ActivitiesGrid] widget.
   ///
   /// [activities] must not be null and should contain at least one activity.
-  const ActivitiesGrid({super.key, required this.activities, this.controller});
+  /// [showIsoWeek] enables the ISO week-number row (default: `false`).
+  const ActivitiesGrid({
+    super.key,
+    required this.activities,
+    this.controller,
+    this.showIsoWeek = false,
+  });
 
   /// Recursively builds widgets for activities and their children.
   ///
@@ -53,7 +65,9 @@ class ActivitiesGrid extends StatelessWidget {
   Widget build(BuildContext context) => Consumer<GanttTheme>(
     builder:
         (context, theme, child) => Padding(
-          padding: EdgeInsets.only(top: theme.headerHeight),
+          padding: EdgeInsets.only(
+            top: theme.headerHeight + (showIsoWeek ? 10 : 0),
+          ),
           child: ListView(
             controller: controller,
             children: getItems(activities, theme),

@@ -1,5 +1,6 @@
 // controller_extension.dart
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../flutter_gantt.dart';
 import '../utils/datetime.dart';
@@ -14,7 +15,11 @@ extension GanttCtrlInternal on GanttController {
   /// Groups days by month and calculates days per month.
   ///
   /// Returns a map where keys are month names and values are day counts.
-  static Map<String, int> getMonths(DateTime startDate, int days) {
+  static Map<String, int> getNamedMonths(
+    DateTime startDate,
+    int days,
+    String locale,
+  ) {
     final result = <String, int>{};
     var currentDate = startDate;
     var remainingDays = days;
@@ -27,7 +32,7 @@ extension GanttCtrlInternal on GanttController {
       final countedDays =
           remainingDays < daysLeftInMonth ? remainingDays : daysLeftInMonth;
 
-      final monthName = _monthName(currentDate.month);
+      final monthName = _monthName(currentDate.month, locale);
       result[monthName] = (result[monthName] ?? 0) + countedDays;
 
       remainingDays -= countedDays;
@@ -37,24 +42,20 @@ extension GanttCtrlInternal on GanttController {
     return result;
   }
 
-  /// Gets the English month name for 1-based month index.
-  static String _monthName(int month) {
-    const monthNames = [
-      '',
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    return monthNames[month];
+  /// Returns the localized month name for a 1-based month index.
+  ///
+  /// Uses the ICU/CLDR data provided by the `intl` package.
+  /// Example:
+  /// ```dart
+  /// monthName(3, locale: 'it'); // → "marzo"
+  /// monthName(3, locale: 'en'); // → "March"
+  /// ```
+  ///
+  /// [locale] must be a valid ICU locale like "en", "it", "es", "fr", "de", etc.
+  static String _monthName(int month, String locale) {
+    final date = DateTime(2000, month, 1);
+    final name = DateFormat.MMMM(locale).format(date);
+    return name[0].toUpperCase() + name.substring(1);
   }
 
   /// The number of days currently visible in the chart.
@@ -76,8 +77,8 @@ extension GanttCtrlInternal on GanttController {
       GanttCtrlInternal.getDays(startDate, internalDaysViews);
 
   /// The months and day counts currently visible in the Gantt chart.
-  Map<String, int> get months =>
-      GanttCtrlInternal.getMonths(startDate, internalDaysViews);
+  Map<String, int> getMonths(String locale) =>
+      GanttCtrlInternal.getNamedMonths(startDate, internalDaysViews, locale);
 
   /// Clamps a date to the currently visible date range.
   ///
@@ -125,6 +126,21 @@ extension GanttCtrlInternal on GanttController {
     for (var listener in onActivityChangedListeners) {
       listener(activity, start, end);
     }
+  }
+
+  /// Returns a map of ISO week numbers to the number of days
+  /// contained in each week within the current visible range.
+  ///
+  /// Example:
+  /// `{1: 7, 2: 7, 3: 5}`
+
+  Map<int, int> get weeks {
+    final map = <int, int>{};
+    for (final d in days) {
+      final w = d.isoWeekNumber;
+      map[w] = (map[w] ?? 0) + 1;
+    }
+    return map;
   }
 }
 

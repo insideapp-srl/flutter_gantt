@@ -1,3 +1,13 @@
+## [1.1.0] - 2025-11-17
+
+@rickypid
+
+- Support for displaying ISO-8601 week numbers in the calendar grid.
+- New showIsoWeek parameter in both CalendarGrid and Gantt widgets to enable week-number rendering.
+- ISO week calculation via isoWeekNumber extension on DateTime.
+- weeks getter to group visible days by ISO week and compute flex distribution.
+- Documentation for all newly introduced properties, methods, and extensions.
+
 ## [1.0.1] - 2025-11-16
 
 @r1wtn

@@ -1,6 +1,6 @@
 name: flutter_gantt
 description: "Flutter package for rendering an interactive and customizable Gantt chart widget."
-version: 1.0.1
+version: 1.1.0
 homepage: https://github.com/insideapp-srl/flutter_gantt
 repository: https://github.com/insideapp-srl/flutter_gantt
 
@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.20.2
   linked_scroll_controller: ^0.2.0
   provider: ^6.1.5+1
 

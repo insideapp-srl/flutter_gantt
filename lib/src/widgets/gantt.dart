@@ -67,12 +67,19 @@ class Gantt extends StatefulWidget {
   /// The flex ratio for the grid area column (default: 4).
   final int gridAreaFlex;
 
+  /// Whether to show the ISO week number row.
+  ///
+  /// If `true`, a row displaying ISO-8601 week numbers is shown
+  /// between the month headers and the day cells.
+  final bool showIsoWeek;
+
   /// Creates a [Gantt] chart widget.
   ///
   /// Throws an [AssertionError] if:
   /// - Neither [startDate] nor [controller] is provided
   /// - Both [activities] and [activitiesAsync] are provided or both are null
   /// - Both [holidays] and [holidaysAsync] are provided
+  /// [showIsoWeek] enables the ISO week-number row (default: `false`).
   const Gantt({
     super.key,
     this.startDate,
@@ -88,6 +95,7 @@ class Gantt extends StatefulWidget {
     this.allowParentIndependentDateMovement = false,
     this.activitiesListFlex = 1,
     this.gridAreaFlex = 4,
+    this.showIsoWeek = false,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -229,6 +237,7 @@ class _GanttState extends State<Gantt> {
                     child: ActivitiesList(
                       activities: c.activities,
                       controller: _listController,
+                      showIsoWeek: widget.showIsoWeek,
                     ),
                   ),
                   Expanded(
@@ -236,7 +245,6 @@ class _GanttState extends State<Gantt> {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         controller.gridWidth = constraints.maxWidth;
-
                         return GestureDetector(
                           onPanStart: _handlePanStart,
                           onPanUpdate:
@@ -248,10 +256,14 @@ class _GanttState extends State<Gantt> {
                           onPanCancel: _handlePanCancel,
                           child: Stack(
                             children: [
-                              CalendarGrid(holidays: c.holidays),
+                              CalendarGrid(
+                                holidays: c.holidays,
+                                showIsoWeek: widget.showIsoWeek,
+                              ),
                               ActivitiesGrid(
                                 activities: c.activities,
                                 controller: _gridColumnsController,
+                                showIsoWeek: widget.showIsoWeek,
                               ),
                             ],
                           ),
