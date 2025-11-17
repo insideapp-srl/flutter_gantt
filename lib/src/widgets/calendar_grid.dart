@@ -65,7 +65,13 @@ class CalendarGrid extends StatelessWidget {
             // Month headers row
             Builder(
               builder: (context) {
-                final months = c.getMonths(Localizations.localeOf(context).toLanguageTag()).entries.toList();
+                final months =
+                    c
+                        .getMonths(
+                          Localizations.localeOf(context).toLanguageTag(),
+                        )
+                        .entries
+                        .toList();
                 return Row(
                   children: List.generate(months.length, (i) {
                     final month = months[i];

@@ -15,7 +15,11 @@ extension GanttCtrlInternal on GanttController {
   /// Groups days by month and calculates days per month.
   ///
   /// Returns a map where keys are month names and values are day counts.
-  static Map<String, int> getNamedMonths(DateTime startDate, int days, String locale) {
+  static Map<String, int> getNamedMonths(
+    DateTime startDate,
+    int days,
+    String locale,
+  ) {
     final result = <String, int>{};
     var currentDate = startDate;
     var remainingDays = days;
@@ -28,7 +32,7 @@ extension GanttCtrlInternal on GanttController {
       final countedDays =
           remainingDays < daysLeftInMonth ? remainingDays : daysLeftInMonth;
 
-      final monthName = _monthName(currentDate.month,  locale);
+      final monthName = _monthName(currentDate.month, locale);
       result[monthName] = (result[monthName] ?? 0) + countedDays;
 
       remainingDays -= countedDays;
