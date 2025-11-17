@@ -79,6 +79,7 @@ class Gantt extends StatefulWidget {
   /// - Neither [startDate] nor [controller] is provided
   /// - Both [activities] and [activitiesAsync] are provided or both are null
   /// - Both [holidays] and [holidaysAsync] are provided
+  /// [showIsoWeek] enables the ISO week-number row (default: `false`).
   const Gantt({
     super.key,
     this.startDate,

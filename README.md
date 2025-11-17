@@ -71,13 +71,14 @@ Gantt(
 
 The main chart container with these key properties:
 
-| Property     | Type                   | Description                |
-|--------------|------------------------|----------------------------|
-| `startDate`  | DateTime               | Initial visible date       |
-| `activities` | List<GanttActivity>    | Activities to display      |
-| `holidays`   | List<GanttDateHoliday> | Special dates to highlight |
-| `theme`      | GanttTheme             | Visual customization       |
-| `controller` | GanttController        | Programmatic control       |
+| Property      | Type                   | Description                     |
+|---------------|------------------------|---------------------------------|
+| `startDate`   | DateTime               | Initial visible date            |
+| `activities`  | List<GanttActivity>    | Activities to display           |
+| `holidays`    | List<GanttDateHoliday> | Special dates to highlight      |
+| `theme`       | GanttTheme             | Visual customization            |
+| `controller`  | GanttController        | Programmatic control            |
+| `showIsoWeek` | bool                   | Enables the ISO week-number row |
 
 #### `GanttActivity`
 
@@ -100,7 +101,7 @@ GanttActivity(
 
 ### Advanced Features
 
-[**Programmatic Control:**]
+#### Programmatic Control
 
 ```dart
 final controller = GanttController(
@@ -116,7 +117,7 @@ controller.prev(days: 14);  // Move backward
 controller.setActivities(newActivities);
 ```
 
-[**Custom Builders:**]
+#### Custom Builders
 
 ```dart
 GanttActivity(
@@ -124,6 +125,17 @@ GanttActivity(
   titleWidget: YourTitleWidget(),
 )
 ```
+
+#### Custom Builders
+
+```dart
+GanttActivity(
+  showIsoWeek: true,
+  ...
+)
+```
+
+![Weeks](https://raw.githubusercontent.com/insideapp-srl/flutter_gantt/main/doc/static/img/show_weeks.png)
 
 ---
 
