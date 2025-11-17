@@ -7,7 +7,11 @@ import 'controller_extension.dart';
 
 /// Displays the calendar grid portion of the Gantt chart.
 ///
-/// Shows month headers and day cells with weekend/holiday highlighting.
+/// Shows:
+/// - Month headers
+/// - (Optional) ISO week numbers
+/// - Day cells with weekend/holiday highlighting
+///
 /// This grid appears above the activities grid to provide date context.
 class CalendarGrid extends StatelessWidget {
   /// The list of holidays to highlight in the calendar.
@@ -15,10 +19,17 @@ class CalendarGrid extends StatelessWidget {
   /// Holidays will be displayed with special background color and tooltips.
   final List<GantDateHoliday>? holidays;
 
+  /// Whether to show the ISO week number row.
+  ///
+  /// If `true`, a row displaying ISO-8601 week numbers is shown
+  /// between the month headers and the day cells.
+  final bool showIsoWeek;
+
   /// Creates a [CalendarGrid] widget.
   ///
-  /// [holidays] is optional and can be null if no holidays need to be shown.
-  const CalendarGrid({super.key, this.holidays});
+  /// [holidays] is optional and can be null when no holiday highlighting is needed.
+  /// [showIsoWeek] enables the ISO week-number row (default: `false`).
+  const CalendarGrid({super.key, this.holidays, this.showIsoWeek = false});
 
   /// Gets the background color for a specific date based on theme and holidays.
   ///
@@ -75,6 +86,41 @@ class CalendarGrid extends StatelessWidget {
                             width: 1,
                             color:
                                 (i < months.length - 1)
+                                    ? Colors.grey
+                                    : Colors.transparent,
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
+            // Week numbers row
+            Builder(
+              builder: (context) {
+                final weeks = c.weeks.entries.toList();
+                return Row(
+                  children: List.generate(weeks.length, (i) {
+                    final week = weeks[i];
+                    return Expanded(
+                      flex: week.value,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                'W${week.key}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 1,
+                            color:
+                                (i < weeks.length - 1)
                                     ? Colors.grey
                                     : Colors.transparent,
                             height: 10,

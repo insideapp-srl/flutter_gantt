@@ -126,6 +126,21 @@ extension GanttCtrlInternal on GanttController {
       listener(activity, start, end);
     }
   }
+
+  /// Returns a map of ISO week numbers to the number of days
+  /// contained in each week within the current visible range.
+  ///
+  /// Example:
+  /// `{1: 7, 2: 7, 3: 5}`
+
+  Map<int, int> get weeks {
+    final map = <int, int>{};
+    for (final d in days) {
+      final w = d.isoWeekNumber;
+      map[w] = (map[w] ?? 0) + 1;
+    }
+    return map;
+  }
 }
 
 /// Controls the display state of a single activity row in the Gantt chart.
