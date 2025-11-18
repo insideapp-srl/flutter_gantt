@@ -188,13 +188,33 @@ class CalendarGrid extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 4.0,
                                 ),
-                                child:
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
                                     holiday != null
                                         ? Tooltip(
                                           message: holiday,
                                           child: child,
                                         )
                                         : child,
+                                    if (holiday != null)
+                                      Positioned(
+                                        top: -2,
+                                        right: -2,
+                                        child: Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.error,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
