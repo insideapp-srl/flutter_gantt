@@ -1,3 +1,9 @@
+## [1.1.1] - 2025-11-18
+
+@rickypid
+
+- Added a notification dot to the top-right of the day cell when a holiday is present.
+
 ## [1.1.0] - 2025-11-17
 
 @rickypid
