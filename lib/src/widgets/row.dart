@@ -119,6 +119,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
             left: 0,
             bottom: 0,
             child: LongPressDraggable<GanttActivity>(
+              delay: _ctrl.controller.dragStartDelay,
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -156,6 +157,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
             right: 0,
             top: 0,
             child: LongPressDraggable<GanttActivity>(
+              delay: _ctrl.controller.dragStartDelay,
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -193,6 +195,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       );
 
       final dragCell = LongPressDraggable<GanttActivity>(
+        delay: _ctrl.controller.dragStartDelay,
         data: activity,
         axis: Axis.horizontal,
         feedback: Material(
