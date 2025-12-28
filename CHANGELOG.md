@@ -3,7 +3,8 @@
 @rickypid
 
 - Update `getNamedMonths` to append the year for months spanning multiple years. (#23)
- 
+- Added customizable month-to-text conversion for Gantt by parameter function `monthToText` (#23)
+
 ## [1.1.1] - 2025-11-18
 
 @rickypid

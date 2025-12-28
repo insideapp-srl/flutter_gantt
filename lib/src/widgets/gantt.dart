@@ -8,6 +8,23 @@ import 'activities_list.dart';
 import 'calendar_grid.dart';
 import 'controller_extension.dart';
 
+/// A function that converts a [DateTime] representing a month
+/// into its textual representation, using the given [BuildContext].
+///
+/// The [BuildContext] can be used to access localization,
+/// theme data, or other inherited widgets.
+///
+/// The returned string is typically a localized or human-readable
+/// name of the month (e.g. "January", "Jan", "Gennaio").
+///
+/// Example:
+/// ```dart
+/// String monthName(BuildContext context, DateTime date) {
+///   return MaterialLocalizations.of(context).formatMonthYear(date);
+/// }
+/// ```
+typedef MonthToText = String Function(BuildContext context, DateTime date);
+
 /// A customizable Gantt chart widget for Flutter.
 ///
 /// Displays activities in a timeline view with configurable appearance and behavior.
@@ -73,6 +90,14 @@ class Gantt extends StatefulWidget {
   /// between the month headers and the day cells.
   final bool showIsoWeek;
 
+  /// A callback used to convert a [DateTime] value into a textual
+  /// representation of its month, using the provided [BuildContext].
+  ///
+  /// If provided, this function overrides the default month-to-text
+  /// conversion logic.
+  /// If `null`, a fallback or built-in formatter may be used instead.
+  final MonthToText? monthToText;
+
   /// Creates a [Gantt] chart widget.
   ///
   /// Throws an [AssertionError] if:
@@ -96,6 +121,7 @@ class Gantt extends StatefulWidget {
     this.activitiesListFlex = 1,
     this.gridAreaFlex = 4,
     this.showIsoWeek = false,
+    this.monthToText,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -259,6 +285,7 @@ class _GanttState extends State<Gantt> {
                               CalendarGrid(
                                 holidays: c.holidays,
                                 showIsoWeek: widget.showIsoWeek,
+                                monthToText: widget.monthToText,
                               ),
                               ActivitiesGrid(
                                 activities: c.activities,

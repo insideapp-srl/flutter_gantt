@@ -267,6 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: Gantt(
                 theme: GanttTheme.of(context),
+                //monthToText: (context, date) => 'Month: ${date.month}', //this function overrides the default month-to-text
                 controller: controller,
                 activitiesAsync: (startDate, endDate, activity) async =>
                     _activities,

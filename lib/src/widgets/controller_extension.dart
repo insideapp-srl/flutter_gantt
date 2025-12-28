@@ -16,14 +16,15 @@ extension GanttCtrlInternal on GanttController {
   ///
   /// Returns a map where keys are month names and values are day counts.
   static Map<String, int> getNamedMonths(
+    BuildContext context,
     DateTime startDate,
     int days,
-    String locale,
+    MonthToText? monthToText,
   ) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final result = <String, int>{};
     var currentDate = startDate;
     var remainingDays = days;
-    final currentYear = DateTime.now().year;
 
     while (remainingDays > 0) {
       final daysInMonth =
@@ -33,11 +34,9 @@ extension GanttCtrlInternal on GanttController {
       final countedDays =
           remainingDays < daysLeftInMonth ? remainingDays : daysLeftInMonth;
 
-      var monthName = _monthName(currentDate.month, locale);
-
-      if (currentDate.year != currentYear) {
-        monthName = '$monthName/${currentDate.year}';
-      }
+      final monthName =
+          monthToText?.call(context, currentDate) ??
+          _monthName(currentDate.month, locale);
 
       result[monthName] = (result[monthName] ?? 0) + countedDays;
 
@@ -83,8 +82,13 @@ extension GanttCtrlInternal on GanttController {
       GanttCtrlInternal.getDays(startDate, internalDaysViews);
 
   /// The months and day counts currently visible in the Gantt chart.
-  Map<String, int> getMonths(String locale) =>
-      GanttCtrlInternal.getNamedMonths(startDate, internalDaysViews, locale);
+  Map<String, int> getMonths(BuildContext context, MonthToText? monthToText) =>
+      GanttCtrlInternal.getNamedMonths(
+        context,
+        startDate,
+        internalDaysViews,
+        monthToText,
+      );
 
   /// Clamps a date to the currently visible date range.
   ///
