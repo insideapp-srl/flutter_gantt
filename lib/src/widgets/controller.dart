@@ -24,11 +24,11 @@ class GanttController extends ChangeNotifier {
   bool _allowParentIndependentDateMovement = false;
   Duration _dragStartDelay;
 
-  GanttTheme? _theme;
+  late GanttTheme _theme;
 
-  GanttTheme get theme => _theme ?? GanttTheme();
+  GanttTheme get theme => _theme;
 
-  set theme(GanttTheme? value) => _theme = value;
+  set theme(GanttTheme value) => _theme = value;
 
   /// The current delay of starting drag.
   Duration get dragStartDelay => _dragStartDelay;
@@ -194,11 +194,13 @@ class GanttController extends ChangeNotifier {
     DateTime? startDate,
     int? daysViews,
     Duration dragStartDelay = kLongPressTimeout,
+    GanttTheme? theme,
   }) : _startDate =
            (startDate?.toDate ??
                DateTime.now().toDate.subtract(Duration(days: 30))),
        _daysViews = daysViews,
-       _dragStartDelay = dragStartDelay;
+       _dragStartDelay = dragStartDelay,
+       _theme = theme ?? GanttTheme();
 
   /// Adds a listener for activity dates changes.
   void addOnActivityChangedListener(GanttActivityOnChangedEvent listener) {

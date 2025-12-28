@@ -1,4 +1,4 @@
-## [1.1.2] - 2025-12-13
+## [1.2.0] - 2025-12-28
 
 @rickypid
 Co-authored-by: beeboy36 <beeboy36@users.noreply.github.com>
@@ -9,6 +9,7 @@ Co-authored-by: beeboy36 <beeboy36@users.noreply.github.com>
 - Added ellipsis for overflowing activity titles. (#22)
 - Rename `Custom Builders` section to `ISO Weeks` in README for clarity.
 - Remove `activity segments` and update README to reflect changes. Simplify activity structure.
+- Set `GanttTheme` as non-nullable and update default initialization logic in `GanttController`.
 
 ## [1.1.1] - 2025-11-18
 
