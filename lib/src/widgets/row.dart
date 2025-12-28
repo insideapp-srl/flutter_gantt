@@ -266,9 +266,10 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     final textDirection = Directionality.of(context);
     final isRTL = textDirection == TextDirection.rtl;
     // In RTL, invert the alignment: left becomes right and vice versa
-    final alignment = isBefore
-        ? (isRTL ? Alignment.centerRight : Alignment.centerLeft)
-        : (isRTL ? Alignment.centerLeft : Alignment.centerRight);
+    final alignment =
+        isBefore
+            ? (isRTL ? Alignment.centerRight : Alignment.centerLeft)
+            : (isRTL ? Alignment.centerLeft : Alignment.centerRight);
     final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
     final children = <Widget>[
       Icon(icon),

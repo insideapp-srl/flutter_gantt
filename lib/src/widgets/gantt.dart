@@ -188,7 +188,11 @@ class _GanttState extends State<Gantt> {
   void _handlePanStart(DragStartDetails details) =>
       _lastPosition = details.localPosition;
 
-  void _handlePanUpdate(DragUpdateDetails details, double maxWidth, BuildContext context) {
+  void _handlePanUpdate(
+    DragUpdateDetails details,
+    double maxWidth,
+    BuildContext context,
+  ) {
     final dayWidth = maxWidth / controller.internalDaysViews;
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
@@ -196,21 +200,22 @@ class _GanttState extends State<Gantt> {
       // Try Directionality first, fallback to locale check
       final textDirection = Directionality.of(context);
       final locale = Localizations.localeOf(context);
-      final isRTL = textDirection == TextDirection.rtl || 
-                    locale.languageCode == 'ar' || 
-                    locale.languageCode == 'he' || 
-                    locale.languageCode == 'fa' ||
-                    locale.languageCode == 'ur';
-      
+      final isRTL =
+          textDirection == TextDirection.rtl ||
+          locale.languageCode == 'ar' ||
+          locale.languageCode == 'he' ||
+          locale.languageCode == 'fa' ||
+          locale.languageCode == 'ur';
+
       // In RTL, swap next/prev to match user expectations
       // LTR: negative dx (left) → next, positive dx (right) → prev
       // RTL: negative dx (left) → prev, positive dx (right) → next
       if (isRTL) {
         // In RTL, invert the logic
         if (dx.isNegative) {
-          controller.prev(fetchData: false);  // Drag left → earlier dates
+          controller.prev(fetchData: false); // Drag left → earlier dates
         } else {
-          controller.next(fetchData: false);  // Drag right → later dates
+          controller.next(fetchData: false); // Drag right → later dates
         }
       } else {
         // LTR behavior (original)
