@@ -162,14 +162,37 @@ class _GanttState extends State<Gantt> {
   void _handlePanStart(DragStartDetails details) =>
       _lastPosition = details.localPosition;
 
-  void _handlePanUpdate(DragUpdateDetails details, double maxWidth) {
+  void _handlePanUpdate(DragUpdateDetails details, double maxWidth, BuildContext context) {
     final dayWidth = maxWidth / controller.internalDaysViews;
     final dx = (details.localPosition.dx - _lastPosition!.dx);
     if (_lastPosition != null && dx.abs() > dayWidth) {
-      if (dx.isNegative) {
-        controller.next(fetchData: false);
+      // Check text direction to handle RTL correctly
+      // Try Directionality first, fallback to locale check
+      final textDirection = Directionality.of(context);
+      final locale = Localizations.localeOf(context);
+      final isRTL = textDirection == TextDirection.rtl || 
+                    locale.languageCode == 'ar' || 
+                    locale.languageCode == 'he' || 
+                    locale.languageCode == 'fa' ||
+                    locale.languageCode == 'ur';
+      
+      // In RTL, swap next/prev to match user expectations
+      // LTR: negative dx (left) → next, positive dx (right) → prev
+      // RTL: negative dx (left) → prev, positive dx (right) → next
+      if (isRTL) {
+        // In RTL, invert the logic
+        if (dx.isNegative) {
+          controller.prev(fetchData: false);  // Drag left → earlier dates
+        } else {
+          controller.next(fetchData: false);  // Drag right → later dates
+        }
       } else {
-        controller.prev(fetchData: false);
+        // LTR behavior (original)
+        if (dx.isNegative) {
+          controller.next(fetchData: false);
+        } else {
+          controller.prev(fetchData: false);
+        }
       }
       _lastPosition = details.localPosition;
     }
@@ -251,6 +274,7 @@ class _GanttState extends State<Gantt> {
                               (details) => _handlePanUpdate(
                                 details,
                                 constraints.maxWidth,
+                                context,
                               ),
                           onPanEnd: _handlePanEnd,
                           onPanCancel: _handlePanCancel,
