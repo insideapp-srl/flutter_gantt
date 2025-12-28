@@ -28,7 +28,12 @@ class GanttController extends ChangeNotifier {
 
   GanttTheme get theme => _theme;
 
-  set theme(GanttTheme value) => _theme = value;
+  set theme(GanttTheme value) {
+    if (value != _theme) {
+      _theme = value;
+      notifyListeners();
+    }
+  }
 
   /// The current delay of starting drag.
   Duration get dragStartDelay => _dragStartDelay;
