@@ -53,9 +53,6 @@ class GanttActivity<T> {
   /// An optional icon to display with the title.
   final Widget? iconTitle;
 
-  /// The segments that make up this activity.
-  final List<GanttActivitySegment>? segments;
-
   /// Child activities that are hierarchically under this one.
   final List<GanttActivity>? children;
 
@@ -108,7 +105,6 @@ class GanttActivity<T> {
     this.listTitleWidget,
     this.tooltip,
     this.iconTitle,
-    this.segments,
     this.children,
     this.onCellTap,
     this.cellBuilder,
@@ -127,14 +123,6 @@ class GanttActivity<T> {
        ) {
     this.start = start.toDate;
     this.end = end.toDate;
-    if (segments != null) {
-      for (final segment in segments!) {
-        assert(
-          segment.start.isDateBetween(this.start, this.end) &&
-              segment.end.isDateBetween(this.start, this.end),
-        );
-      }
-    }
     if (children != null) {
       for (final child in children!) {
         assert(
@@ -215,45 +203,4 @@ extension GanttActivityListExtension on List<GanttActivity> {
     final i = plainList.indexWhere((e) => e.key == key);
     return i < 0 ? null : plainList[i];
   }
-}
-
-/// A segment of a Gantt activity.
-///
-/// Activities can be divided into segments to show progress or phases.
-class GanttActivitySegment {
-  /// The start date of the segment.
-  late DateTime start;
-
-  /// The end date of the segment.
-  late DateTime end;
-
-  /// The title of the segment.
-  final String title;
-
-  /// The description of the segment.
-  final String description;
-
-  /// Callback when the segment is tapped.
-  final Function(GanttActivity activity)? onTap;
-
-  /// The color of the segment.
-  final Color? color;
-
-  /// Creates a [GanttActivitySegment].
-  ///
-  /// Throws an [AssertionError] if start date is after end date.
-  GanttActivitySegment({
-    required DateTime start,
-    required DateTime end,
-    required this.title,
-    required this.description,
-    this.onTap,
-    this.color,
-  }) : assert(start.toDate.isBeforeOrSame(end.toDate)) {
-    this.start = start.toDate;
-    this.end = end.toDate;
-  }
-
-  @override
-  String toString() => title;
 }

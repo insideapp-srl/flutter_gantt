@@ -7,6 +7,7 @@
 - Increase header height to improve layout spacing.
 - Added ellipsis for overflowing activity titles. (#22)
 - Rename `Custom Builders` section to `ISO Weeks` in README for clarity.
+- Remove `activity segments` and update README to reflect changes. Simplify activity structure.
 
 ## [1.1.1] - 2025-11-18
 
