@@ -1,6 +1,7 @@
 ## [1.1.2] - 2025-12-13
 
 @rickypid
+Co-authored-by: beeboy36 <beeboy36@users.noreply.github.com>
 
 - Update `getNamedMonths` to append the year for months spanning multiple years. (#23)
 - Added customizable month-to-text conversion for Gantt by parameter function `monthToText` (#23)
