@@ -126,7 +126,7 @@ GanttActivity(
 )
 ```
 
-#### Custom Builders
+#### ISO Weeks
 
 ```dart
 GanttActivity(

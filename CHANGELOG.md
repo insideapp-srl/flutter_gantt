@@ -6,6 +6,7 @@
 - Added customizable month-to-text conversion for Gantt by parameter function `monthToText` (#23)
 - Increase header height to improve layout spacing.
 - Added ellipsis for overflowing activity titles. (#22)
+- Rename `Custom Builders` section to `ISO Weeks` in README for clarity.
 
 ## [1.1.1] - 2025-11-18
 
