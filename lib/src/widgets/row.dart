@@ -119,6 +119,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
             left: 0,
             bottom: 0,
             child: LongPressDraggable<GanttActivity>(
+              delay: _ctrl.controller.dragStartDelay,
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -156,6 +157,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
             right: 0,
             top: 0,
             child: LongPressDraggable<GanttActivity>(
+              delay: _ctrl.controller.dragStartDelay,
               feedback: draggableEdge,
               data: activity,
               axis: Axis.horizontal,
@@ -193,6 +195,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       );
 
       final dragCell = LongPressDraggable<GanttActivity>(
+        delay: _ctrl.controller.dragStartDelay,
         data: activity,
         axis: Axis.horizontal,
         feedback: Material(
@@ -259,12 +262,23 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     }
 
     final isBefore = ctrl.showBefore;
-    final alignment = isBefore ? Alignment.centerLeft : Alignment.centerRight;
-    final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
-    final children =
+    // Check text direction to handle RTL correctly
+    final textDirection = Directionality.of(context);
+    final isRTL = textDirection == TextDirection.rtl;
+    // In RTL, invert the alignment: left becomes right and vice versa
+    final alignment =
         isBefore
-            ? [Icon(icon), activity.titleWidget ?? Text(activity.title!)]
-            : [activity.titleWidget ?? Text(activity.title!), Icon(icon)];
+            ? (isRTL ? Alignment.centerRight : Alignment.centerLeft)
+            : (isRTL ? Alignment.centerLeft : Alignment.centerRight);
+    final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
+    final children = <Widget>[
+      Icon(icon),
+      Flexible(
+        child:
+            activity.titleWidget ??
+            Text(activity.title!, overflow: TextOverflow.ellipsis),
+      ),
+    ];
 
     return Align(
       alignment: alignment,
@@ -276,7 +290,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: children,
+            children: isBefore ? children : children.reversed.toList(),
           ),
         ),
       ),

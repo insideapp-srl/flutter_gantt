@@ -25,11 +25,24 @@ class CalendarGrid extends StatelessWidget {
   /// between the month headers and the day cells.
   final bool showIsoWeek;
 
+  /// A callback used to convert a [DateTime] value into a textual
+  /// representation of its month, using the provided [BuildContext].
+  ///
+  /// If provided, this function overrides the default month-to-text
+  /// conversion logic.
+  /// If `null`, a fallback or built-in formatter may be used instead.
+  final MonthToText? monthToText;
+
   /// Creates a [CalendarGrid] widget.
   ///
   /// [holidays] is optional and can be null when no holiday highlighting is needed.
   /// [showIsoWeek] enables the ISO week-number row (default: `false`).
-  const CalendarGrid({super.key, this.holidays, this.showIsoWeek = false});
+  const CalendarGrid({
+    super.key,
+    this.holidays,
+    this.showIsoWeek = false,
+    this.monthToText,
+  });
 
   /// Gets the background color for a specific date based on theme and holidays.
   ///
@@ -66,12 +79,7 @@ class CalendarGrid extends StatelessWidget {
             Builder(
               builder: (context) {
                 final months =
-                    c
-                        .getMonths(
-                          Localizations.localeOf(context).toLanguageTag(),
-                        )
-                        .entries
-                        .toList();
+                    c.getMonths(context, monthToText).entries.toList();
                 return Row(
                   children: List.generate(months.length, (i) {
                     final month = months[i];

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../flutter_gantt.dart';
@@ -21,12 +22,29 @@ class GanttController extends ChangeNotifier {
   List<DateTime> _highlightedDates = [];
   bool _enableDraggable = true;
   bool _allowParentIndependentDateMovement = false;
+  Duration _dragStartDelay;
 
-  GanttTheme? _theme;
+  late GanttTheme _theme;
 
-  GanttTheme get theme => _theme ?? GanttTheme();
+  GanttTheme get theme => _theme;
 
-  set theme(GanttTheme? value) => _theme = value;
+  set theme(GanttTheme value) {
+    if (value != _theme) {
+      _theme = value;
+      notifyListeners();
+    }
+  }
+
+  /// The current delay of starting drag.
+  Duration get dragStartDelay => _dragStartDelay;
+
+  /// Sets the delay of starting drag and notifies listeners if changed.
+  set dragStartDelay(Duration value) {
+    if (value != _dragStartDelay) {
+      _dragStartDelay = value;
+      notifyListeners();
+    }
+  }
 
   /// The current start date of the visible range.
   DateTime get startDate => _startDate;
@@ -177,11 +195,17 @@ class GanttController extends ChangeNotifier {
   /// Creates a [GanttController] with optional start date.
   ///
   /// If no [startDate] is provided, defaults to 30 days before today.
-  GanttController({DateTime? startDate, int? daysViews})
-    : _startDate =
-          (startDate?.toDate ??
-              DateTime.now().toDate.subtract(Duration(days: 30))),
-      _daysViews = daysViews;
+  GanttController({
+    DateTime? startDate,
+    int? daysViews,
+    Duration dragStartDelay = kLongPressTimeout,
+    GanttTheme? theme,
+  }) : _startDate =
+           (startDate?.toDate ??
+               DateTime.now().toDate.subtract(Duration(days: 30))),
+       _daysViews = daysViews,
+       _dragStartDelay = dragStartDelay,
+       _theme = theme ?? GanttTheme();
 
   /// Adds a listener for activity dates changes.
   void addOnActivityChangedListener(GanttActivityOnChangedEvent listener) {

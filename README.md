@@ -14,7 +14,7 @@ A production-ready, fully customizable Gantt chart widget for Flutter applicatio
 - ↔  Draggable
 - 🎈 Complete visual customization
 - 🛳  Hierarchical activities with parent/child relationships
-- 🙳  Activity segments with custom styling
+- 🙳  Activity custom builder
 - 👅 Built-in date utilities and calculations
 - 🚀 Optimized for performance
 - 😱 Responsive across all platforms
@@ -92,7 +92,6 @@ GanttActivity(
   color: Colors.blue,
   // Optional:
   children: [/* sub-tasks */],
-  segments: [/* phases */],
   onCellTap: (activity) => print('Tapped ${activity.title}'),
 )
 ```
@@ -126,7 +125,7 @@ GanttActivity(
 )
 ```
 
-#### Custom Builders
+#### ISO Weeks
 
 ```dart
 GanttActivity(
@@ -159,5 +158,4 @@ MIT – See [LICENSE](LICENSE) for details.
 
 - Added limitations when dragging
 - Improving documentation
-- Implementing cell segments
 - Improving mobile usability
