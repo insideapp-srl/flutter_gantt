@@ -228,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
         key: 'task6',
         start: now.subtract(const Duration(days: 10)),
         end: monthLater,
-        title: 'Ongoing Project',
+        title: 'Ongoing Project  [Long task] Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam.',
         tooltip: 'Spanning multiple weeks',
         color: const Color(0xFF4FC3F7), // Sky blue
       ),

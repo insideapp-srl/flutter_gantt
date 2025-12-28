@@ -4,6 +4,8 @@
 
 - Update `getNamedMonths` to append the year for months spanning multiple years. (#23)
 - Added customizable month-to-text conversion for Gantt by parameter function `monthToText` (#23)
+- Increase header height to improve layout spacing.
+- Added ellipsis for overflowing activity titles. (#22)
 
 ## [1.1.1] - 2025-11-18
 

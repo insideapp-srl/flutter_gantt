@@ -261,10 +261,14 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     final isBefore = ctrl.showBefore;
     final alignment = isBefore ? Alignment.centerLeft : Alignment.centerRight;
     final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
-    final children =
-        isBefore
-            ? [Icon(icon), activity.titleWidget ?? Text(activity.title!)]
-            : [activity.titleWidget ?? Text(activity.title!), Icon(icon)];
+    final children = <Widget>[
+      Icon(icon),
+      Flexible(
+        child:
+            activity.titleWidget ??
+            Text(activity.title!, overflow: TextOverflow.ellipsis),
+      ),
+    ];
 
     return Align(
       alignment: alignment,
@@ -276,7 +280,7 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: children,
+            children: isBefore ? children : children.reversed.toList(),
           ),
         ),
       ),

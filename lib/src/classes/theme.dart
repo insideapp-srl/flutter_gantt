@@ -52,7 +52,7 @@ class GanttTheme {
   static const double _defaultCellHeight = 24.0;
   static const double _defaultRowPadding = 4.0;
   static const double _defaultRowsGroupPadding = 16.0;
-  static const double _defaultHeaderHeight = 44.0;
+  static const double _defaultHeaderHeight = 62.0;
   static const double _defaultDayMinWidth = 30.0;
 
   /// Creates a [GanttTheme] with customizable properties.
