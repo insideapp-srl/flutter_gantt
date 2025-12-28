@@ -1,3 +1,10 @@
+## [Unreleased]
+
+- Added RTL (Right-to-Left) locale support for drag navigation and alignment
+- Fixed drag direction inversion in RTL locales (Arabic, Hebrew, Farsi, Urdu)
+- Fixed activity row alignment for activities outside visible date range in RTL locales
+- Improved internationalization support with proper text direction handling
+
 ## [1.1.1] - 2025-11-18
 
 @rickypid
