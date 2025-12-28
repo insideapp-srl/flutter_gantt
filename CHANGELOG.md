@@ -2,6 +2,7 @@
 
 @rickypid
 Co-authored-by: beeboy36 <beeboy36@users.noreply.github.com>
+Co-authored-by: nezar-cube <nezar-cube@users.noreply.github.com>
 
 - Update `getNamedMonths` to append the year for months spanning multiple years. (#23)
 - Added customizable month-to-text conversion for Gantt by parameter function `monthToText` (#23)
@@ -10,6 +11,10 @@ Co-authored-by: beeboy36 <beeboy36@users.noreply.github.com>
 - Rename `Custom Builders` section to `ISO Weeks` in README for clarity.
 - Remove `activity segments` and update README to reflect changes. Simplify activity structure.
 - Set `GanttTheme` as non-nullable and update default initialization logic in `GanttController`.
+- Added RTL (Right-to-Left) locale support for drag navigation and alignment @nezar-cube (#27)
+- Fixed the drag direction inversion in RTL locales (Arabic, Hebrew, Farsi, Urdu) @nezar-cube (#27)
+- Fixed activity row alignment for activities outside the visible date range in RTL locales @nezar-cube (#27)
+- Improved internationalization support with proper text direction handling @nezar-cube (#27)
 
 ## [1.1.1] - 2025-11-18
 
