@@ -1,3 +1,9 @@
+## [1.2.1] - 2026-03-31
+
+@rickypid
+
+- Update `getDayHoliday` to handle multiple holidays per date
+
 ## [1.2.0] - 2025-12-28
 
 @rickypid
