@@ -65,11 +65,12 @@ class CalendarGrid extends StatelessWidget {
   /// Returns the holiday name if the date matches a holiday in [holidays],
   /// otherwise returns null.
   String? getDayHoliday(DateTime date) {
-    final dayHolidays = (holidays ?? [])
-        .where((e) => e.date.isAtSameMomentAs(date))
-        .map((e) => e.holiday)
-        .whereType<String>()
-        .toList();
+    final dayHolidays =
+        (holidays ?? [])
+            .where((e) => e.date.isAtSameMomentAs(date))
+            .map((e) => e.holiday)
+            .whereType<String>()
+            .toList();
 
     if (dayHolidays.isEmpty) return null;
     if (dayHolidays.length == 1) return dayHolidays.first;
