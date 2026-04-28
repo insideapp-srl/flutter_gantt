@@ -136,6 +136,7 @@ class _GanttState extends State<Gantt> {
   late GanttTheme theme;
   late GanttController controller;
   Offset? _lastPosition;
+  DateTime? _panStartDate;
   late LinkedScrollControllerGroup _linkedControllers;
   late ScrollController _listController;
   late ScrollController _gridColumnsController;
@@ -161,7 +162,9 @@ class _GanttState extends State<Gantt> {
     if (widget.activities != null) {
       controller.setActivities(widget.activities!, notify: false);
     } else {
-      controller.fetch();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) controller.fetch();
+      });
     }
     if (widget.highlightedDates != null) {
       controller.setHighlightedDates(widget.highlightedDates!, notify: false);
@@ -185,8 +188,10 @@ class _GanttState extends State<Gantt> {
     super.dispose();
   }
 
-  void _handlePanStart(DragStartDetails details) =>
-      _lastPosition = details.localPosition;
+  void _handlePanStart(DragStartDetails details) {
+    _lastPosition = details.localPosition;
+    _panStartDate = controller.startDate;
+  }
 
   void _handlePanUpdate(
     DragUpdateDetails details,
@@ -234,23 +239,31 @@ class _GanttState extends State<Gantt> {
   void _handlePanCancel() => _reset();
 
   void _reset() {
+    final dateChanged =
+        _panStartDate != null &&
+        !controller.startDate.isAtSameMomentAs(_panStartDate!);
     _lastPosition = null;
-    controller.fetch();
+    _panStartDate = null;
+    if (dateChanged) controller.fetch();
   }
 
   Future<void> _getAsync() async {
+    if (!mounted) return;
     if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
       var activities = <GanttActivity>[];
       var holidays = <GantDateHoliday>[];
-      setState(() {
-        _loading = true;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = true;
+        });
+      }
       if (widget.activitiesAsync != null) {
         activities = await widget.activitiesAsync!(
           controller.startDate,
           controller.endDate,
           controller.activities,
         );
+        if (!mounted) return;
         controller.setActivities(activities, notify: false);
       }
       if (widget.holidaysAsync != null) {
@@ -259,11 +272,14 @@ class _GanttState extends State<Gantt> {
           controller.endDate,
           controller.holidays,
         );
+        if (!mounted) return;
         controller.setHolidays(holidays, notify: false);
       }
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
