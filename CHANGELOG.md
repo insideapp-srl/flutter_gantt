@@ -1,6 +1,7 @@
 ## [1.2.2] - 2026-04-28
 
 @rickypid
+Co-authored-by: RichiB20 <RichiB20@users.noreply.github.com>
 
 - Fix `setState` called during build in `initState` by deferring `controller.fetch()` via `addPostFrameCallback`.
 - Fix `setState` called on unmounted widget in `_getAsync` by adding `mounted` guards before each `setState` call.
