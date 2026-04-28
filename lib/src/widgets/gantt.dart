@@ -252,10 +252,11 @@ class _GanttState extends State<Gantt> {
     if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
       var activities = <GanttActivity>[];
       var holidays = <GantDateHoliday>[];
-      if (mounted)
+      if (mounted) {
         setState(() {
           _loading = true;
         });
+      }
       if (widget.activitiesAsync != null) {
         activities = await widget.activitiesAsync!(
           controller.startDate,
@@ -274,10 +275,11 @@ class _GanttState extends State<Gantt> {
         if (!mounted) return;
         controller.setHolidays(holidays, notify: false);
       }
-      if (mounted)
+      if (mounted) {
         setState(() {
           _loading = false;
         });
+      }
     }
   }
 
