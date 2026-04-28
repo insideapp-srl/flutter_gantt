@@ -1,3 +1,11 @@
+## [1.2.2] - 2026-04-28
+
+@rickypid
+
+- Fix `setState` called during build in `initState` by deferring `controller.fetch()` via `addPostFrameCallback`.
+- Fix `setState` called on unmounted widget in `_getAsync` by adding `mounted` guards before each `setState` call.
+- Skip `controller.fetch()` on pan end when the visible date range has not changed (e.g. simple tap or sub-day drag).
+
 ## [1.2.1] - 2026-03-31
 
 @rickypid
