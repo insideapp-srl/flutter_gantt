@@ -84,6 +84,7 @@ class ActivitiesList extends StatelessWidget {
                             padding: EdgeInsets.zero,
                             onPressed: e.onTap,
                             icon: Icon(e.icon, size: theme.cellHeight * 0.8),
+                            style: e.style,
                           );
                           return e.tooltip != null
                               ? Tooltip(message: e.tooltip, child: child)

@@ -1,3 +1,12 @@
+## [1.3.0] - 2026-09-22
+
+@a-nisi-insideapp
+
+- Fix a race between overlapping `fetch()` calls (e.g. the automatic fetch on mount racing a caller's own refetch triggered by async filter restoration): `GanttController` now serializes fetches instead of running them concurrently — at most one fetch is ever in flight, and any `fetch()` call that arrives while one is running is coalesced into a single follow-up run instead of starting a second one. This removes the need for callers to guard against stale responses overwriting fresher ones.
+- A fetch listener that throws (a failing `activitiesAsync`/`holidaysAsync`, for instance) no longer leaves `GanttController` permanently unable to fetch, and no longer skips the remaining listeners. The failure is reported through `FlutterError.reportError` instead of being swallowed.
+- Fix a `ConcurrentModificationError` when a fetch listener was added or removed while a fetch was in flight — for example a `Gantt` widget disposed while its data was still loading.
+- Add an optional `style` to `GanttActivityAction`, applied to the action's `IconButton`, so callers can customize the button (e.g. its color on hover).
+
 ## [1.2.2] - 2026-04-28
 
 @rickypid

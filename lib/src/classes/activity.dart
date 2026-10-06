@@ -13,11 +13,15 @@ class GanttActivityAction {
   /// Optional tooltip text for the action.
   final String? tooltip;
 
+  /// Optional style for the action button.
+  final ButtonStyle? style;
+
   /// Creates an activity action with an icon, tap handler, and optional tooltip.
   const GanttActivityAction({
     required this.icon,
     required this.onTap,
     this.tooltip,
+    this.style,
   });
 }
 

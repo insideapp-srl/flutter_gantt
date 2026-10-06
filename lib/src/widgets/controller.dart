@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -164,13 +166,18 @@ class GanttController extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<VoidCallback> _fetchListener = <VoidCallback>[];
+  bool _fetchInFlight = false;
+  bool _fetchPending = false;
+
+  final List<FutureOr<void> Function()> _fetchListener =
+      <FutureOr<void> Function()>[];
 
   /// Adds a listener to be called when data needs to be fetched.
-  void addFetchListener(VoidCallback fn) => _fetchListener.add(fn);
+  void addFetchListener(FutureOr<void> Function() fn) => _fetchListener.add(fn);
 
   /// Removes a fetch listener.
-  void removeFetchListener(VoidCallback fn) => _fetchListener.remove(fn);
+  void removeFetchListener(FutureOr<void> Function() fn) =>
+      _fetchListener.remove(fn);
 
   /// Removes all fetch listeners.
   void removeAllFetchListener() {
@@ -180,9 +187,56 @@ class GanttController extends ChangeNotifier {
   }
 
   /// Notifies all fetch listeners to load new data.
+  ///
+  /// If a fetch is already in flight, this does not start a second one in
+  /// parallel — it just marks that another fetch is needed and returns.
+  /// Once the running fetch completes, it immediately re-runs exactly once
+  /// more, picking up whatever changed in the meantime. This guarantees at
+  /// most one fetch in flight at any time, so a slower/older fetch can never
+  /// overwrite a faster/newer one — there is nothing left to race against.
+  ///
+  /// A listener that throws is reported through [FlutterError.reportError]: it
+  /// neither skips the remaining listeners nor leaves the controller unable to
+  /// fetch again.
   void fetch() {
-    for (var fn in _fetchListener) {
-      fn();
+    if (_fetchInFlight) {
+      _fetchPending = true;
+      return;
+    }
+    unawaited(_runFetch());
+  }
+
+  Future<void> _runFetch() async {
+    _fetchInFlight = true;
+    try {
+      // Iterate over a snapshot: listeners may be added or removed while this
+      // loop is suspended on an await (a Gantt widget being disposed mid-fetch
+      // removes its own listener), which would otherwise throw a
+      // ConcurrentModificationError.
+      for (final fn in List<FutureOr<void> Function()>.of(_fetchListener)) {
+        try {
+          await Future.sync(fn);
+        } catch (error, stackTrace) {
+          // A listener that throws must not abort the remaining listeners nor
+          // leave the controller wedged, but the failure still has to surface.
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              exception: error,
+              stack: stackTrace,
+              library: 'flutter_gantt',
+              context: ErrorDescription(
+                'while running a GanttController fetch listener',
+              ),
+            ),
+          );
+        }
+      }
+    } finally {
+      _fetchInFlight = false;
+    }
+    if (_fetchPending) {
+      _fetchPending = false;
+      unawaited(_runFetch());
     }
   }
 
