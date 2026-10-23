@@ -125,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
             title: 'Subtask 1',
             tooltip: 'WO-1001-1 | Subtask',
             color: const Color(0xFF81C784),
+            progress: 0.6, // Drawn as a line over a track along the bottom
             actions: [
               GanttActivityAction(
                 icon: Icons.check,
@@ -140,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
             title: 'Subtask 2',
             tooltip: 'WO-1001-2 | Subtask with nested children',
             color: const Color(0xFF9575CD),
+            progress: 0, // Not started: only the track is drawn
             actions: [
               GanttActivityAction(
                 icon: Icons.add,
@@ -191,6 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: 'Independent Task',
         tooltip: 'A separate task',
         color: const Color(0xFF64B5F6),
+        progress: 0.3,
       ),
 
       // ✅ Activity from one month ago
@@ -211,6 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: 'Older Task',
         tooltip: 'Past task',
         color: const Color(0xFFBCAAA4), // Light brown
+        progress: 1.2, // Above 1.0 the line is full
       ),
 
       // ✅ Future activity
@@ -232,6 +236,8 @@ class _MyHomePageState extends State<MyHomePage> {
             'Ongoing Project  [Long task] Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam.',
         tooltip: 'Spanning multiple weeks',
         color: const Color(0xFF4FC3F7), // Sky blue
+        // Past the visible range: the track continues beyond the grid edge
+        progress: 0.45,
       ),
     ];
   }
@@ -273,6 +279,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 activitiesAsync: (startDate, endDate, activity) async =>
                     _activities,
                 showIsoWeek: true,
+                // Optional: keeps the titles readable on narrow layouts
+                activitiesListMinWidth: 220,
+                // Optional: below this list width, rows with more actions
+                // show them in a single "more" menu
+                collapseActionsBelowWidth: 260,
                 holidaysAsync: (startDate, endDate, holidays) async {
                   final currentYear = DateTime.now().year;
                   return <GantDateHoliday>[

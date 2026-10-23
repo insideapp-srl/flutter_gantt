@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gantt/flutter_gantt.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -278,5 +279,41 @@ void main() {
       await settle();
       expect(runs, 1);
     });
+
+    test('removeAllFetchListener removes every listener', () async {
+      var runs = 0;
+      controller.addFetchListener(() => runs++);
+      controller.addFetchListener(() => runs++);
+
+      // Removing them one by one while iterating used to throw a
+      // ConcurrentModificationError as soon as one was registered.
+      expect(controller.removeAllFetchListener, returnsNormally);
+      controller.fetch();
+      await settle();
+      expect(runs, 0);
+    });
+  });
+
+  testWidgets('a controller can be disposed while its Gantt is mounted', (
+    tester,
+  ) async {
+    final start = DateTime.utc(2026, 1, 5);
+    final controller = GanttController(startDate: start, daysViews: 10);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Gantt(
+            controller: controller,
+            activities: [
+              GanttActivity(key: 'a', title: 'A', start: start, end: start),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // The Gantt registered a fetch listener that is still there.
+    expect(controller.dispose, returnsNormally);
+    await tester.pumpWidget(const SizedBox());
   });
 }
