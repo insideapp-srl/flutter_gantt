@@ -75,6 +75,25 @@ class GanttActivity<T> {
   /// Whether to show the activity cell.
   final bool showCell;
 
+  /// The share of the activity that is complete, from 0.0 to 1.0.
+  ///
+  /// Drawn by the default cell as a line along the bottom edge, over a track
+  /// that spans the whole activity, so it reads as a progress bar. Track and
+  /// line are inset 8px from the real start and end of the activity, in line
+  /// with the title, and are measured on the whole activity: they stay in
+  /// place while the visible range moves and, on a side cut by it, continue
+  /// beyond the grid edge. Values above 1.0 draw a full line; 0.0 draws only
+  /// the track. If `null` (the default), neither is drawn. Cells built with
+  /// [builder] or [cellBuilder] do not draw it.
+  final double? progress;
+
+  /// The color of the [progress] line; the track uses it at 30% opacity.
+  ///
+  /// If `null`, white or black is used, whichever has the higher contrast
+  /// against the cell, like the title text. A custom color is drawn as is, so
+  /// its contrast against the cell is up to the caller.
+  final Color? progressColor;
+
   /// Builder function for custom cell rendering.
   final Widget Function(GanttActivity activity)? builder;
 
@@ -115,6 +134,8 @@ class GanttActivity<T> {
     this.color,
     this.actions,
     this.showCell = true,
+    this.progress,
+    this.progressColor,
     this.builder,
     this.data,
     this.limitStart,
@@ -123,7 +144,8 @@ class GanttActivity<T> {
          start.toDate.isBeforeOrSame(end.toDate) &&
              ((title == null) != (titleWidget == null)) &&
              ((cellBuilder == null) || (builder == null)) &&
-             ((listTitle == null) || (listTitleWidget == null)),
+             ((listTitle == null) || (listTitleWidget == null)) &&
+             (progress == null || progress >= 0),
        ) {
     this.start = start.toDate;
     this.end = end.toDate;

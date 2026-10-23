@@ -1,3 +1,19 @@
+## [1.4.0] - 2026-10-22
+
+@a-nisi-insideapp
+
+- The row actions of the activities list are now `cellHeight` squares (24px by default) instead of the default 40/48px `IconButton`, so the titles keep a usable width on narrow layouts (#32). Values set in `GanttActivityAction.style` still win over the compact size.
+- Add `Gantt.activitiesListMinWidth`: the activities list keeps its flex share of the width but never gets narrower than this, capped at half of the width so the grid area keeps at least as much room. Defaults to `null` (flex ratios only).
+- Add `Gantt.collapseActionsBelowWidth`: below this width of the activities list, the rows with more than one action show them in a single "more" menu, each with its icon and its tooltip as the label, so those actions need a tooltip (asserted in debug mode). Defaults to `null` (always buttons).
+- Add `GanttTheme.listIndent`: the indent each nesting level adds in the activities list. Defaults to `null`, which keeps the current indent growing with the depth (8, 24, 48...).
+- Add `GanttActivity.progress` (0.0–1.0) and `GanttActivity.progressColor`: the default cell draws the progress as a line along its bottom edge, over a track that spans the activity, so it reads as a progress bar (the track alone at 0%). Track and line are inset 8px from the real start and end of the activity, in line with the title, and are measured on the whole activity: on a side cut by the visible range they continue beyond the grid edge instead of stopping at it. The default line color is the same as the title text, the track uses the line color at 30% opacity.
+- The title of the default cell is now white or black, whichever has the higher contrast against the cell color (at least 4.5:1, WCAG 1.4.3), instead of the app text color, which could be unreadable on colored cells (e.g. white on yellow). Only text without a color of its own takes it.
+- The resize edges of a cell use the track color instead of a fixed translucent white, so they show on light cells too, and show the left-right resize cursor (the start edge showed the right one). On a side cut by the visible range the edge is no longer drawn, since the real start or end is out of sight.
+- Fix the chart not following a new `theme` (e.g. switching the app between light and dark): `Gantt` now applies the theme it is rebuilt with in `didUpdateWidget`.
+- `GanttTheme` now has value equality (`==` and `hashCode`), so a theme rebuilt with the same values no longer counts as a change.
+- Add `GanttController.setTheme(theme, {notify})`, like `setHolidays`, to set the theme without notifying the listeners while a build is in progress.
+- Fix `GanttController.removeAllFetchListener()` (also called by `dispose()`) throwing a `ConcurrentModificationError` when a fetch listener was registered, e.g. when the controller was disposed while its `Gantt` was still mounted: it removed the listeners one by one while iterating over them.
+
 ## [1.3.0] - 2026-09-22
 
 @a-nisi-insideapp

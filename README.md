@@ -71,14 +71,16 @@ Gantt(
 
 The main chart container with these key properties:
 
-| Property      | Type                   | Description                     |
-|---------------|------------------------|---------------------------------|
-| `startDate`   | DateTime               | Initial visible date            |
-| `activities`  | List<GanttActivity>    | Activities to display           |
-| `holidays`    | List<GanttDateHoliday> | Special dates to highlight      |
-| `theme`       | GanttTheme             | Visual customization            |
-| `controller`  | GanttController        | Programmatic control            |
-| `showIsoWeek` | bool                   | Enables the ISO week-number row |
+| Property                    | Type                   | Description                                              |
+|-----------------------------|------------------------|----------------------------------------------------------|
+| `startDate`                 | DateTime               | Initial visible date                                     |
+| `activities`                | List<GanttActivity>    | Activities to display                                    |
+| `holidays`                  | List<GanttDateHoliday> | Special dates to highlight                               |
+| `theme`                     | GanttTheme             | Visual customization                                     |
+| `controller`                | GanttController        | Programmatic control                                     |
+| `showIsoWeek`               | bool                   | Enables the ISO week-number row                          |
+| `activitiesListMinWidth`    | double?                | Minimum width of the activities list                     |
+| `collapseActionsBelowWidth` | double?                | List width below which row actions go in a "more" menu   |
 
 #### `GanttActivity`
 
@@ -91,6 +93,7 @@ GanttActivity(
   title: 'Task Name',
   color: Colors.blue,
   // Optional:
+  progress: 0.4, // drawn as a line along the bottom of the cell
   children: [/* sub-tasks */],
   onCellTap: (activity) => print('Tapped ${activity.title}'),
 )

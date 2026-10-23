@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
@@ -84,6 +86,27 @@ class Gantt extends StatefulWidget {
   /// The flex ratio for the grid area column (default: 4).
   final int gridAreaFlex;
 
+  /// The minimum width of the activities list column, in logical pixels.
+  ///
+  /// The column keeps its [activitiesListFlex] share of the width, but never
+  /// gets narrower than this, so titles stay readable on narrow layouts. The
+  /// minimum is capped at half of the width, so the grid area always keeps at
+  /// least as much room as the list. If `null` (the default), the column is
+  /// sized by the flex ratios alone.
+  final double? activitiesListMinWidth;
+
+  /// The width of the activities list column below which the actions of a row
+  /// are grouped in a single "more" menu, in logical pixels.
+  ///
+  /// Applies to every row with more than one action, so the whole column
+  /// switches together; a row with a single action keeps its button. If
+  /// `null` (the default), the actions are always shown as buttons.
+  ///
+  /// Each menu item uses the [GanttActivityAction.tooltip] of its action as
+  /// the label, so the actions of those rows need one: in debug mode a missing
+  /// tooltip fails an assertion.
+  final double? collapseActionsBelowWidth;
+
   /// Whether to show the ISO week number row.
   ///
   /// If `true`, a row displaying ISO-8601 week numbers is shown
@@ -120,12 +143,15 @@ class Gantt extends StatefulWidget {
     this.allowParentIndependentDateMovement = false,
     this.activitiesListFlex = 1,
     this.gridAreaFlex = 4,
+    this.activitiesListMinWidth,
+    this.collapseActionsBelowWidth,
     this.showIsoWeek = false,
     this.monthToText,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
-             (holidays == null || holidaysAsync == null),
+             (holidays == null || holidaysAsync == null) &&
+             (activitiesListMinWidth == null || activitiesListMinWidth > 0),
        );
 
   @override
@@ -172,6 +198,17 @@ class _GanttState extends State<Gantt> {
     controller.enableDraggable = widget.enableDraggable;
     controller.allowParentIndependentDateMovement =
         widget.allowParentIndependentDateMovement;
+  }
+
+  @override
+  void didUpdateWidget(covariant Gantt oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Without this the theme read in initState stays forever, so a change of
+    // the app theme (e.g. light to dark) never reaches the chart.
+    if (widget.theme != oldWidget.theme) {
+      theme = widget.theme ?? GanttTheme();
+      controller.setTheme(theme, notify: false);
+    }
   }
 
   @override
@@ -300,50 +337,55 @@ class _GanttState extends State<Gantt> {
               child: _loading ? LinearProgressIndicator() : Container(),
             ),
             Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: widget.activitiesListFlex,
-                    child: ActivitiesList(
-                      activities: c.activities,
-                      controller: _listController,
-                      showIsoWeek: widget.showIsoWeek,
-                    ),
-                  ),
-                  Expanded(
-                    flex: widget.gridAreaFlex,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        controller.gridWidth = constraints.maxWidth;
-                        return GestureDetector(
-                          onPanStart: _handlePanStart,
-                          onPanUpdate:
-                              (details) => _handlePanUpdate(
-                                details,
-                                constraints.maxWidth,
-                                context,
-                              ),
-                          onPanEnd: _handlePanEnd,
-                          onPanCancel: _handlePanCancel,
-                          child: Stack(
-                            children: [
-                              CalendarGrid(
-                                holidays: c.holidays,
-                                showIsoWeek: widget.showIsoWeek,
-                                monthToText: widget.monthToText,
-                              ),
-                              ActivitiesGrid(
-                                activities: c.activities,
-                                controller: _gridColumnsController,
-                                showIsoWeek: widget.showIsoWeek,
-                              ),
-                            ],
+              child: LayoutBuilder(
+                builder:
+                    (context, rowConstraints) => Row(
+                      children: [
+                        _activitiesListColumn(
+                          rowConstraints.maxWidth,
+                          ActivitiesList(
+                            activities: c.activities,
+                            controller: _listController,
+                            showIsoWeek: widget.showIsoWeek,
+                            collapseActionsBelowWidth:
+                                widget.collapseActionsBelowWidth,
                           ),
-                        );
-                      },
+                        ),
+                        Expanded(
+                          flex: widget.gridAreaFlex,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              controller.gridWidth = constraints.maxWidth;
+                              return GestureDetector(
+                                onPanStart: _handlePanStart,
+                                onPanUpdate:
+                                    (details) => _handlePanUpdate(
+                                      details,
+                                      constraints.maxWidth,
+                                      context,
+                                    ),
+                                onPanEnd: _handlePanEnd,
+                                onPanCancel: _handlePanCancel,
+                                child: Stack(
+                                  children: [
+                                    CalendarGrid(
+                                      holidays: c.holidays,
+                                      showIsoWeek: widget.showIsoWeek,
+                                      monthToText: widget.monthToText,
+                                    ),
+                                    ActivitiesGrid(
+                                      activities: c.activities,
+                                      controller: _gridColumnsController,
+                                      showIsoWeek: widget.showIsoWeek,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
               ),
             ),
           ],
@@ -351,4 +393,24 @@ class _GanttState extends State<Gantt> {
       );
     },
   );
+
+  /// Sizes the activities list column within a row of [rowWidth].
+  ///
+  /// Without [Gantt.activitiesListMinWidth] the column is a plain flex child.
+  /// With it, the column takes its flex share or the minimum (capped at half
+  /// of [rowWidth]), whichever is wider, and the grid area takes the rest.
+  Widget _activitiesListColumn(double rowWidth, Widget child) {
+    final minWidth = widget.activitiesListMinWidth;
+    if (minWidth == null) {
+      return Expanded(flex: widget.activitiesListFlex, child: child);
+    }
+    final share =
+        rowWidth *
+        widget.activitiesListFlex /
+        (widget.activitiesListFlex + widget.gridAreaFlex);
+    return SizedBox(
+      width: math.max(share, math.min(minWidth, rowWidth / 2)),
+      child: child,
+    );
+  }
 }

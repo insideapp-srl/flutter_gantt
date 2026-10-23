@@ -30,10 +30,20 @@ class GanttController extends ChangeNotifier {
 
   GanttTheme get theme => _theme;
 
-  set theme(GanttTheme value) {
+  set theme(GanttTheme value) => setTheme(value);
+
+  /// Sets the theme, notifying the listeners only if it changed and [notify]
+  /// is `true`.
+  ///
+  /// Pass `notify: false` while a build is in progress, e.g. from
+  /// `didUpdateWidget`: the widgets that need the theme read it from the
+  /// [Gantt] itself.
+  void setTheme(GanttTheme value, {bool notify = true}) {
     if (value != _theme) {
       _theme = value;
-      notifyListeners();
+      if (notify) {
+        notifyListeners();
+      }
     }
   }
 
@@ -180,11 +190,11 @@ class GanttController extends ChangeNotifier {
       _fetchListener.remove(fn);
 
   /// Removes all fetch listeners.
-  void removeAllFetchListener() {
-    for (var fn in _fetchListener) {
-      _fetchListener.remove(fn);
-    }
-  }
+  ///
+  /// Clears the list in one go: removing the listeners one by one while
+  /// iterating over it threw a [ConcurrentModificationError] as soon as one
+  /// was registered, e.g. on [dispose] while a [Gantt] was still mounted.
+  void removeAllFetchListener() => _fetchListener.clear();
 
   /// Notifies all fetch listeners to load new data.
   ///
