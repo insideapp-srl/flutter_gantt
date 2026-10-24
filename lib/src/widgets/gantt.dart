@@ -90,6 +90,18 @@ class Gantt extends StatefulWidget {
   /// [activitiesListFlex] and [gridAreaFlex].
   final GanttActivitiesListWidth? activitiesListWidth;
 
+  /// The width of the activities list column below which the actions of a row
+  /// are grouped in a single "more" menu, in logical pixels.
+  ///
+  /// Applies to every row with more than one action, so the whole column
+  /// switches together; a row with a single action keeps its button. If
+  /// `null` (the default), the actions are always shown as buttons.
+  ///
+  /// Each menu item uses the [GanttActivityAction.tooltip] of its action as
+  /// the label, so the actions of those rows need one: in debug mode a missing
+  /// tooltip fails an assertion.
+  final double? collapseActionsBelowWidth;
+
   /// Whether to show the ISO week number row.
   ///
   /// If `true`, a row displaying ISO-8601 week numbers is shown
@@ -132,6 +144,7 @@ class Gantt extends StatefulWidget {
     this.activitiesListFlex = 1,
     this.gridAreaFlex = 4,
     this.activitiesListWidth,
+    this.collapseActionsBelowWidth,
     this.showIsoWeek = false,
     this.monthToText,
     this.activitiesListHeader,
@@ -197,6 +210,12 @@ class _GanttState extends State<Gantt> {
   @override
   void didUpdateWidget(covariant Gantt oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Without this the theme read in initState stays forever, so a change of
+    // the app theme (e.g. light to dark) never reaches the chart.
+    if (widget.theme != oldWidget.theme) {
+      theme = widget.theme ?? GanttTheme();
+      controller.setTheme(theme, notify: false);
+    }
     final width = widget.activitiesListWidth?.width;
     if (width != oldWidget.activitiesListWidth?.width) {
       _listWidth = width;
@@ -360,6 +379,7 @@ class _GanttState extends State<Gantt> {
     controller: _listController,
     showIsoWeek: widget.showIsoWeek,
     header: widget.activitiesListHeader,
+    collapseActionsBelowWidth: widget.collapseActionsBelowWidth,
   );
 
   Widget _buildGridArea(GanttController c) => LayoutBuilder(

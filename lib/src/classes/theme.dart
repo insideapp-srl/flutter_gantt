@@ -49,6 +49,13 @@ class GanttTheme {
   /// Defaults to 30.0.
   final double dayMinWidth;
 
+  /// The indent each nesting level adds in the activities list, in pixels.
+  ///
+  /// Top-level activities keep a left padding of 8.0 and each child level adds
+  /// exactly this amount. If `null` (the default), each level adds
+  /// `8.0 * (level + 1)`, so the indent grows with the depth (8, 24, 48...).
+  final double? listIndent;
+
   static const double _defaultCellHeight = 24.0;
   static const double _defaultRowPadding = 4.0;
   static const double _defaultRowsGroupPadding = 16.0;
@@ -68,6 +75,7 @@ class GanttTheme {
     this.rowsGroupPadding = _defaultRowsGroupPadding,
     this.headerHeight = _defaultHeaderHeight,
     this.dayMinWidth = _defaultDayMinWidth,
+    this.listIndent,
   });
 
   /// Creates a [GanttTheme] based on the current [Theme] of the [BuildContext].
@@ -89,6 +97,7 @@ class GanttTheme {
     double rowsGroupPadding = _defaultRowsGroupPadding,
     double headerHeight = _defaultHeaderHeight,
     double dayMinWidth = _defaultDayMinWidth,
+    double? listIndent,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -104,9 +113,45 @@ class GanttTheme {
       rowsGroupPadding: rowsGroupPadding,
       headerHeight: headerHeight,
       dayMinWidth: dayMinWidth,
+      listIndent: listIndent,
     );
   }
 
   /// The border radius for activity cells, calculated as 1/3 of [cellHeight].
   double get cellRounded => cellHeight / 3;
+
+  /// Two themes are equal when all their values are, so a theme rebuilt with
+  /// the same values does not count as a change.
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GanttTheme &&
+          other.backgroundColor == backgroundColor &&
+          other.holidayColor == holidayColor &&
+          other.weekendColor == weekendColor &&
+          other.todayBackgroundColor == todayBackgroundColor &&
+          other.todayTextColor == todayTextColor &&
+          other.defaultCellColor == defaultCellColor &&
+          other.cellHeight == cellHeight &&
+          other.rowPadding == rowPadding &&
+          other.rowsGroupPadding == rowsGroupPadding &&
+          other.headerHeight == headerHeight &&
+          other.dayMinWidth == dayMinWidth &&
+          other.listIndent == listIndent;
+
+  @override
+  int get hashCode => Object.hash(
+    backgroundColor,
+    holidayColor,
+    weekendColor,
+    todayBackgroundColor,
+    todayTextColor,
+    defaultCellColor,
+    cellHeight,
+    rowPadding,
+    rowsGroupPadding,
+    headerHeight,
+    dayMinWidth,
+    listIndent,
+  );
 }
