@@ -1,3 +1,11 @@
+## [1.4.0] - 2026-10-24
+
+@rickypid
+
+- Add `activitiesListHeader` to `Gantt` to fill the empty area at the top of the activities list column with a custom widget, aligned with the calendar header.
+- Add `activitiesListWidth` to `Gantt` with the new `GanttActivitiesListWidth` class to make the activities list column resizable by dragging its edge. The width is expressed in logical pixels and is not persisted by the package: restore it through `width` and save it from `onChanged`, called when the drag ends. `minWidth`/`maxWidth` bound the column, which always leaves room for at least one day column in the grid. When not provided, the column keeps the fixed flex layout.
+- Refetch data when resizing the activities list column changes the visible date range.
+
 ## [1.3.0] - 2026-09-22
 
 @a-nisi-insideapp

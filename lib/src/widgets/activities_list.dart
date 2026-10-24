@@ -25,6 +25,7 @@ class ActivitiesList extends StatelessWidget {
     required this.activities,
     this.controller,
     this.showIsoWeek = false,
+    this.header,
   });
 
   /// Whether to show the ISO week number row.
@@ -32,6 +33,13 @@ class ActivitiesList extends StatelessWidget {
   /// If `true`, a row displaying ISO-8601 week numbers is shown
   /// between the month headers and the day cells.
   final bool showIsoWeek;
+
+  /// Optional widget shown in the empty area above the activities list,
+  /// aligned with the calendar header.
+  ///
+  /// It is constrained to the header height (including the ISO week row
+  /// when [showIsoWeek] is `true`) and to the column width.
+  final Widget? header;
 
   /// Recursively builds widgets for activities and their children.
   ///
@@ -104,14 +112,20 @@ class ActivitiesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<GanttTheme>(
     builder:
-        (context, theme, child) => Padding(
-          padding: EdgeInsets.only(
-            top: theme.headerHeight + (showIsoWeek ? 10 : 0),
-          ),
-          child: ListView(
-            controller: controller,
-            children: getItems(activities, theme),
-          ),
+        (context, theme, child) => Column(
+          children: [
+            SizedBox(
+              height: theme.headerHeight + (showIsoWeek ? 10 : 0),
+              width: double.infinity,
+              child: header,
+            ),
+            Expanded(
+              child: ListView(
+                controller: controller,
+                children: getItems(activities, theme),
+              ),
+            ),
+          ],
         ),
   );
 }

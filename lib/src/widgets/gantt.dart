@@ -84,6 +84,12 @@ class Gantt extends StatefulWidget {
   /// The flex ratio for the grid area column (default: 4).
   final int gridAreaFlex;
 
+  /// Makes the activities list column resizable by dragging its edge.
+  ///
+  /// If `null`, the column is not resizable and its width is driven by
+  /// [activitiesListFlex] and [gridAreaFlex].
+  final GanttActivitiesListWidth? activitiesListWidth;
+
   /// Whether to show the ISO week number row.
   ///
   /// If `true`, a row displaying ISO-8601 week numbers is shown
@@ -97,6 +103,11 @@ class Gantt extends StatefulWidget {
   /// conversion logic.
   /// If `null`, a fallback or built-in formatter may be used instead.
   final MonthToText? monthToText;
+
+  /// Optional widget shown in the empty area at the top of the activities
+  /// list column, above the activity names and aligned with the calendar
+  /// header.
+  final Widget? activitiesListHeader;
 
   /// Creates a [Gantt] chart widget.
   ///
@@ -120,8 +131,10 @@ class Gantt extends StatefulWidget {
     this.allowParentIndependentDateMovement = false,
     this.activitiesListFlex = 1,
     this.gridAreaFlex = 4,
+    this.activitiesListWidth,
     this.showIsoWeek = false,
     this.monthToText,
+    this.activitiesListHeader,
   }) : assert(
          (startDate != null || controller != null) &&
              ((activities == null) != (activitiesAsync == null)) &&
@@ -141,10 +154,17 @@ class _GanttState extends State<Gantt> {
   late ScrollController _listController;
   late ScrollController _gridColumnsController;
   bool _loading = false;
+  double? _listWidth;
+  DateTime? _resizeStartEndDate;
+  double? _resizeStartWidth;
+
+  /// Width of the invisible drag handle on the activities list edge.
+  static const double _resizeHandleWidth = 8;
 
   @override
   void initState() {
     super.initState();
+    _listWidth = widget.activitiesListWidth?.width;
     _linkedControllers = LinkedScrollControllerGroup();
     _listController = _linkedControllers.addAndGet();
     _gridColumnsController = _linkedControllers.addAndGet();
@@ -172,6 +192,15 @@ class _GanttState extends State<Gantt> {
     controller.enableDraggable = widget.enableDraggable;
     controller.allowParentIndependentDateMovement =
         widget.allowParentIndependentDateMovement;
+  }
+
+  @override
+  void didUpdateWidget(covariant Gantt oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final width = widget.activitiesListWidth?.width;
+    if (width != oldWidget.activitiesListWidth?.width) {
+      _listWidth = width;
+    }
   }
 
   @override
@@ -247,6 +276,49 @@ class _GanttState extends State<Gantt> {
     if (dateChanged) controller.fetch();
   }
 
+  /// Clamps [width] between the configured bounds, always leaving room
+  /// for at least one day column in the grid area.
+  double _clampListWidth(double width, double totalWidth) {
+    final config = widget.activitiesListWidth!;
+    final upper = (totalWidth - theme.dayMinWidth).clamp(0.0, config.maxWidth);
+    return width.clamp(config.minWidth.clamp(0.0, upper), upper);
+  }
+
+  void _handleResizeStart(DragStartDetails details) {
+    _resizeStartEndDate = controller.endDate;
+    _resizeStartWidth = _listWidth;
+  }
+
+  void _handleResizeUpdate(
+    DragUpdateDetails details,
+    double currentWidth,
+    double totalWidth,
+  ) {
+    final isRTL = Directionality.of(context) == TextDirection.rtl;
+    final delta = isRTL ? -details.delta.dx : details.delta.dx;
+    setState(() {
+      final base = _clampListWidth(_listWidth ?? currentWidth, totalWidth);
+      _listWidth = _clampListWidth(base + delta, totalWidth);
+    });
+  }
+
+  void _handleResizeEnd(DragEndDetails details) {
+    final startEndDate = _resizeStartEndDate;
+    final startWidth = _resizeStartWidth;
+    _resizeStartEndDate = null;
+    _resizeStartWidth = null;
+    final width = _listWidth;
+    if (width != null && width != startWidth) {
+      widget.activitiesListWidth?.onChanged?.call(width);
+    }
+    // The visible days depend on the grid width: reload data if the
+    // visible range changed.
+    if (startEndDate != null &&
+        !controller.endDate.isAtSameMomentAs(startEndDate)) {
+      controller.fetch();
+    }
+  }
+
   Future<void> _getAsync() async {
     if (!mounted) return;
     if (widget.activitiesAsync != null || widget.holidaysAsync != null) {
@@ -283,6 +355,41 @@ class _GanttState extends State<Gantt> {
     }
   }
 
+  Widget _buildActivitiesList(GanttController c) => ActivitiesList(
+    activities: c.activities,
+    controller: _listController,
+    showIsoWeek: widget.showIsoWeek,
+    header: widget.activitiesListHeader,
+  );
+
+  Widget _buildGridArea(GanttController c) => LayoutBuilder(
+    builder: (context, constraints) {
+      controller.gridWidth = constraints.maxWidth;
+      return GestureDetector(
+        onPanStart: _handlePanStart,
+        onPanUpdate:
+            (details) =>
+                _handlePanUpdate(details, constraints.maxWidth, context),
+        onPanEnd: _handlePanEnd,
+        onPanCancel: _handlePanCancel,
+        child: Stack(
+          children: [
+            CalendarGrid(
+              holidays: c.holidays,
+              showIsoWeek: widget.showIsoWeek,
+              monthToText: widget.monthToText,
+            ),
+            ActivitiesGrid(
+              activities: c.activities,
+              controller: _gridColumnsController,
+              showIsoWeek: widget.showIsoWeek,
+            ),
+          ],
+        ),
+      );
+    },
+  );
+
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: [
@@ -300,51 +407,66 @@ class _GanttState extends State<Gantt> {
               child: _loading ? LinearProgressIndicator() : Container(),
             ),
             Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: widget.activitiesListFlex,
-                    child: ActivitiesList(
-                      activities: c.activities,
-                      controller: _listController,
-                      showIsoWeek: widget.showIsoWeek,
-                    ),
-                  ),
-                  Expanded(
-                    flex: widget.gridAreaFlex,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        controller.gridWidth = constraints.maxWidth;
-                        return GestureDetector(
-                          onPanStart: _handlePanStart,
-                          onPanUpdate:
-                              (details) => _handlePanUpdate(
-                                details,
-                                constraints.maxWidth,
-                                context,
-                              ),
-                          onPanEnd: _handlePanEnd,
-                          onPanCancel: _handlePanCancel,
-                          child: Stack(
+              child:
+                  widget.activitiesListWidth == null
+                      ? Row(
+                        children: [
+                          Expanded(
+                            flex: widget.activitiesListFlex,
+                            child: _buildActivitiesList(c),
+                          ),
+                          Expanded(
+                            flex: widget.gridAreaFlex,
+                            child: _buildGridArea(c),
+                          ),
+                        ],
+                      )
+                      : LayoutBuilder(
+                        builder: (context, constraints) {
+                          final totalWidth = constraints.maxWidth;
+                          final listWidth = _clampListWidth(
+                            _listWidth ??
+                                totalWidth *
+                                    widget.activitiesListFlex /
+                                    (widget.activitiesListFlex +
+                                        widget.gridAreaFlex),
+                            totalWidth,
+                          );
+                          return Stack(
                             children: [
-                              CalendarGrid(
-                                holidays: c.holidays,
-                                showIsoWeek: widget.showIsoWeek,
-                                monthToText: widget.monthToText,
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: listWidth,
+                                    child: _buildActivitiesList(c),
+                                  ),
+                                  Expanded(child: _buildGridArea(c)),
+                                ],
                               ),
-                              ActivitiesGrid(
-                                activities: c.activities,
-                                controller: _gridColumnsController,
-                                showIsoWeek: widget.showIsoWeek,
+                              PositionedDirectional(
+                                start: listWidth - _resizeHandleWidth / 2,
+                                top: 0,
+                                bottom: 0,
+                                width: _resizeHandleWidth,
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.resizeColumn,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onHorizontalDragStart: _handleResizeStart,
+                                    onHorizontalDragUpdate:
+                                        (details) => _handleResizeUpdate(
+                                          details,
+                                          listWidth,
+                                          totalWidth,
+                                        ),
+                                    onHorizontalDragEnd: _handleResizeEnd,
+                                  ),
+                                ),
                               ),
                             ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                          );
+                        },
+                      ),
             ),
           ],
         ),
