@@ -1,3 +1,4 @@
+export 'src/classes/activities_list_width.dart';
 export 'src/classes/activity.dart';
 export 'src/classes/date_holiday.dart';
 export 'src/classes/theme.dart';

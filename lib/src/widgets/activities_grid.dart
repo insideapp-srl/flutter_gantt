@@ -48,7 +48,10 @@ class ActivitiesGrid extends StatelessWidget {
     activities.length,
     (index) => Padding(
       padding: EdgeInsets.only(
-        top: theme.rowPadding + (nested == 0 ? theme.rowsGroupPadding : 0),
+        // The group padding separates top-level groups: none above the first.
+        top:
+            theme.rowPadding +
+            (nested == 0 && index > 0 ? theme.rowsGroupPadding : 0),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -63,15 +66,14 @@ class ActivitiesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Consumer<GanttTheme>(
-    builder:
-        (context, theme, child) => Padding(
-          padding: EdgeInsets.only(
-            top: theme.headerHeight + (showIsoWeek ? 10 : 0),
-          ),
-          child: ListView(
-            controller: controller,
-            children: getItems(activities, theme),
-          ),
-        ),
+    builder: (context, theme, child) => Padding(
+      padding: EdgeInsets.only(
+        top: theme.headerHeight + (showIsoWeek ? 10 : 0),
+      ),
+      child: ListView(
+        controller: controller,
+        children: getItems(activities, theme),
+      ),
+    ),
   );
 }

@@ -71,14 +71,17 @@ Gantt(
 
 The main chart container with these key properties:
 
-| Property      | Type                   | Description                     |
-|---------------|------------------------|---------------------------------|
-| `startDate`   | DateTime               | Initial visible date            |
-| `activities`  | List<GanttActivity>    | Activities to display           |
-| `holidays`    | List<GanttDateHoliday> | Special dates to highlight      |
-| `theme`       | GanttTheme             | Visual customization            |
-| `controller`  | GanttController        | Programmatic control            |
-| `showIsoWeek` | bool                   | Enables the ISO week-number row |
+| Property                    | Type                     | Description                                              |
+|-----------------------------|--------------------------|----------------------------------------------------------|
+| `startDate`                 | DateTime                 | Initial visible date                                     |
+| `activities`                | List<GanttActivity>      | Activities to display                                    |
+| `holidays`                  | List<GanttDateHoliday>   | Special dates to highlight                               |
+| `theme`                     | GanttTheme               | Visual customization                                     |
+| `controller`                | GanttController          | Programmatic control                                     |
+| `showIsoWeek`               | bool                     | Enables the ISO week-number row                          |
+| `activitiesListHeader`      | Widget?                  | Widget shown in the empty area above the activities list |
+| `activitiesListWidth`       | GanttActivitiesListWidth? | Resizable activities list width, with min/max bounds    |
+| `collapseActionsBelowWidth` | double?                  | List width below which row actions go in a "more" menu   |
 
 #### `GanttActivity`
 
@@ -91,6 +94,7 @@ GanttActivity(
   title: 'Task Name',
   color: Colors.blue,
   // Optional:
+  progress: 0.4, // drawn as a line along the bottom of the cell
   children: [/* sub-tasks */],
   onCellTap: (activity) => print('Tapped ${activity.title}'),
 )
@@ -135,6 +139,35 @@ GanttActivity(
 ```
 
 ![Weeks](https://raw.githubusercontent.com/insideapp-srl/flutter_gantt/main/doc/static/img/show_weeks.png)
+
+#### Activities List Header
+
+Fill the empty area at the top of the activities list column, aligned with the calendar header:
+
+```dart
+Gantt(
+  activitiesListHeader: Center(child: Text('Activities')),
+  ...
+)
+```
+
+#### Resizable Activities List
+
+Pass a `GanttActivitiesListWidth` to let users resize the activities list column by dragging its edge. The width is expressed in logical pixels and is not persisted by the package: restore it through `width` and save it from `onChanged`, which is called when the drag ends.
+
+```dart
+Gantt(
+  activitiesListWidth: GanttActivitiesListWidth(
+    width: prefs.getDouble('ganttListWidth'), // null = derived from the flex ratio
+    minWidth: 150,
+    maxWidth: 500,
+    onChanged: (width) => prefs.setDouble('ganttListWidth', width),
+  ),
+  ...
+)
+```
+
+When `activitiesListWidth` is `null`, the column is not resizable and its width is driven by `activitiesListFlex` and `gridAreaFlex`.
 
 ---
 

@@ -65,12 +65,11 @@ class CalendarGrid extends StatelessWidget {
   /// Returns the holiday name if the date matches a holiday in [holidays],
   /// otherwise returns null.
   String? getDayHoliday(DateTime date) {
-    final dayHolidays =
-        (holidays ?? [])
-            .where((e) => e.date.isAtSameMomentAs(date))
-            .map((e) => e.holiday)
-            .whereType<String>()
-            .toList();
+    final dayHolidays = (holidays ?? [])
+        .where((e) => e.date.isAtSameMomentAs(date))
+        .map((e) => e.holiday)
+        .whereType<String>()
+        .toList();
 
     if (dayHolidays.isEmpty) return null;
     if (dayHolidays.length == 1) return dayHolidays.first;
@@ -80,176 +79,161 @@ class CalendarGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Consumer<GanttController>(
-    builder:
-        (context, c, child) => Column(
-          children: [
-            // Month headers row
-            Builder(
-              builder: (context) {
-                final months =
-                    c.getMonths(context, monthToText).entries.toList();
-                return Row(
-                  children: List.generate(months.length, (i) {
-                    final month = months[i];
-                    return Expanded(
-                      flex: month.value,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                month.key,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
+    builder: (context, c, child) => Column(
+      children: [
+        // Month headers row
+        Builder(
+          builder: (context) {
+            final months = c.getMonths(context, monthToText).entries.toList();
+            return Row(
+              children: List.generate(months.length, (i) {
+                final month = months[i];
+                return Expanded(
+                  flex: month.value,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            month.key,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          Container(
-                            width: 1,
-                            color:
-                                (i < months.length - 1)
-                                    ? Colors.grey
-                                    : Colors.transparent,
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                );
-              },
-            ),
-            // Week numbers row
-            if (showIsoWeek)
-              Builder(
-                builder: (context) {
-                  final weeks = c.weeks.entries.toList();
-                  return Row(
-                    children: List.generate(weeks.length, (i) {
-                      final week = weeks[i];
-                      return Expanded(
-                        flex: week.value,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  'W${week.key}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 1,
-                              color:
-                                  (i < weeks.length - 1)
-                                      ? Colors.grey
-                                      : Colors.transparent,
-                              height: 10,
-                            ),
-                          ],
                         ),
-                      );
-                    }),
-                  );
-                },
-              ),
-            // Days grid
-            Expanded(
-              child: Row(
-                children: List.generate(c.days.length, (i) {
-                  final day = c.days[i];
-                  final holiday = getDayHoliday(day);
-                  final child = Container(
-                    width: 22,
-                    height: 22,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          day.isToday
-                              ? context.watch<GanttTheme>().todayBackgroundColor
-                              : null,
-                    ),
-                    child: Text(
-                      '${day.day}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color:
-                            day.isToday
-                                ? context.watch<GanttTheme>().todayTextColor
-                                : null,
-                        fontWeight:
-                            day.isToday ? FontWeight.bold : FontWeight.normal,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                    ),
-                  );
+                      Container(
+                        width: 1,
+                        color: (i < months.length - 1)
+                            ? Colors.grey
+                            : Colors.transparent,
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            );
+          },
+        ),
+        // Week numbers row
+        if (showIsoWeek)
+          Builder(
+            builder: (context) {
+              final weeks = c.weeks.entries.toList();
+              return Row(
+                children: List.generate(weeks.length, (i) {
+                  final week = weeks[i];
                   return Expanded(
+                    flex: week.value,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Container(
-                            color: getDayColor(
-                              context.watch<GanttTheme>(),
-                              day,
-                            ),
-                            height: double.infinity,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    holiday != null
-                                        ? Tooltip(
-                                          message: holiday,
-                                          child: child,
-                                        )
-                                        : child,
-                                    if (holiday != null)
-                                      Positioned(
-                                        top: -2,
-                                        right: -2,
-                                        child: Container(
-                                          width: 8,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.error,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
+                          child: Center(
+                            child: Text(
+                              'W${week.key}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
                         Container(
-                          height: double.infinity,
                           width: 1,
-                          color:
-                              c.dateToHighlight(day)
-                                  ? context.watch<GanttTheme>().defaultCellColor
-                                  : Colors.grey,
+                          color: (i < weeks.length - 1)
+                              ? Colors.grey
+                              : Colors.transparent,
+                          height: 10,
                         ),
                       ],
                     ),
                   );
                 }),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
+        // Days grid
+        Expanded(
+          child: Row(
+            children: List.generate(c.days.length, (i) {
+              final day = c.days[i];
+              final holiday = getDayHoliday(day);
+              final child = Container(
+                width: 22,
+                height: 22,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: day.isToday
+                      ? context.watch<GanttTheme>().todayBackgroundColor
+                      : null,
+                ),
+                child: Text(
+                  '${day.day}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: day.isToday
+                        ? context.watch<GanttTheme>().todayTextColor
+                        : null,
+                    fontWeight: day.isToday
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              );
+              return Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: getDayColor(context.watch<GanttTheme>(), day),
+                        height: double.infinity,
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                holiday != null
+                                    ? Tooltip(message: holiday, child: child)
+                                    : child,
+                                if (holiday != null)
+                                  Positioned(
+                                    top: -2,
+                                    right: -2,
+                                    child: Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: double.infinity,
+                      width: 1,
+                      color: c.dateToHighlight(day)
+                          ? context.watch<GanttTheme>().defaultCellColor
+                          : Colors.grey,
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
         ),
+      ],
+    ),
   );
 }
