@@ -23,7 +23,7 @@ jobs:
       matrix:
         # The minimum version matching the Dart SDK declared in pubspec.yaml,
         # and the latest stable.
-        flutter: ['3.29.2', 'stable']
+        flutter: ['3.32.0', 'stable']
     steps:
       - uses: actions/checkout@v4
 

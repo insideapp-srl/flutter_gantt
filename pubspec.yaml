@@ -5,8 +5,8 @@ homepage: https://github.com/insideapp-srl/flutter_gantt
 repository: https://github.com/insideapp-srl/flutter_gantt
 
 environment:
-  sdk: ^3.7.2
-  flutter: ">=1.17.0"
+  sdk: ^3.8.0
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:

@@ -5,6 +5,8 @@
 - Add `activitiesListHeader` to `Gantt` to fill the empty area at the top of the activities list column with a custom widget, aligned with the calendar header.
 - Add `activitiesListWidth` to `Gantt` with the new `GanttActivitiesListWidth` class to make the activities list column resizable by dragging its edge. The width is expressed in logical pixels and is not persisted by the package: restore it through `width` and save it from `onChanged`, called when the drag ends. `minWidth`/`maxWidth` bound the column, which always leaves room for at least one day column in the grid. When not provided, the column keeps the fixed flex layout.
 - Refetch data when resizing the activities list column changes the visible date range.
+- **Breaking:** raise the minimum SDK to Dart `^3.8.0` / Flutter `>=3.32.0`, the versions actually required by the development dependencies (`flutter_lints` 6). Sources are reformatted with the Dart 3.8 formatter style.
+- CI: replace the analyze workflow with a CI running format, analyze, tests and the pana score check on the minimum Flutter version and on stable; add automated publishing to pub.dev on version tags and Dependabot.
 
 ## [1.3.0] - 2026-09-22
 
