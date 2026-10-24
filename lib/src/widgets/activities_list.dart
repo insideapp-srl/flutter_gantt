@@ -54,7 +54,10 @@ class ActivitiesList extends StatelessWidget {
     activities.length,
     (index) => Padding(
       padding: EdgeInsets.only(
-        top: theme.rowPadding + (nested == 0 ? theme.rowsGroupPadding : 0),
+        // The group padding separates top-level groups: none above the first.
+        top:
+            theme.rowPadding +
+            (nested == 0 && index > 0 ? theme.rowsGroupPadding : 0),
         left: 8.0 * (nested + 1),
       ),
       child: Column(
