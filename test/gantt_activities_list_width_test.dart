@@ -34,14 +34,13 @@ Future<void> pumpGantt(
 }
 
 /// Measures the activities list column, which is not exported publicly.
-double listWidthOf(WidgetTester tester) =>
-    tester
-        .getSize(
-          find.byWidgetPredicate(
-            (w) => w.runtimeType.toString() == 'ActivitiesList',
-          ),
-        )
-        .width;
+double listWidthOf(WidgetTester tester) => tester
+    .getSize(
+      find.byWidgetPredicate(
+        (w) => w.runtimeType.toString() == 'ActivitiesList',
+      ),
+    )
+    .width;
 
 void main() {
   group('Gantt.activitiesListWidth', () {

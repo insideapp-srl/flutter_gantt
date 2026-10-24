@@ -64,11 +64,10 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(
     value: _ctrl,
-    builder:
-        (context, child) => SizedBox(
-          height: context.watch<GanttTheme>().cellHeight,
-          child: _buildContent(context),
-        ),
+    builder: (context, child) => SizedBox(
+      height: context.watch<GanttTheme>().cellHeight,
+      child: _buildContent(context),
+    ),
   );
 
   /// Builds the row content based on activity visibility.
@@ -89,27 +88,26 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
         ),
       );
 
-      final cell =
-          activity.builder != null
-              ? activity.builder!(activity)
-              : activity.cellBuilder != null
-              ? Row(
-                children: List<Widget>.generate(
-                  ctrl.cellVisibleDays,
-                  (index) => Expanded(
-                    child: activity.cellBuilder!(
-                      context
-                          .read<GanttController>()
-                          .clampToGanttRange(activity.start)
-                          .add(Duration(days: index)),
-                    ),
+      final cell = activity.builder != null
+          ? activity.builder!(activity)
+          : activity.cellBuilder != null
+          ? Row(
+              children: List<Widget>.generate(
+                ctrl.cellVisibleDays,
+                (index) => Expanded(
+                  child: activity.cellBuilder!(
+                    context
+                        .read<GanttController>()
+                        .clampToGanttRange(activity.start)
+                        .add(Duration(days: index)),
                   ),
                 ),
-              )
-              : Tooltip(
-                message: activity.tooltip ?? '',
-                child: GanttCell(activity: activity),
-              );
+              ),
+            )
+          : Tooltip(
+              message: activity.tooltip ?? '',
+              child: GanttCell(activity: activity),
+            );
 
       final cellContent = Stack(
         fit: StackFit.expand,
@@ -132,8 +130,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementStartX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementStartX!;
-                  final daysDeltaTemp =
-                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth)
+                      .round();
                   if (_ctrl.cellVisibleDays - daysDeltaTemp > 0 &&
                       widget.activity.validStartMove(daysDeltaTemp)) {
                     daysDelta = daysDeltaTemp;
@@ -170,8 +168,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
                 setState(() {
                   _movementEndX ??= details.globalPosition.dx;
                   final dxTotal = details.globalPosition.dx - _movementEndX!;
-                  final daysDeltaTemp =
-                      (dxTotal / _ctrl.dayColumnWidth).round();
+                  final daysDeltaTemp = (dxTotal / _ctrl.dayColumnWidth)
+                      .round();
                   if (_ctrl.cellVisibleDays + daysDeltaTemp > 0 &&
                       widget.activity.validEndMove(daysDeltaTemp)) {
                     daysDelta = daysDeltaTemp;
@@ -206,15 +204,14 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
               ChangeNotifierProvider.value(value: _ctrl),
               Provider.value(value: theme),
             ],
-            builder:
-                (context, child) => Opacity(
-                  opacity: 0.85,
-                  child: SizedBox(
-                    width: ctrl.cellVisibleWidth,
-                    height: theme.cellHeight,
-                    child: cellContent,
-                  ),
-                ),
+            builder: (context, child) => Opacity(
+              opacity: 0.85,
+              child: SizedBox(
+                width: ctrl.cellVisibleWidth,
+                height: theme.cellHeight,
+                child: cellContent,
+              ),
+            ),
           ),
         ),
         childWhenDragging: const SizedBox.shrink(),
@@ -266,10 +263,9 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
     final textDirection = Directionality.of(context);
     final isRTL = textDirection == TextDirection.rtl;
     // In RTL, invert the alignment: left becomes right and vice versa
-    final alignment =
-        isBefore
-            ? (isRTL ? Alignment.centerRight : Alignment.centerLeft)
-            : (isRTL ? Alignment.centerLeft : Alignment.centerRight);
+    final alignment = isBefore
+        ? (isRTL ? Alignment.centerRight : Alignment.centerLeft)
+        : (isRTL ? Alignment.centerLeft : Alignment.centerRight);
     final icon = isBefore ? Icons.navigate_before : Icons.navigate_next;
     final children = <Widget>[
       Icon(icon),
@@ -285,8 +281,8 @@ class _GanttActivityRowState extends State<GanttActivityRow> {
       child: Tooltip(
         message: '${activity.start.toLocal()} - ${activity.end.toLocal()}',
         child: InkWell(
-          onTap:
-              () => context.read<GanttController>().startDate = activity.start,
+          onTap: () =>
+              context.read<GanttController>().startDate = activity.start,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,

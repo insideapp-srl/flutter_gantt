@@ -367,9 +367,8 @@ class _GanttState extends State<Gantt> {
       controller.gridWidth = constraints.maxWidth;
       return GestureDetector(
         onPanStart: _handlePanStart,
-        onPanUpdate:
-            (details) =>
-                _handlePanUpdate(details, constraints.maxWidth, context),
+        onPanUpdate: (details) =>
+            _handlePanUpdate(details, constraints.maxWidth, context),
         onPanEnd: _handlePanEnd,
         onPanCancel: _handlePanCancel,
         child: Stack(
@@ -407,66 +406,65 @@ class _GanttState extends State<Gantt> {
               child: _loading ? LinearProgressIndicator() : Container(),
             ),
             Expanded(
-              child:
-                  widget.activitiesListWidth == null
-                      ? Row(
-                        children: [
-                          Expanded(
-                            flex: widget.activitiesListFlex,
-                            child: _buildActivitiesList(c),
-                          ),
-                          Expanded(
-                            flex: widget.gridAreaFlex,
-                            child: _buildGridArea(c),
-                          ),
-                        ],
-                      )
-                      : LayoutBuilder(
-                        builder: (context, constraints) {
-                          final totalWidth = constraints.maxWidth;
-                          final listWidth = _clampListWidth(
-                            _listWidth ??
-                                totalWidth *
-                                    widget.activitiesListFlex /
-                                    (widget.activitiesListFlex +
-                                        widget.gridAreaFlex),
-                            totalWidth,
-                          );
-                          return Stack(
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: listWidth,
-                                    child: _buildActivitiesList(c),
-                                  ),
-                                  Expanded(child: _buildGridArea(c)),
-                                ],
-                              ),
-                              PositionedDirectional(
-                                start: listWidth - _resizeHandleWidth / 2,
-                                top: 0,
-                                bottom: 0,
-                                width: _resizeHandleWidth,
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.resizeColumn,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onHorizontalDragStart: _handleResizeStart,
-                                    onHorizontalDragUpdate:
-                                        (details) => _handleResizeUpdate(
-                                          details,
-                                          listWidth,
-                                          totalWidth,
-                                        ),
-                                    onHorizontalDragEnd: _handleResizeEnd,
-                                  ),
+              child: widget.activitiesListWidth == null
+                  ? Row(
+                      children: [
+                        Expanded(
+                          flex: widget.activitiesListFlex,
+                          child: _buildActivitiesList(c),
+                        ),
+                        Expanded(
+                          flex: widget.gridAreaFlex,
+                          child: _buildGridArea(c),
+                        ),
+                      ],
+                    )
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        final totalWidth = constraints.maxWidth;
+                        final listWidth = _clampListWidth(
+                          _listWidth ??
+                              totalWidth *
+                                  widget.activitiesListFlex /
+                                  (widget.activitiesListFlex +
+                                      widget.gridAreaFlex),
+                          totalWidth,
+                        );
+                        return Stack(
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: listWidth,
+                                  child: _buildActivitiesList(c),
+                                ),
+                                Expanded(child: _buildGridArea(c)),
+                              ],
+                            ),
+                            PositionedDirectional(
+                              start: listWidth - _resizeHandleWidth / 2,
+                              top: 0,
+                              bottom: 0,
+                              width: _resizeHandleWidth,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.resizeColumn,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onHorizontalDragStart: _handleResizeStart,
+                                  onHorizontalDragUpdate: (details) =>
+                                      _handleResizeUpdate(
+                                        details,
+                                        listWidth,
+                                        totalWidth,
+                                      ),
+                                  onHorizontalDragEnd: _handleResizeEnd,
                                 ),
                               ),
-                            ],
-                          );
-                        },
-                      ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ],
         ),

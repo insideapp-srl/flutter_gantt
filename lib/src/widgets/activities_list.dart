@@ -86,18 +86,17 @@ class ActivitiesList extends StatelessWidget {
                 ),
                 if (activities[index].actions?.isNotEmpty == true)
                   Row(
-                    children:
-                        activities[index].actions!.map((e) {
-                          final child = IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: e.onTap,
-                            icon: Icon(e.icon, size: theme.cellHeight * 0.8),
-                            style: e.style,
-                          );
-                          return e.tooltip != null
-                              ? Tooltip(message: e.tooltip, child: child)
-                              : child;
-                        }).toList(),
+                    children: activities[index].actions!.map((e) {
+                      final child = IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: e.onTap,
+                        icon: Icon(e.icon, size: theme.cellHeight * 0.8),
+                        style: e.style,
+                      );
+                      return e.tooltip != null
+                          ? Tooltip(message: e.tooltip, child: child)
+                          : child;
+                    }).toList(),
                   ),
               ],
             ),
@@ -111,21 +110,20 @@ class ActivitiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Consumer<GanttTheme>(
-    builder:
-        (context, theme, child) => Column(
-          children: [
-            SizedBox(
-              height: theme.headerHeight + (showIsoWeek ? 10 : 0),
-              width: double.infinity,
-              child: header,
-            ),
-            Expanded(
-              child: ListView(
-                controller: controller,
-                children: getItems(activities, theme),
-              ),
-            ),
-          ],
+    builder: (context, theme, child) => Column(
+      children: [
+        SizedBox(
+          height: theme.headerHeight + (showIsoWeek ? 10 : 0),
+          width: double.infinity,
+          child: header,
         ),
+        Expanded(
+          child: ListView(
+            controller: controller,
+            children: getItems(activities, theme),
+          ),
+        ),
+      ],
+    ),
   );
 }

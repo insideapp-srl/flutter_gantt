@@ -256,7 +256,7 @@ class GanttController extends ChangeNotifier {
     GanttTheme? theme,
   }) : _startDate =
            (startDate?.toDate ??
-               DateTime.now().toDate.subtract(Duration(days: 30))),
+           DateTime.now().toDate.subtract(Duration(days: 30))),
        _daysViews = daysViews,
        _dragStartDelay = dragStartDelay,
        _theme = theme ?? GanttTheme();

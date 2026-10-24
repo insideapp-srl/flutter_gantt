@@ -27,12 +27,16 @@ extension GanttCtrlInternal on GanttController {
     var remainingDays = days;
 
     while (remainingDays > 0) {
-      final daysInMonth =
-          DateTime(currentDate.year, currentDate.month + 1, 0).day;
+      final daysInMonth = DateTime(
+        currentDate.year,
+        currentDate.month + 1,
+        0,
+      ).day;
       final startDay = currentDate.day;
       final daysLeftInMonth = daysInMonth - startDay + 1;
-      final countedDays =
-          remainingDays < daysLeftInMonth ? remainingDays : daysLeftInMonth;
+      final countedDays = remainingDays < daysLeftInMonth
+          ? remainingDays
+          : daysLeftInMonth;
 
       final monthName =
           monthToText?.call(context, currentDate) ??

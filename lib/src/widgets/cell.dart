@@ -42,14 +42,12 @@ class _GanttCellState extends State<GanttCell> {
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft:
-                context.watch<GanttActivityCtrl>().cellsNotVisibleBefore
-                    ? Radius.zero
-                    : Radius.circular(context.watch<GanttTheme>().cellRounded),
-            bottomRight:
-                context.watch<GanttActivityCtrl>().cellsNotVisibleAfter
-                    ? Radius.zero
-                    : Radius.circular(context.watch<GanttTheme>().cellRounded),
+            topLeft: context.watch<GanttActivityCtrl>().cellsNotVisibleBefore
+                ? Radius.zero
+                : Radius.circular(context.watch<GanttTheme>().cellRounded),
+            bottomRight: context.watch<GanttActivityCtrl>().cellsNotVisibleAfter
+                ? Radius.zero
+                : Radius.circular(context.watch<GanttTheme>().cellRounded),
           ),
           color: color.withValues(alpha: color.a * (mouseOver ? 0.7 : 1)),
         ),
